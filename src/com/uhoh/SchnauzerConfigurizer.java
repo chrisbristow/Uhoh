@@ -49,10 +49,16 @@ public class SchnauzerConfigurizer extends UhohBase
           if(file != null && match_str != null)
           {
             HashMap<String, String> args = get_kvps(config_line);
+            String message = "";
+
+            if(args.get("message") != null)
+            {
+              message = config_line.replaceFirst("^\\s*alert_all:\\s+.+message=", "");
+            }
 
             if(args.get("tags") != null)
             {
-              BasicMatchFileSchnauzer sh = new BasicMatchFileSchnauzer(file, active, args.get("tags"), event_collector, match_str);
+              BasicMatchFileSchnauzer sh = new BasicMatchFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, message);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -87,26 +93,32 @@ public class SchnauzerConfigurizer extends UhohBase
           if(file != null && match_str != null)
           {
             HashMap<String, String> args = get_kvps(config_line);
+            String message = "";
+
+            if(args.get("message") != null)
+            {
+              message = config_line.replaceFirst("^\\s*alert_range:\\s+.+message=", "");
+            }
             
             if(args.get("tags") != null && args.get("seconds") != null)
             {
               if(args.get("minimum") != null && args.get("maximum") != null)
               {
-                ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, Long.parseLong(args.get("minimum")), Long.parseLong(args.get("maximum")));
+                ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, Long.parseLong(args.get("minimum")), Long.parseLong(args.get("maximum")), message);
                 Thread t = new Thread(sh);
                 t.start();
                 schs.add(sh);
               }
               else if(args.get("minimum") != null)
               {
-                ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, Long.parseLong(args.get("minimum")), -1);
+                ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, Long.parseLong(args.get("minimum")), -1, message);
                 Thread t = new Thread(sh);
                 t.start();
                 schs.add(sh);
               }
               else if(args.get("maximum") != null)
               {
-                ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, -1, Long.parseLong(args.get("maximum")));
+                ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, -1, Long.parseLong(args.get("maximum")), message);
                 Thread t = new Thread(sh);
                 t.start();
                 schs.add(sh);
@@ -123,10 +135,16 @@ public class SchnauzerConfigurizer extends UhohBase
           if(file != null && match_str != null)
           {
             HashMap<String, String> args = get_kvps(config_line);
+            String message = "";
+
+            if(args.get("message") != null)
+            {
+              message = config_line.replaceFirst("^\\s*alert_n:\\s+.+message=", "");
+            }
             
             if(args.get("tags") != null && args.get("seconds") != null && args.get("threshold") != null)
             {
-              ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, -1, Long.parseLong(args.get("threshold")));
+              ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, -1, Long.parseLong(args.get("threshold")), message);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -142,10 +160,16 @@ public class SchnauzerConfigurizer extends UhohBase
           if(file != null && match_str != null)
           {
             HashMap<String, String> args = get_kvps(config_line);
+            String message = "";
+
+            if(args.get("message") != null)
+            {
+              message = config_line.replaceFirst("^\\s*alert_inactive:\\s+.+message=", "");
+            }
             
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, 1, -1);
+              ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, 1, -1, message);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);

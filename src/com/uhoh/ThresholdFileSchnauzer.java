@@ -9,11 +9,12 @@ public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
   
   //Construct a ThresholdFileSchnauzer.
   
-  ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt)
+  ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   {
     super(f, a, t, ec, r, m);
     greater_than = gt;
     less_than = lt;
+    message = msg;
     
     if(lt != -1)
     {
@@ -23,6 +24,11 @@ public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
     if(gt != -1)
     {
       log(" - Alert if N > " + gt);
+    }
+
+    if(message.length() != 0)
+    {
+      log(" - Message: " + message);
     }
   }
   
@@ -35,13 +41,16 @@ public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
     {
       if(is_active(active_string))
       {
-        if(less_than != -1 && match_count < less_than)
+        if((less_than != -1 && match_count < less_than) || (greater_than != -1 && match_count > greater_than))
         {
-          event_collector.dispatch("SYSTEM%%" + tags + "%%" + match_count);
-        }
-        else if(greater_than != -1 && match_count > greater_than)
-        {
-          event_collector.dispatch("SYSTEM%%" + tags + "%%" + match_count);
+          if(message.length() == 0)
+          {
+            event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + match_count);
+          }
+          else
+          {
+            event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + message);
+          }
         }
       }
       

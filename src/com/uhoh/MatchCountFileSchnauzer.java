@@ -12,7 +12,7 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
   
   MatchCountFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m)
   {
-    super(f, a, t, ec, r);
+    super(f, a, t, ec, r, "");
     metrics_interval = m;
     next_checkpoint = (new Date()).getTime() + metrics_interval;
     log(" - Interval is " + m + " ms");
@@ -36,7 +36,7 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
     {
       if(is_active(active_string))
       {
-        event_collector.dispatch("SYSTEM%%" + tags + "%%" + match_count);
+        event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + match_count);
       }
 
       match_count = 0;

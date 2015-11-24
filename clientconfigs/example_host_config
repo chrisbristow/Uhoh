@@ -35,6 +35,15 @@ alert_all:   tags=RED
 # needs to be prefixed and suffixed with .* - to consume any characters before or
 # after the "Type: <number>" text.
 
+# The "alert_all:" line can also contain a customised message, as follows:
+
+alert_all:   tags=RED  message=Type identified
+
+# In this case, the alert recorded (and sent to the UI if a RED, AMBER or GREEN tag is included
+# in the tag list) will contain the customised message rather than the line in the
+# log file which was captured.
+# Note that "message=" has to be the last attribute on the "alert_all:" line.
+
 # "alert_count:" triggers a periodic alert which indicates the number of times a particular
 # regular expression has been matched in a log file over a set period of time.
 # For example, the following:
@@ -75,6 +84,12 @@ alert_range:  tags=INACTIVE  seconds=60  minimum=1
 file:        logfile.log
 match:       .*Exception.*
 alert_range: tags=RED,EXCEPTION  seconds=300  maximum=20
+
+# "alert_range:", just like "alert_all:", can be provided with a customised
+# message to include in the alert instead of the match count.
+# For example:
+
+alert_range: tags=RED,EXCEPTION  seconds=300  maximum=20 message=Out of bounds
 
 # The next set of alert types are used to examine disk usage and
 # running processes.
