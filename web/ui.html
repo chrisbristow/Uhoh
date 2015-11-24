@@ -1,0 +1,144 @@
+<html>
+
+  <head>
+      <title>Uhoh</title>
+  </head>
+
+  <style>
+
+      body
+      {
+        margin: 0;
+      }
+
+      .alert_red
+      {
+        margin-top: 0px;
+        background-color: #EF0000;
+        color: #dddddd;
+        font-family: 'Roboto', arial, sans-serif;
+        font-size: 14pt;
+        font-weight: normal;
+        padding: 10px;
+        //letter-spacing: 1px;
+      }
+
+      .alert_amber
+      {
+        margin-top: 0px;
+        background-color: #FCA800;
+        color: #666666;
+        font-family: 'Roboto', arial, sans-serif;
+        font-size: 14pt;
+        font-weight: normal;
+        padding: 10px;
+        //letter-spacing: 1px;
+      }
+
+      .alert_green
+      {
+        margin-top: 0px;
+        background-color: #ffffff;
+        color: #999999;
+        font-family: 'Roboto', arial, sans-serif;
+        font-size: 14pt;
+        font-weight: normal;
+        padding: 10px;
+        //letter-spacing: 1px;
+      }
+
+      .menubar
+      {
+        background-color: #000000;
+        color: #ffffff;
+        font-family: arial, sans-serif;
+        font-size: 14pt;
+        font-weight: bold;
+        padding: 10px;
+        position: fixed;
+        height: 50px;
+        width: 100%;
+      }
+
+  </style>
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
+
+  <script>
+
+      window.addEvent('domready', function()
+      {
+        do_fetch();
+      });
+
+      function do_fetch()
+      {
+        var ajax = new Request({ noCache: true, url: "/ui", onSuccess: function(responseText, responseXML) { do_render(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
+        ajax.get();
+
+        setTimeout(function() { do_fetch(); }, 20000);
+      }
+
+      function do_render(responseText)
+      {
+        var obj = JSON.decode(responseText);
+        //var response = "<div class=\"menubar\" style=\"position: static;\"></div>";
+        var response = "";
+
+        if(obj.status != "ok")
+        {
+          alert("The server returned an error");
+        }
+        else
+        {
+          response += get_alerts(obj.red, "alert_red");
+          response += get_alerts(obj.amber, "alert_amber");
+          response += get_alerts(obj.green, "alert_green");
+        }
+
+        $('alerts').innerHTML = response;
+      }
+
+      function get_alerts(aobj, categ)
+      {
+        var html = "";
+
+        for(var i = 0; i < aobj.length; i ++)
+        {
+          html += ( "<div class=\"" + categ + "\">" + aobj[i] + "</div>" );
+        }
+
+        return(html);
+      }
+
+      function errbox()
+      {
+        alert("Error calling the server");
+      }
+
+      function toggle_menu()
+      {
+        var curr_menu_sz = document.getElementById('topmenu').style.height.replace('px', '');
+
+        if(curr_menu_sz == '')
+        {
+          curr_menu_sz = 50;
+        }
+
+        var new_menu_sz = 450 - curr_menu_sz;
+        document.getElementById('topmenu').style.height = new_menu_sz + "px";
+      }
+
+  </script>
+
+  <body>
+
+    <!-- <div class="menubar" id="topmenu"><div style="line-height: 50%; cursor: pointer;" onmouseup="toggle_menu();">__<br/>__<br/>__</div></div> -->
+
+    <div id="alerts"></div>
+
+  </body>
+
+</html>

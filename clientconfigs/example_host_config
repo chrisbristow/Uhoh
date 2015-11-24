@@ -1,0 +1,140 @@
+# All alert types are given one or more "tags", in a comma-separated list.  These tags are
+# to be used by programs which consume the server's logs and perform actions based
+# on the alerts and tags which appear in those logs.
+# There are also three special tags - RED, AMBER and GREEN.  Alerts tagged with these
+# values will appear in the web UI provided by the server's built-in web server.
+
+# The following alert types are used to collect information from log files:
+# - alert_all:
+# - alert_count:
+# - alert_range:
+
+# "alert_all:" consumes a log file and triggers an alert each time a line containing a particular
+# string match is found:
+
+file:         <log_file_name>
+match:        <regular_expression>
+alert_all:    tags=<tags>
+
+# You can also add an optional "active:" directive which describes when this check will be active.
+# The "active:" line is a comma-separated list of <days>;<hour/min_range> items.
+# <days> are days of the week - numbered 1-7 where 1 = Sunday, 2 = Monday etc.
+# <hour/min_range> is written as start hour/min - end hour/min in the format
+# HH:MM-HH:MM.
+# "active:" can be used with any alert type.
+
+# Below is an example of "alert_all:" where lines containing "Type: <number>" are found.
+# The consumer is only active from 09:00 - 17:30 Monday - Friday and 10:00 - 16:00 Saturday - Sunday.
+
+file:        logfile.log
+active:      23456;09:00-17:30,17;10:00-16:00
+match:       .*Type: \d+.*
+alert_all:   tags=RED
+
+# Note that the "match:" regular expression needs to match the entire log file line and therefore
+# needs to be prefixed and suffixed with .* - to consume any characters before or
+# after the "Type: <number>" text.
+
+# "alert_count:" triggers a periodic alert which indicates the number of times a particular
+# regular expression has been matched in a log file over a set period of time.
+# For example, the following:
+
+file:          logfile.log
+match:         .*Type: \d+.*
+alert_count:   tags=RED   seconds=60
+
+# ... triggers an alert every minute which contains the number of times the string "Type: <number>"
+# appears in logfile.log.  The "RED" tag means that this alert will be displayed as a red
+# (highest priority) alarm in the browser UI.
+
+# "alert_range:" is used to trigger a periodic alert if the number of matches in a log file
+# falls outside a set range during that time period.  For example, the following fires off an
+# alert if there are less than 3 or more than 6 instances of the string "Type X" appearing
+# in logfile.log within a minute:
+
+file:         logfile.log
+match:        .*Type X.*
+alert_range:  tags=AMBER,X_RANGE  seconds=60  minimum=3  maximum=6
+
+# "minimum=" and "maximum=" can be specified on their own, for example, the
+# following could be used to raise an alert if the file logfile.log hasn't
+# been updated at all over the last minute (useful for detecting if a program
+# has entered a "hung" state) and we require this check to only be active
+# between 07:00 and 22:00 on any day of the week:
+
+file:         logfile.log
+match:        .+
+active:       1234567;07:00-22:00
+alert_range:  tags=INACTIVE  seconds=60  minimum=1
+
+# (Note that .+ matches one or more of any character - ie. any line.)
+
+# This example triggers an alert if more than 20 lines containing
+# "Exception" appear in logfile.log within a five minute period:
+
+file:        logfile.log
+match:       .*Exception.*
+alert_range: tags=RED,EXCEPTION  seconds=300  maximum=20
+
+# The next set of alert types are used to examine disk usage and
+# running processes.
+
+# "alert_disk:" is used to check available space on a disk.
+# The following raises an alert if utilised space on the
+# root filesystem exceeds 80%:
+
+file:        /
+alert_disk:  tags=ROOT_FS,RED   maximum=80
+
+# In addtion to the above, if you include:
+
+file:        /
+alert_disk:  tags=ROOT_FS,AMBER   maximum=70
+
+# ... then an Amber alert (in the UI) will appear if root filesystem
+# space exceeds 70%, and then a Red alert will appear if space
+# exceeds 80%.
+
+# To monitor for the presence (or non-presence) of processes, use
+# the "alert_process:" directive.
+
+# Firstly, we need to set the command used to fetch the process table.
+# For example, on Linux we could set this as follows:
+
+ps_command:   ps -fe
+
+# On Windows, we would use:
+
+ps_command:   tasklist.exe
+
+# Then, we define pattern matches and "alert_process:" statements.
+# Eg. to raise an alert if no Apache httpd process are running or
+# if more than 20 are running:
+
+match:          .*httpd.*
+alert_process:  tags=AMBER,APACHE  minimum=1  maximum=20
+
+# Note that we have to specify both "minimum" and "maximum"
+# unlike with "alert_count:".
+
+# If we would like an alert to be triggered if anything other
+# than a set number of processes are running, then we specify "exactly"
+# instead of "minimum" and "maximum".
+# For example, if only one instance of "chart_load" should be running at
+# any time:
+
+match:         .*chart_load.*
+alert_process  tags=CHARTING  exactly=1
+
+# Finally, the client can run commands and raise alerts if an lines in the
+# command output match a regular expression.  This is generally used for
+# custom monitoring by running a script.
+# The following runs "df -i ." every 150 seconds and captures any lines
+# which contain a number, followed by one or more spaces, then another
+# number, then another one or more spaces.  The "active:" directive means
+# that the command will only be run from 17:00 - 19:00 on Saturday and Sunday.
+
+match:             .*\d+\s+\d+\s+.*
+active:            17;17:00-19:00
+alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
+
