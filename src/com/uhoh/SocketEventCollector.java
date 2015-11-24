@@ -32,11 +32,11 @@ public class SocketEventCollector extends EventCollector
     smon.start();
   }
   
-  void process_event(String event)
+  void process_event(Object[] event)
   {
     if(event == null)
     {
-      event = "SYSTEM%%NULL%%Idle";
+      event = new Object[]{ "SYSTEM%%NULL%%Idle", "IDLE" };
     }
 
     for(Enumeration<String> e = servers.keys(); e.hasMoreElements();)
@@ -49,12 +49,11 @@ public class SocketEventCollector extends EventCollector
         String ip_addr = st.nextToken();
         int ip_port = Integer.parseInt(st.nextToken());
         long utime = (new Date()).getTime();
-        String uid = utime + "_" + uid_c;
         uid_c ++;
-        byte[] alert_cmd = ("ALERT%%" + our_name + "%%" + uid + "%%" + utime + "%%" + event).getBytes();
+        byte[] alert_cmd = ("ALERT%%" + our_name + "%%" + (String)event[1] + "%%" + utime + "%%" + (String)event[0]).getBytes();
         DatagramPacket sp = new DatagramPacket(alert_cmd, alert_cmd.length, InetAddress.getByName(ip_addr), ip_port);
 
-        log(server_info + " -> " + event);
+        log(server_info + " -> (" + (String)event[1] + ") " + (String)event[0]);
 
         udp_socket.send(sp);
       }

@@ -6,13 +6,13 @@ import java.util.concurrent.*;
 
 public class EventCollector extends UhohBase implements Runnable
 {
-  LinkedBlockingQueue<String> q = null;
+  LinkedBlockingQueue<Object[]> q = null;
   
   // Basic EventCollector constructor.
   
   EventCollector()
   {
-    q = new LinkedBlockingQueue<String>();
+    q = new LinkedBlockingQueue<Object[]>();
   }
   
   // This is the basic EventCollector loop.
@@ -25,7 +25,7 @@ public class EventCollector extends UhohBase implements Runnable
     {
       try
       {
-        String event = (String)q.poll(67, TimeUnit.SECONDS);
+        Object[] event = (Object[])q.poll(67, TimeUnit.SECONDS);
         
         process_event(event);
       }
@@ -39,23 +39,25 @@ public class EventCollector extends UhohBase implements Runnable
   
   // Override this method to customise processing of events.
   
-  void process_event(String event)
+  void process_event(Object[] event)
   {
     if(event == null)
     {
-      event = "";
+      log("");
     }
-
-    log(event);
+    else
+    {
+      log((String)event[0]);
+    }
   }
   
   // Called by external threads to send a message to the EventCollector.
   
-  public void dispatch(String event)
+  public void dispatch(String event, String type)
   {
     try
     {
-      q.put(event);
+      q.put(new Object[]{ event, type });
     }
     catch(Exception e)
     {

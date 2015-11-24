@@ -40,7 +40,6 @@ public class DiskSchnauzer extends Schnauzer
       
       if(is_active(active_string) && pct_used > pct_threshold)
       {
-        //string_processor("Filesystem " + filename + " usage of " + pct_used + "% exceeds limit of "+ pct_threshold + "%");
         string_processor("Filesystem " + filename + " usage exceeds limit of "+ pct_threshold + "%");
       }
       
