@@ -17,9 +17,13 @@ public class ServerLoop extends UhohBase
   HashMap<String, Object[]> clients = new HashMap<String, Object[]>();
   LinkedBlockingQueue<Object[]> client_q = new LinkedBlockingQueue<Object[]>();
   LinkedBlockingQueue<Object[]> ui_rec = new LinkedBlockingQueue<Object[]>();
-  HashMap<String, Long> ui_red = new HashMap<String, Long>();
-  HashMap<String, Long> ui_amber = new HashMap<String, Long>();
-  HashMap<String, Long> ui_green = new HashMap<String, Long>();
+  //HashMap<String, Long> ui_red = new HashMap<String, Long>();
+  //HashMap<String, Long> ui_amber = new HashMap<String, Long>();
+  //HashMap<String, Long> ui_green = new HashMap<String, Long>();
+  HashMap<String, Object[]> ui_red = new HashMap<String, Object[]>();
+  HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
+  HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
+  HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
 
   // Initialise a new ServerLoop().
   
@@ -28,6 +32,11 @@ public class ServerLoop extends UhohBase
     udp_port = u;
     broadcast_address = b;
     tcp_port = t;
+
+    ui_rtime.put("ALL", 125000L);
+    ui_rtime.put("PROCESS", 65000L);
+    ui_rtime.put("FILE", 600000L);
+    ui_rtime.put("IDLE", 75000L);
   }
 
   // Start and run the ServerLoop.  Note that this class isn't to be used as
@@ -137,7 +146,7 @@ public class ServerLoop extends UhohBase
 
             try
             {
-              ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), client_host_name, "No updates", "GREEN" });
+              ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), client_host_name, "No updates", "GREEN", "IDLE" });
             }
             catch(InterruptedException e)
             {
@@ -157,15 +166,18 @@ public class ServerLoop extends UhohBase
           {
             if(ui_item[3].equals("RED"))
             {
-              ui_red.put(ui_item[1] + ": " + ui_item[2], (Long)ui_item[0]);
+              //ui_red.put(ui_item[1] + ": " + ui_item[2], (Long)ui_item[0]);
+              ui_red.put(ui_item[1] + ": " + ui_item[2], new Object[]{(Long)ui_item[0], (String)ui_item[4]});
             }
             else if(ui_item[3].equals("AMBER"))
             {
-              ui_amber.put(ui_item[1] + ": " + ui_item[2], (Long)ui_item[0]);
+              //ui_amber.put(ui_item[1] + ": " + ui_item[2], (Long)ui_item[0]);
+              ui_amber.put(ui_item[1] + ": " + ui_item[2], new Object[]{(Long)ui_item[0], (String)ui_item[4]});
             }
             else if(ui_item[3].equals("GREEN"))
             {
-              ui_green.put(ui_item[1] + ": " + ui_item[2], (Long)ui_item[0]);
+              //ui_green.put(ui_item[1] + ": " + ui_item[2], (Long)ui_item[0]);
+              ui_green.put(ui_item[1] + ": " + ui_item[2], new Object[]{(Long)ui_item[0], (String)ui_item[4]});
             }
           }
         }
@@ -218,9 +230,28 @@ public class ServerLoop extends UhohBase
     }
   }
 
-  String get_ui_items(HashMap<String, Long> ui_disp)
+  //String get_ui_items(HashMap<String, Long> ui_disp)
+  String get_ui_items(HashMap<String, Object[]> ui_disp)
   {
-    Iterator<String> iter = sortByValue(ui_disp).keySet().iterator();
+    LinkedList<Map.Entry<String, Object[]>> lst = new LinkedList<Map.Entry<String, Object[]>>(ui_disp.entrySet());
+
+    Collections.sort(lst, new Comparator<Map.Entry<String, Object[]>>() {
+      public int compare(Map.Entry<String, Object[]> o1, Map.Entry<String, Object[]> o2)
+      {
+        return(((Long)o2.getValue()[0]).compareTo((Long)o1.getValue()[0]));
+      }
+    });
+
+    ArrayList<String> msgs = new ArrayList<String>();
+
+    for(Map.Entry<String, Object[]> entry : lst)
+    {
+      msgs.add(entry.getKey());
+    }
+
+    Iterator<String> iter = msgs.iterator();
+
+    //Iterator<String> iter = sortByValue(ui_disp).keySet().iterator();
     StringBuffer sb = new StringBuffer("");
     String pfx = "";
 
@@ -228,12 +259,13 @@ public class ServerLoop extends UhohBase
     {
       String msg = iter.next();
       Date ev_dt = new Date();
-      ev_dt.setTime(ui_disp.get(msg));
+      ev_dt.setTime(((Long)ui_disp.get(msg)[0]));
       sb.append(pfx);
       sb.append("\"" + ev_dt.toString() + ": " + msg.replaceAll("\"", "") + "\"");
       pfx = ",";
 
-      if(ui_disp.get(msg) < (System.currentTimeMillis() - max_ui_retention_time))
+      //if(((Long)ui_disp.get(msg)[0]) < (System.currentTimeMillis() - max_ui_retention_time))
+      if(((Long)ui_disp.get(msg)[0]) < (System.currentTimeMillis() - ui_rtime.get((String)ui_disp.get(msg)[1])))
       {
         ui_disp.remove(msg);
       }
@@ -242,6 +274,7 @@ public class ServerLoop extends UhohBase
     return(sb.toString());
   }
 
+  /*
   public static <K, V extends Comparable<? super V>> Map<K, V>sortByValue(Map<K, V> map)
   {
     List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
@@ -249,18 +282,19 @@ public class ServerLoop extends UhohBase
     Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
         public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2)
         {
-          return(o2.getValue()).compareTo(o1.getValue());
+          return(o2.getValue().compareTo(o1.getValue()));
         }
       }
     );
 
     Map<K, V> result = new LinkedHashMap<K, V>();
 
-    for (Map.Entry<K, V> entry : list)
+    for(Map.Entry<K, V> entry : list)
     {
       result.put(entry.getKey(), entry.getValue());
     }
 
     return result;
   }
+  */
 }

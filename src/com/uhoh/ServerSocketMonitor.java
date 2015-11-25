@@ -67,15 +67,15 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
 
             if(tags.contains("RED"))
             {
-              server_loop.ui_rec.put(new Object[]{ new Long(System.currentTimeMillis()), cmd[1], cmd[6], "RED" });
+              server_loop.ui_rec.put(new Object[]{ new Long(System.currentTimeMillis()), cmd[1], cmd[6], "RED", cmd[2] });
             }
             else if(tags.contains("AMBER"))
             {
-              server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "AMBER" });
+              server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "AMBER", cmd[2] });
             }
             else if(tags.contains("GREEN"))
             {
-              server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "GREEN" });
+              server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "GREEN", cmd[2] });
             }
           }
 

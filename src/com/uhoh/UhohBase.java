@@ -6,7 +6,7 @@ public abstract class UhohBase
 {
   long client_timeout = 180000;
   int max_ui_queue_size = 10;
-  long max_ui_retention_time = 300000;
+  //long max_ui_retention_time = 300000;
   long server_heartbeat_interval = 5000;
   long rest_request_timeout = 10000;
   String server_disk_log_name = "server.log";
