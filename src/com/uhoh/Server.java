@@ -8,11 +8,11 @@ public class Server
   {
     try
     {
-      new ServerLoop(Integer.parseInt(args[0]), args[1], Integer.parseInt(args[2])).run();
+      new ServerLoop(args[0]).run();
     }
     catch(Exception e)
     {
-      System.err.println("Usage: com.uhoh.Server <udp_port_number> <broadcast_address> <web_tcp_port>");
+      System.err.println("Usage: com.uhoh.Server <server_properties_file>");
       System.exit(1);
     }
   }

@@ -24,16 +24,42 @@ public class ServerLoop extends UhohBase
 
   // Initialise a new ServerLoop().
   
-  ServerLoop(int u, String b, int t)
+  ServerLoop(String props_file)
   {
-    udp_port = u;
-    broadcast_address = b;
-    tcp_port = t;
+    try
+    {
+      Properties props = new Properties();
+      props.load(new FileReader(props_file));
 
-    ui_rtime.put("ALL", 125000L);
-    ui_rtime.put("PROCESS", 65000L);
-    ui_rtime.put("FILE", 600000L);
-    ui_rtime.put("IDLE", 75000L);
+      udp_port = Integer.parseInt(props.getProperty("udp_port_number"));
+      broadcast_address = props.getProperty("udp_broadcast_address");
+      tcp_port = Integer.parseInt(props.getProperty("tcp_port_number"));
+      client_timeout = Long.parseLong(props.getProperty("client_timeout"));
+      server_heartbeat_interval = Long.parseLong(props.getProperty("heartbeat_interval"));
+      server_disk_log_name = props.getProperty("disk_log_name");
+      server_disk_log_size = Long.parseLong(props.getProperty("disk_log_size"));
+      ui_rtime.put("ALL", new Long(props.getProperty("ui_display_time_ALL")));
+      ui_rtime.put("PROCESS", new Long(props.getProperty("ui_display_time_PROCESS")));
+      ui_rtime.put("FILE", new Long(props.getProperty("ui_display_time_FILE")));
+      ui_rtime.put("IDLE", new Long(props.getProperty("ui_display_time_IDLE")));
+
+      log("Client/Server UDP ports:              " + udp_port + " / " + (udp_port + 1));
+      log("Server broadcast address:             " + broadcast_address);
+      log("Web UI server TCP port:               " + tcp_port);
+      log("Client inactivity timeout:            " + client_timeout + " ms");
+      log("Server will sent heartbeats every:    " + server_heartbeat_interval + " ms");
+      log("Server will log events to:            " + server_disk_log_name);
+      log("Event log will roll after it reaches: " + server_disk_log_size + " bytes");
+      log("UI: Log file events held for:         " + ui_rtime.get("FILE") + " ms");
+      log("UI: Process events held for:          " + ui_rtime.get("PROCESS") + " ms");
+      log("UI: Idle client events held for:      " + ui_rtime.get("IDLE") + " ms");
+      log("UI: Other events held for:            " + ui_rtime.get("ALL") + " ms");
+    }
+    catch(Exception e)
+    {
+      log("Exception: Unable to load the server properties");
+      System.exit(1);
+    }
   }
 
   // Start and run the ServerLoop.  Note that this class isn't to be used as
