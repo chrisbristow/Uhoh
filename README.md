@@ -71,5 +71,42 @@ Each Server hosts an embedded web server which is used to serve a simple browser
 certain types of alerts.  The user interface page lists recently active alerts divided into three severity
 categories - Red, Amber and Green.  For alerts to appear in the Red section (at the top of the list) they must
 be tagged with the ID RED (other tags can be included beside this tag).  Alerts tagged AMBER appear below Red and
-those tagged GREEN appear below Amber.  The Server retains (TBC)
+those tagged GREEN appear below Amber.
+
+The Server retains alerts in the web UI for a set period of time - different categories of alert are retained for different times:
+
+- Log file alerts are retained for 10 minutes.
+- Process alerts are retained for 65 seconds.
+- Disk usage and Custom alerts are retained for 125 seconds.
+- Idle client alerts are retained for 75 seconds.
+
+All of these times can be configured in the server.properties file.
+
+Let’s Present an Example Usage Scenario for Uhoh.
+-------------------------------------------------
+“Amalgamated Paperclips PLC has a network of Raspberry Pi 2s, running Ubuntu Linux, which are used to control the
+factory clump-presses.  Although the clump-press control software running on each of them is very reliable, it
+needs to be monitored constantly so that issues logged concerning the health of the clump-presses themselves can
+be captured, a clump-press minder dispatched to fix the problem, so to avoid the entire production line grinding to a halt.
+Three beige-box PCs, also running Ubuntu, are also deployed on the network.  One sits in the management office and the
+other two in the clump-press support workshop.”
+
+Here’s how the system is set up from a monitoring perspective:
+
+- Uhoh is installed on all of the Pi 2s and Clients started, listening on UDP port 8888.
+- The three PCs also have Uhoh installed on them and have been set up to run Uhoh Servers.
+- The three Servers maintain all Client configuration files and if a Client config is updated, then that config is pushed to the other two Servers such that they all stay in sync.  Once the push has been performed, a “reset” for the updated Client can be sent from one of the Servers.
+- Each Client config contains configuration directives to:
+  - Check that the clump-press minding daemon (“clumppressd”) is running.
+  - Check that no more than 80% of disk space is in use.
+  - Check the /var/log/clumppressd.log file for indications that the press being controlled hasn’t developed a fault.
+- Remember, if a clump-press catches fire, Uhoh will notice that its Client is no longer running and generate an alert - probably before the smell of smoke makes it to the clump-press minders.
+- The three Servers, of course, are all used as Web UI servers for the factory management office users and clump-press minders.
+- The two PCs located in the clump-press support workshop also run various other Python scripts which:
+  - Consume the server.log log file from the Server.
+  - Pick up and correlate alerts which appear in this file.
+  - Write messages to other log files.
+  - Send email alerts to support staff inboxes.
+- The two clump-press support workshop PCs also run Uhoh Clients themselves which monitor the Python scripts’ output logs and feed alarms back to the Servers. (Derived alarms.)
+
 
