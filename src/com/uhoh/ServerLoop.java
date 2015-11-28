@@ -16,11 +16,12 @@ public class ServerLoop extends UhohBase
   String our_name = null;
   HashMap<String, Object[]> clients = new HashMap<String, Object[]>();
   LinkedBlockingQueue<Object[]> client_q = new LinkedBlockingQueue<Object[]>();
-  LinkedBlockingQueue<Object[]> ui_rec = new LinkedBlockingQueue<Object[]>();
+  //LinkedBlockingQueue<Object[]> ui_rec = new LinkedBlockingQueue<Object[]>();
   HashMap<String, Object[]> ui_red = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
   HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
+  FileOutputStream logmgr = null;
 
   // Initialise a new ServerLoop().
   
@@ -169,16 +170,19 @@ public class ServerLoop extends UhohBase
 
             try
             {
-              ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), client_host_name, "No updates", "GREEN", "IDLE" });
+              //ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), client_host_name, "No updates", "GREEN", "IDLE" });
+              //ui_green.put(client_host_name + ": No updates", new Object[]{new Long(System.currentTimeMillis()), "IDLE"});
+              client_q.put(new Object[]{"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SYSTEM", "GREEN", "No updates"});
             }
             catch(InterruptedException e)
             {
-              log("Exception queueing alert:");
+              log("Exception queueing client idle alert:");
               e.printStackTrace();
             }
           }
         }
 
+        /*
         Object[] ui_item = new Object[]{ "MT"};
 
         while(ui_item != null)
@@ -201,6 +205,7 @@ public class ServerLoop extends UhohBase
             }
           }
         }
+        */
       }
 
       try
@@ -238,6 +243,28 @@ public class ServerLoop extends UhohBase
               sb.append("]}");
 
               ((LinkedBlockingQueue)new_update[1]).put(sb.toString());
+            }
+            else if(new_update[0].equals("ALERT"))
+            {
+              HashSet<String> tags = new HashSet<String>(Arrays.asList(((String)new_update[5]).split(",")));
+
+              if(tags.contains("RED"))
+              {
+                //ui_rec.put(new Object[]{ new Long(System.currentTimeMillis()), new_update[1], new_update[6], "RED", new_update[2] });
+                ui_red.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
+              }
+              else if(tags.contains("AMBER"))
+              {
+                //ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), new_update[1], new_update[6], "AMBER", new_update[2] });
+                ui_amber.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
+              }
+              else if(tags.contains("GREEN"))
+              {
+                //ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), new_update[1], new_update[6], "GREEN", new_update[2] });
+                ui_green.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
+              }
+
+              disk_log(log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]));
             }
           }
         }
@@ -288,5 +315,31 @@ public class ServerLoop extends UhohBase
     }
 
     return(sb.toString());
+  }
+
+  void disk_log(String s)
+  {
+    try
+    {
+      if(logmgr == null)
+      {
+        logmgr = new FileOutputStream(server_disk_log_name, true);
+      }
+
+      logmgr.write((s + "\n").getBytes());
+
+      if(logmgr.getChannel().size() > server_disk_log_size)
+      {
+        logmgr.close();
+        logmgr = null;
+        (new File(server_disk_log_name)).renameTo(new File(server_disk_log_name + ".1"));
+        (new File(server_disk_log_name)).createNewFile();
+      }
+    }
+    catch(Exception e)
+    {
+      log("Exception logging to disk:");
+      e.printStackTrace();
+    }
   }
 }

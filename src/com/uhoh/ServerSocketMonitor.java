@@ -8,7 +8,7 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
 {
   DatagramSocket udp_socket = null;
   ServerLoop server_loop;
-  FileOutputStream logmgr = null;
+  // FileOutputStream logmgr = null;
   
   ServerSocketMonitor(DatagramSocket u, ServerLoop s)
   {
@@ -63,6 +63,8 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
         {
           if(cmd[0].equals("ALERT"))
           {
+            server_loop.client_q.put(cmd); // TODO: This is the new way ....
+/*
             HashSet<String> tags = new HashSet<String>(Arrays.asList(cmd[5].split(",")));
 
             if(tags.contains("RED"))
@@ -77,10 +79,11 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
             {
               server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "GREEN", cmd[2] });
             }
+*/
           }
 
-          String log_line = log(in_data);
-          disk_log(log_line);
+          //String log_line = log(in_data);
+          //disk_log(log_line);
         }
       }
       catch(Exception e)
@@ -91,6 +94,7 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
     }
   }
 
+  /*
   void disk_log(String s)
   {
     try
@@ -116,4 +120,5 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
       e.printStackTrace();
     }
   }
+  */
 }
