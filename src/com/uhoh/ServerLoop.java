@@ -16,7 +16,6 @@ public class ServerLoop extends UhohBase
   String our_name = null;
   HashMap<String, Object[]> clients = new HashMap<String, Object[]>();
   LinkedBlockingQueue<Object[]> client_q = new LinkedBlockingQueue<Object[]>();
-  //LinkedBlockingQueue<Object[]> ui_rec = new LinkedBlockingQueue<Object[]>();
   HashMap<String, Object[]> ui_red = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
@@ -170,8 +169,6 @@ public class ServerLoop extends UhohBase
 
             try
             {
-              //ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), client_host_name, "No updates", "GREEN", "IDLE" });
-              //ui_green.put(client_host_name + ": No updates", new Object[]{new Long(System.currentTimeMillis()), "IDLE"});
               client_q.put(new Object[]{"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SYSTEM", "GREEN", "No updates"});
             }
             catch(InterruptedException e)
@@ -181,31 +178,6 @@ public class ServerLoop extends UhohBase
             }
           }
         }
-
-        /*
-        Object[] ui_item = new Object[]{ "MT"};
-
-        while(ui_item != null)
-        {
-          ui_item = ui_rec.poll();
-
-          if(ui_item != null)
-          {
-            if(ui_item[3].equals("RED"))
-            {
-              ui_red.put(ui_item[1] + ": " + ui_item[2], new Object[]{(Long)ui_item[0], (String)ui_item[4]});
-            }
-            else if(ui_item[3].equals("AMBER"))
-            {
-              ui_amber.put(ui_item[1] + ": " + ui_item[2], new Object[]{(Long)ui_item[0], (String)ui_item[4]});
-            }
-            else if(ui_item[3].equals("GREEN"))
-            {
-              ui_green.put(ui_item[1] + ": " + ui_item[2], new Object[]{(Long)ui_item[0], (String)ui_item[4]});
-            }
-          }
-        }
-        */
       }
 
       try
@@ -250,17 +222,14 @@ public class ServerLoop extends UhohBase
 
               if(tags.contains("RED"))
               {
-                //ui_rec.put(new Object[]{ new Long(System.currentTimeMillis()), new_update[1], new_update[6], "RED", new_update[2] });
                 ui_red.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
               }
               else if(tags.contains("AMBER"))
               {
-                //ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), new_update[1], new_update[6], "AMBER", new_update[2] });
                 ui_amber.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
               }
               else if(tags.contains("GREEN"))
               {
-                //ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), new_update[1], new_update[6], "GREEN", new_update[2] });
                 ui_green.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
               }
 

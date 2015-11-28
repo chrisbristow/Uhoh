@@ -8,8 +8,7 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
 {
   DatagramSocket udp_socket = null;
   ServerLoop server_loop;
-  // FileOutputStream logmgr = null;
-  
+
   ServerSocketMonitor(DatagramSocket u, ServerLoop s)
   {
     udp_socket = u;
@@ -63,27 +62,8 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
         {
           if(cmd[0].equals("ALERT"))
           {
-            server_loop.client_q.put(cmd); // TODO: This is the new way ....
-/*
-            HashSet<String> tags = new HashSet<String>(Arrays.asList(cmd[5].split(",")));
-
-            if(tags.contains("RED"))
-            {
-              server_loop.ui_rec.put(new Object[]{ new Long(System.currentTimeMillis()), cmd[1], cmd[6], "RED", cmd[2] });
-            }
-            else if(tags.contains("AMBER"))
-            {
-              server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "AMBER", cmd[2] });
-            }
-            else if(tags.contains("GREEN"))
-            {
-              server_loop.ui_rec.put(new Object[]{new Long(System.currentTimeMillis()), cmd[1], cmd[6], "GREEN", cmd[2] });
-            }
-*/
+            server_loop.client_q.put(cmd);
           }
-
-          //String log_line = log(in_data);
-          //disk_log(log_line);
         }
       }
       catch(Exception e)
@@ -93,32 +73,4 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
       }
     }
   }
-
-  /*
-  void disk_log(String s)
-  {
-    try
-    {
-      if(logmgr == null)
-      {
-        logmgr = new FileOutputStream(server_disk_log_name, true);
-      }
-
-      logmgr.write((s + "\n").getBytes());
-
-      if(logmgr.getChannel().size() > server_disk_log_size)
-      {
-        logmgr.close();
-        logmgr = null;
-        (new File(server_disk_log_name)).renameTo(new File(server_disk_log_name + ".1"));
-        (new File(server_disk_log_name)).createNewFile();
-      }
-    }
-    catch(Exception e)
-    {
-      log("Exception logging to disk:");
-      e.printStackTrace();
-    }
-  }
-  */
 }
