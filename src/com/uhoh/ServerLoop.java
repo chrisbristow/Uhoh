@@ -188,6 +188,34 @@ public class ServerLoop extends UhohBase
           reset_file.delete();
         }
 
+        File forget_file = new File("forget");
+
+        if(forget_file.exists())
+        {
+          try
+          {
+            BufferedReader ff = new BufferedReader(new FileReader(forget_file));
+            String next_line;
+
+            while((next_line = ff.readLine()) != null)
+            {
+              String client_name = next_line.trim();
+
+              log("Removing monitoring for " + client_name);
+              clients.remove(client_name);
+            }
+
+            ff.close();
+          }
+          catch(Exception e)
+          {
+            log("Exception handling forget file:");
+            e.printStackTrace();
+          }
+
+          forget_file.delete();
+        }
+
         Iterator<String> iter = clients.keySet().iterator();
 
         while(iter.hasNext())

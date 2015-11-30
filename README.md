@@ -1,9 +1,9 @@
 Keep an eye on your stuff.  Find out when things are going wrong.  Simple, lightweight distributed systems monitoring.
 ======================================================================================================================
 
-What is Uhoh ?
---------------
-Uhoh is an application which is designed to perform basic monitoring tasks on hosts, relaying any issues found back
+What's Uhoh All About Then ?
+----------------------------
+Uhoh is an application which is performs basic monitoring tasks on hosts, relaying any issues found back
 to a set of centralised servers.  Key features of Uhoh include:
 
 - Clients run on hosts to be monitored.
@@ -13,7 +13,7 @@ to a set of centralised servers.  Key features of Uhoh include:
 - Servers collate alarms from clients.
 - Servers output alarm streams for other programs to consume and analyse.
 - Servers host a basic web alarm view user interface.
-- 100% Java / Javascript.
+- 100% Java & Javascript.
 - Tiny installation (Servers and Clients).
 
 Getting Started.
@@ -54,7 +54,7 @@ the log file are matched using a regular expression and then an action is taken.
 - Count how many matches there have been over a set period of time and send the number of matches to the Server at the end of the period.
 - Count how many matches there have been over a set period of time and sent a custom alert or the count value back to the Server if the count is outside an expected range.
 
-For Process Monitoring, the Schauzer will:
+For Process Monitoring, the Schnauzer will:
 
 Send an alert back to the Server if the number of running instances of a process (identified via a regular expression) is outside a
 given acceptable range.
@@ -64,6 +64,28 @@ The command used to fetch the process table can be specified - eg. “ps -fe” 
 Disk Monitoring checks periodically that the free space available for a particular filesystem or volume hasn’t exceeded a given amount.
 
 Finally, Custom Monitoring allows the Client to run a command and relay output from that command that matches a regular expression back to the Server.
+
+Managing Running Clients.
+-------------------------
+If a Client configuration is updated, the Client will need to be told that a new configuration is available.  The simplest
+way to do this is just to re-start the Client, but wouldn't it be better if there was an easier way ?  Well, there is - the
+"reset" procedure.  Here's how it works:
+
+- Servers periodically check for a file called "reset" located in their root folder.
+- If this file exists, the Server will open and read the file.
+- For each host name listed in the file, the Server will send a "reset" command to the appropriate Client.
+  - The file should contain a new host name on each line.
+- The Clients which have been reset will close down their existing Schnauzers and re-request configuration from the Server.
+- The Server finally deletes the "reset" file.
+
+Occasionally, a host will need to be decommissioned.  If this host is running a Client and the Client is closed down, then
+the Server will repeatedly log a "No updates" alert for the Client.  To prevent this happening and make the Server forget about
+the Client, use a "forget" file, as follows:
+
+- Servers periodically check for a file called "forget" located in their root folder.
+- If this file exists, the Server will open and read the file.
+- For each host name listed in the file, the Server will remove the host from its internal Client watchlist.
+  - The file should contain a new host name on each line.
 
 The Browser User Interface.
 ---------------------------
