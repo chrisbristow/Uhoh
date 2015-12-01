@@ -52,6 +52,7 @@ public class ServerLoop extends UhohBase
   HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
   HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
   FileOutputStream logmgr = null;
+  String unicast_addrs = null;
 
   // Initialise a new ServerLoop().
   
@@ -85,6 +86,12 @@ public class ServerLoop extends UhohBase
       log("UI: Process events held for:          " + ui_rtime.get("PROCESS") + " ms");
       log("UI: Idle client events held for:      " + ui_rtime.get("IDLE") + " ms");
       log("UI: Other events held for:            " + ui_rtime.get("ALL") + " ms");
+
+      if(props.getProperty("udp_unicast_address") != null)
+      {
+        unicast_addrs = props.getProperty("udp_unicast_address").trim();
+        log("Server unicast address(es):           " + unicast_addrs);
+      }
     }
     catch(Exception e)
     {
@@ -147,6 +154,15 @@ public class ServerLoop extends UhohBase
           byte[] advert_cmd = ("SRVHB%%" + our_name).getBytes();
           DatagramPacket sp = new DatagramPacket(advert_cmd, advert_cmd.length, InetAddress.getByName(broadcast_address), udp_port);
           udp_socket.send(sp);
+
+          if(unicast_addrs != null)
+          {
+            for(String uaddr : unicast_addrs.split(","))
+            {
+              DatagramPacket sp_u = new DatagramPacket(advert_cmd, advert_cmd.length, InetAddress.getByName(uaddr.trim()), udp_port);
+              udp_socket.send(sp_u);
+            }
+          }
         }
         catch(Exception e)
         {
