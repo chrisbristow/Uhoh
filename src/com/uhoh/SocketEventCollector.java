@@ -41,7 +41,7 @@ public class SocketEventCollector extends EventCollector
   long uid_c = 0;
   String our_name = null;
   
-  SocketEventCollector(int udp_port)
+  SocketEventCollector(int udp_port, String s_ips)
   {
     super();
     
@@ -59,7 +59,7 @@ public class SocketEventCollector extends EventCollector
       System.exit(1);
     }
     
-    Thread smon = new Thread(new SocketMonitor(this));
+    Thread smon = new Thread(new SocketMonitor(this, s_ips, udp_port));
     smon.start();
   }
   

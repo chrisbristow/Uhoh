@@ -39,12 +39,19 @@ public class Client
   {
     try
     {
-      Thread ec = new Thread(new SocketEventCollector(Integer.parseInt(args[0])));
+      String server_ips = "";
+
+      if(args.length == 2)
+      {
+        server_ips = args[1];
+      }
+
+      Thread ec = new Thread(new SocketEventCollector(Integer.parseInt(args[0]), server_ips));
       ec.start();
     }
     catch(Exception e)
     {
-      System.err.println("Usage: com.uhoh.Client <udp_port_number>");
+      System.err.println("Usage: com.uhoh.Client <udp_port_number> [<server_ip_address(es)>]");
       System.exit(1);
     }
   }

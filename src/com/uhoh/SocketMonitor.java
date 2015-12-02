@@ -39,13 +39,17 @@ public class SocketMonitor extends UhohBase implements Runnable
   SocketEventCollector event_collector = null;
   boolean is_configured = false;
   SchnauzerConfigurizer cfz = null;
+  String server_ips = "";
+  int udp_port;
   
   // Construct a SocketMonitor by passing it a reference
   // to the EventCollector.
   
-  SocketMonitor(SocketEventCollector ec)
+  SocketMonitor(SocketEventCollector ec, String s_ips, int u_port)
   {
     event_collector = ec;
+    server_ips = s_ips;
+    udp_port = u_port;
   }
   
   // Listen for incoming UDP messages and deal with them.  Messages
@@ -55,6 +59,8 @@ public class SocketMonitor extends UhohBase implements Runnable
   
   public void run()
   {
+    unicast_client_init();
+
     log("Listening for incoming UDP messages");
     
     while(true)
@@ -99,12 +105,48 @@ public class SocketMonitor extends UhohBase implements Runnable
           cfz.terminate_all();
           cfz = null;
           is_configured = false;
+          unicast_client_init();
         }
       }
       catch(Exception e)
       {
         log("Exception processing incoming UDP data:");
         e.printStackTrace();
+      }
+    }
+  }
+
+  void unicast_client_init()
+  {
+    if(server_ips.length() > 0)
+    {
+      boolean send_cfg = true;
+
+      for(String svr : server_ips.split(","))
+      {
+        log("Unicast server: " + svr + "/" + (udp_port + 1));
+
+        event_collector.servers.put(svr + "/" + (udp_port + 1), new Long(new Date().getTime()));
+
+        if(send_cfg)
+        {
+          try
+          {
+            String our_name = InetAddress.getLocalHost().getHostName();
+            byte[] config_cmd = new String("CONFREQ%%" + our_name).getBytes();
+            DatagramPacket sp = new DatagramPacket(config_cmd, config_cmd.length, InetAddress.getByName(svr), (udp_port + 1));
+
+            log("Sending unicast config request to: " + svr + "/" + (udp_port + 1));
+
+            event_collector.udp_socket.send(sp);
+            send_cfg = false;
+          }
+          catch(Exception e)
+          {
+            log("Exception sending configuration request to " + svr);
+            e.printStackTrace();
+          }
+        }
       }
     }
   }

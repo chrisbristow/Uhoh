@@ -37,6 +37,15 @@ java -cp uhoh.jar com.uhoh.Client 8888
 
 Point your browser to the UI web server (http://server_host:7777/).
 
+Servers use UDP broadcast to indicate their presence to Clients.  However, for environments which don't
+support UDP broadcast (eg. AWS), Clients can be provided with a comma-separated list of Server IP
+addresses in addition to the UDP port.  For example, to start a Client in a system with two
+Servers at 172.31.11.1 and 172.31.11.2 use:
+
+java -cp uhoh.jar com.uhoh.Client 8888 172.31.11.1,172.31.11.2
+
+(Note that the Client will always requests its configuration from the first IP address given.)
+
 Creating a Client Configuration File.
 -------------------------------------
 The example_client_config file provided with the base install of Uhoh contains detailed notes on how the different
