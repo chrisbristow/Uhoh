@@ -73,11 +73,11 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     {
       if(message.length() == 0)
       {
-        event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + s, "FILE");
+        event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + s, "FILE");
       }
       else
       {
-        event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + message, "FILE");
+        event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + message, "FILE");
       }
     }
   }

@@ -244,7 +244,7 @@ public class ServerLoop extends UhohBase
 
             try
             {
-              client_q.put(new Object[]{"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SYSTEM", "GREEN", "No updates"});
+              client_q.put(new Object[]{"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SERVER", "GREEN", "No updates"});
             }
             catch(InterruptedException e)
             {

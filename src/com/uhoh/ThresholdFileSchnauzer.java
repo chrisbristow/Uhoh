@@ -76,11 +76,11 @@ public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
         {
           if(message.length() == 0)
           {
-            event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + match_count, "FILE");
+            event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_count, "FILE");
           }
           else
           {
-            event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + message, "FILE");
+            event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + message, "FILE");
           }
         }
       }

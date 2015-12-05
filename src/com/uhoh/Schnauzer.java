@@ -51,7 +51,7 @@ public abstract class Schnauzer extends UhohBase implements Runnable
   
   public void string_processor(String s)
   {
-    event_collector.dispatch("SYSTEM%%" + tags + "%%" + s, "ALL");
+    event_collector.dispatch("CLIENT%%" + tags + "%%" + s, "ALL");
   }
   
   // Called periodically.

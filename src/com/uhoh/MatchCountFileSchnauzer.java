@@ -67,7 +67,7 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
     {
       if(is_active(active_string))
       {
-        event_collector.dispatch("SYSTEM%%" + tags + "%%" + filename + ": " + match_count, "FILE");
+        event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_count, "FILE");
       }
 
       match_count = 0;
