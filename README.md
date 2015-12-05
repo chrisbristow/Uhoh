@@ -1,24 +1,37 @@
 Keep an eye on your stuff.  Find out when things are going wrong.  Simple, lightweight distributed systems monitoring.
 ======================================================================================================================
 
-What's Uhoh All About Then ?
-----------------------------
+Why Uhoh ?
+----------
 Uhoh is an application which is performs basic monitoring tasks on hosts, relaying any issues found back
 to a set of centralised servers.  Key features of Uhoh include:
 
 - Clients run on hosts to be monitored.
 - Clients perform log file, process, disk and custom monitoring tasks.
 - Clients fetch all of their configuration from Servers.
-- No local configuration needed on hosts.
+  - No local configuration needed on hosts.
 - Servers collate alarms from clients.
 - Servers output alarm streams for other programs to consume and analyse.
 - Servers host a basic web alarm view user interface.
 - 100% Java & Javascript.
-- Tiny installation (Servers and Clients).
+- Really tiny installation (both Servers and Clients).
+
+I know what you're thinking - "There are plenty of other monitoring solutions out there, so why go with Uhoh ?".
+The answer to this is really simplicity.  Very little time needs to be invested in getting Uhoh up and running
+so you never need to leave setting up monitoring to later date.  Uhoh doesn't get in the way of your
+deployment schedule and you can think of it in a similar way to Test Driven Development -
+"Monitoring Driven Deployment" maybe ?  Keeping things lightweight and simple will encourage the use of more
+complete and robust system monitoring - resulting in increased reliability all round.
 
 Getting Started.
 ----------------
 Download the zip file and unpack onto a host suitable for use as a Server.
+You should have the following folders:
+
+- src
+- web
+- clientconfigs
+
 Compile the source and create uhoh.jar:
 
 javac -d . src/com/uhoh/*.java
@@ -27,6 +40,7 @@ jar -cvf uhoh.jar com
 The clientconfigs folder contains Client monitoring configuration files.
 For a fresh installation, only the example configuration file will exist in this folder.
 Create configuration files for your hosts (filenames are the hostnames) in clientconfigs.
+
 Start the Server:
 
 java -cp uhoh.jar com.uhoh.Server server.properties
@@ -65,8 +79,8 @@ the log file are matched using a regular expression and then an action is taken.
 
 For Process Monitoring, the Schnauzer will:
 
-Send an alert back to the Server if the number of running instances of a process (identified via a regular expression) is outside a
-given acceptable range.
+- Send an alert back to the Server if the number of running instances of a process (identified via a regular expression) is outside a given acceptable range.
+
 The command used to fetch the process table can be specified - eg. “ps -fe” for Linux,
 “tasklist.exe” for Windows, “/usr/ucb/ps -wwaux” for Solaris etc.
 
@@ -112,6 +126,9 @@ The Server retains alerts in the web UI for a set period of time - different cat
 - Idle client alerts are retained for 75 seconds.
 
 All of these times can be configured in the server.properties file.
+
+Note that the Browser UI requires the Mootools Javascript library and a Font which are both downloaded from Google, so
+UI users will need Internet access.
 
 Let’s Present an Example Usage Scenario for Uhoh.
 -------------------------------------------------
