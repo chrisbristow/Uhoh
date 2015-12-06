@@ -44,17 +44,17 @@
         padding: 10px;
       }
 
-      .menubar
+      .chartbar
       {
-        background-color: #000000;
-        color: #ffffff;
+        background-color: #ffffff;
+        color: #000000;
         font-family: 'Roboto', arial, sans-serif;
         font-size: 14pt;
         font-weight: bold;
         padding: 10px;
         position: fixed;
-        height: 50px;
-        width: 100%;
+        height: 150px;
+        width: 90%;
       }
 
   </style>
@@ -63,10 +63,45 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
 
+  <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }">
+  </script>
+
   <script>
+
+      var datatable = null;
+      var chartoptions = null;
+      var chart = null;
+
+      var max_chart_rows = 2160; // Twelve hours.
 
       window.addEvent('domready', function()
       {
+        chart = new google.visualization.LineChart(document.getElementById('alertchart'));
+
+        datatable = new google.visualization.DataTable();
+        datatable.addColumn('timeofday', 'Time of Day');
+        datatable.addColumn('number', 'Red');
+        datatable.addColumn('number', 'Amber');
+        datatable.addColumn('number', 'Green');
+
+        chartoptions = {
+          title: 'Alert History',
+          titlePosition: 'none',
+          curveType: 'none',
+          hAxis: { viewWindowMode: 'pretty', textStyle: { color: '#666666', fontName: 'Roboto, arial, sans-serif', fontSize: 12 } },
+          vAxis: { minValue: 0, logScale: false, textStyle: { color: '#666666', fontName: 'Roboto, arial, sans-serif', fontSize: 12 } },
+          chartArea: { left: 100, top: 5, width: '70%', height: '80%' },
+          legend: { position: 'right', textStyle: { color: '#666666', fontName: 'Roboto, arial, sans-serif', fontSize: 12 } },
+          series: { 0: { color: '#EF0000', lineWidth: 4 }, 1: { color: '#FCA800', lineWidth: 2 }, 2: { color: '#00FF00', lineWidth: 1 } }
+        };
+
         do_fetch();
       });
 
@@ -81,8 +116,7 @@
       function do_render(responseText)
       {
         var obj = JSON.decode(responseText);
-        //var response = "<div class=\"menubar\" style=\"position: static;\"></div>";
-        var response = "";
+        var response = "<div class=\"chartbar\" style=\"position: static;\"></div>";
 
         if(obj.status != "ok")
         {
@@ -93,9 +127,20 @@
           response += get_alerts(obj.red, "alert_red");
           response += get_alerts(obj.amber, "alert_amber");
           response += get_alerts(obj.green, "alert_green");
+
+          var d = new Date();
+
+          datatable.addRow([[ d.getHours(), d.getMinutes(), d.getSeconds() ], obj.red.length, obj.amber.length, obj.green.length ]);
+
+          if(datatable.getNumberOfRows() > max_chart_rows)
+          {
+            datatable.removeRow(0);
+          }
         }
 
         $('alerts').innerHTML = response;
+
+        chart.draw(datatable, chartoptions);
       }
 
       function get_alerts(aobj, categ)
@@ -132,8 +177,7 @@
 
   <body>
 
-    <!-- <div class="menubar" id="topmenu"><div style="line-height: 50%; cursor: pointer;" onmouseup="toggle_menu();">__<br/>__<br/>__</div></div> -->
-
+    <div class="chartbar" id="alertchart"></div>
     <div id="alerts"></div>
 
   </body>
