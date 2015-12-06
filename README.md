@@ -1,5 +1,5 @@
-Keep an eye on your stuff.  Find out when things are going wrong.  Simple, lightweight distributed systems monitoring.
-======================================================================================================================
+Keep an eye on your stuff.  Find out when things are going wrong.  Simple, lightweight distributed system monitoring.
+=====================================================================================================================
 
 Why Uhoh ?
 ----------
