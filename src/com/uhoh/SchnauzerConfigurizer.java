@@ -241,10 +241,12 @@ public class SchnauzerConfigurizer extends UhohBase
               if(args.get("minimum") != null && args.get("maximum") != null)
               {
                 ps_hash.put(match_str, new Object[]{ args.get("tags"), active, new Integer(args.get("minimum")), new Integer(args.get("maximum")), 0 });
+                log("Checking for process: " + match_str + " (" + args.get("minimum") + " <= N <= " + args.get("maximum") + ") [" + args.get("tags") + "]");
               }
               else if(args.get("exactly") != null)
               {
                 ps_hash.put(match_str, new Object[]{ args.get("tags"), active, new Integer(args.get("exactly")), new Integer(args.get("exactly")), 0 });
+                log("Checking for process: " + match_str + " (N = " + args.get("exactly") + ") [" + args.get("tags") + "]");
               }
             }
           }
@@ -261,6 +263,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null && args.get("command") != null)
             {
+              log("Running: " + args.get("command") + " every " + args.get("seconds") + " second(s)");
               CommandSchnauzer sh = new CommandSchnauzer(cmd, active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, match_str);
               Thread t = new Thread(sh);
               t.start();

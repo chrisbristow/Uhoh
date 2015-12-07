@@ -73,23 +73,33 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
           log("Loading configuration for " + cmd[1]);
           
           StringBuffer sb = new StringBuffer("CONFIG%%");
-          BufferedReader fb = new BufferedReader(new FileReader("clientconfigs/" + cmd[1]));
-          String next_line;
-          
-          while((next_line = fb.readLine()) != null)
-          {
-            sb.append(next_line);
-            sb.append("%%");
-          }
-          
-          fb.close();
+          File config_file = new File("clientconfigs/" + cmd[1]);
 
-          byte[] config_reply = new String(sb.toString()).getBytes();
-          DatagramPacket sp = new DatagramPacket(config_reply, config_reply.length, from.getAddress(), from.getPort());
-          
-          log("Sending config reply for " + cmd[1] + " to: " + from.getAddress().getHostAddress() + "/" + from.getPort());
-          
-          udp_socket.send(sp);
+          if(config_file.exists())
+          {
+            BufferedReader fb = new BufferedReader(new FileReader(config_file));
+            String next_line;
+
+            while((next_line = fb.readLine()) != null)
+            {
+              sb.append(next_line);
+              sb.append("%%");
+            }
+
+            fb.close();
+
+            byte[] config_reply = new String(sb.toString()).getBytes();
+            DatagramPacket sp = new DatagramPacket(config_reply, config_reply.length, from.getAddress(), from.getPort());
+
+            log("Sending config reply for " + cmd[1] + " to: " + from.getAddress().getHostAddress() + "/" + from.getPort());
+
+            udp_socket.send(sp);
+          }
+          else
+          {
+            log("Warning: A client configuration file for " + cmd[1] + " doesn't exist");
+            server_loop.client_q.put(new Object[]{"ALERT", cmd[1], "IDLE", new Long(System.currentTimeMillis()), "SERVER", "GREEN", "No configuration available"});
+          }
         }
         else
         {
