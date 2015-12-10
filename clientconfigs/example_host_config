@@ -141,7 +141,7 @@ alert_process:  tags=AMBER,APACHE  minimum=1  maximum=20
 match:         .*chart_load.*
 alert_process  tags=CHARTING  exactly=1
 
-# Finally, the client can run commands and raise alerts if an lines in the
+# The client can run commands and raise alerts if an lines in the
 # command output match a regular expression.  This is generally used for
 # custom monitoring by running a script.
 # The following runs "df -i ." every 150 seconds and captures any lines
@@ -152,4 +152,29 @@ alert_process  tags=CHARTING  exactly=1
 match:             .*\d+\s+\d+\s+.*
 active:            17;17:00-19:00
 alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
+
+# A "Multi" monitor can be set up which will trigger an alert if
+# a Client detects a series of alerts containing tags in a watchlist
+# within a set period of time.  Here's an example:
+
+file:              test.log
+match:             .*type_1.*
+alert_all:         tags=TAG1,INFO
+
+file:              test.log
+match:             .*type_2.*
+alert_all:         tags=TAG2,INFO
+
+alert_multi:       tags=RED,DERIVED  seconds=60  collect=TAG1,TAG2  message=Both types found
+
+# Here we've set up two file schnauzers which detect log lines containing "type_1" and "type_2".  Each
+# schnauzer triggers an alert containing either TAG1 or TAG2.
+# The "alert_multi" line uses it's "collect" attribute to specify that if other alerts containing
+# the tags TAG1 and TAG2 have been raised in the last 60 seconds, then a RED,DERIVED alert with the
+# message "Both types found" will be raised.
+# Multi monitors can be used by Clients monitoring the Server event log in order to collect alerts
+# raised by different Clients and trigger further alerts if these are seen (alert correlation).
+# An example usage of Multi monitors would be to raise a high-priority alert if an entire group
+# of servers aren't running a particular process.
+
 

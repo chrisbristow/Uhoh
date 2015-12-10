@@ -13,6 +13,7 @@ to a set of centralised servers.  Key features of Uhoh include:
 - Servers collate alarms from clients.
 - Servers output alarm streams for other programs to consume and analyse.
 - Servers host a basic web alarm view user interface.
+- Alarms correlation is supported allowing combinations of alarms to trigger further alarms.
 - 100% Java & Javascript.
 - Really tiny installation (both Servers and Clients).
 
@@ -127,7 +128,10 @@ The Server retains alerts in the web UI for a set period of time - different cat
 
 All of these times can be configured in the server.properties file.
 
-Note that the Browser UI requires the Mootools Javascript library and a Font which are both downloaded from Google, so
+A graph showing the number of Red, Amber and Green alarms over the last twelve hours is shown at the top of the UI
+page.  This gives a simple overview of recent fault history.
+
+Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
 UI users will need Internet access.
 
 Let’s Present an Example Usage Scenario for Uhoh.

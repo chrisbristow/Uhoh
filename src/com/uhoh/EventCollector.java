@@ -34,16 +34,19 @@
 package com.uhoh;
 
 import java.util.concurrent.*;
+import java.util.*;
 
 public class EventCollector extends UhohBase implements Runnable
 {
   LinkedBlockingQueue<Object[]> q = null;
+  ArrayList<MultiMatcher> multi_list = null;
   
   // Basic EventCollector constructor.
   
   EventCollector()
   {
     q = new LinkedBlockingQueue<Object[]>();
+    multi_list = new ArrayList<MultiMatcher>();
   }
   
   // This is the basic EventCollector loop.

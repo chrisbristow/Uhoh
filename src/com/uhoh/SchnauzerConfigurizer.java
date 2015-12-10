@@ -46,6 +46,7 @@ public class SchnauzerConfigurizer extends UhohBase
     String active = "ANY";
     String ps_command = null;
     HashMap<String, Object[]> ps_hash = new HashMap<String, Object[]>();
+    event_collector.multi_list = new ArrayList<MultiMatcher>();
 
     schs = new ArrayList<Schnauzer>();
     
@@ -272,6 +273,19 @@ public class SchnauzerConfigurizer extends UhohBase
           }
 
           match_str = null;
+          active = "ANY";
+        }
+        else if(config_line.startsWith("alert_multi:"))
+        {
+          HashMap<String, String> args = get_kvps(config_line);
+
+          if(args.get("message") != null && args.get("tags") != null && args.get("seconds") != null && args.get("collect") != null)
+          {
+            String message = config_line.replaceFirst("^\\s*alert_multi:\\s+.+message=", "");
+            log("Collecting tags: " + args.get("collect") + " over " + args.get("seconds") + " second(s) to output: " + args.get("message") + " (" + args.get("tags") + ")");
+            event_collector.multi_list.add(new MultiMatcher(args.get("tags"), Long.parseLong(args.get("seconds")), message, args.get("collect"), active, event_collector));
+          }
+
           active = "ANY";
         }
       }

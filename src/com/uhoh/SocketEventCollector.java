@@ -81,12 +81,19 @@ public class SocketEventCollector extends EventCollector
         int ip_port = Integer.parseInt(st.nextToken());
         long utime = (new Date()).getTime();
         uid_c ++;
-        byte[] alert_cmd = ("ALERT%%" + our_name + "%%" + (String)event[1] + "%%" + utime + "%%" + (String)event[0]).getBytes();
+        byte[] alert_cmd = ("ALERT%%" + our_name + "%%" + event[1] + "%%" + utime + "%%" + event[0]).getBytes();
         DatagramPacket sp = new DatagramPacket(alert_cmd, alert_cmd.length, InetAddress.getByName(ip_addr), ip_port);
 
-        log(server_info + " -> (" + (String)event[1] + ") " + (String)event[0]);
+        log(server_info + " -> (" + event[1] + ") " + event[0]);
 
         udp_socket.send(sp);
+
+        String alert_tags = ((String)event[0]).split("%%")[1];
+
+        for(int x = 0; x < multi_list.size(); x ++)
+        {
+          multi_list.get(x).check_for_complete(alert_tags);
+        }
       }
       catch(Exception ex)
       {
