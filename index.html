@@ -75,7 +75,7 @@ jar -cvf uhoh.jar com</p>
 
 <p>The clientconfigs folder contains Client monitoring configuration files.
 For a fresh installation, only the example configuration file will exist in this folder.
-Create configuration files for your hosts (filenames are the hostnames) in clientconfigs.</p>
+Create configuration files for your hosts (filenames are the names of your hosts) in clientconfigs.</p>
 
 <p>Start the Server:</p>
 
@@ -94,7 +94,7 @@ Servers at 172.31.11.1 and 172.31.11.2 use:</p>
 
 <p>java -cp uhoh.jar com.uhoh.Client 8888 172.31.11.1,172.31.11.2</p>
 
-<p>(Note that the Client will always requests its configuration from the first IP address given.)</p>
+<p>(Note that the Client will always request its configuration from the first IP address given.)</p>
 
 <h2>
 <a id="creating-a-client-configuration-file" class="anchor" href="#creating-a-client-configuration-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a Client Configuration File.</h2>
@@ -102,8 +102,8 @@ Servers at 172.31.11.1 and 172.31.11.2 use:</p>
 <p>The example_client_config file provided with the base install of Uhoh contains detailed notes on how the different
 directives used for configuring log file, process, disk and custom monitoring work.</p>
 
-<p>An Uhoh client will create a separate thread (known as a Schnauzer) to monitor each item it has been instructed
-to look at.  The only exception to this is for process monitoring where a single thread is used to monitor all processes.</p>
+<p>Uhoh clients create threads (called Schnauzers) which are used to action the checks given in the Client
+configuration file.</p>
 
 <p>For Log File Monitoring, Schauzers will consume the file - coping with files that are “rolled” (where the
 existing log is copied to another name and a new log is created once the log reaches a certain size).  Lines in
@@ -127,12 +127,13 @@ the log file are matched using a regular expression and then an action is taken.
 
 <p>Disk Monitoring checks periodically that the free space available for a particular filesystem or volume hasn’t exceeded a given amount.</p>
 
-<p>Finally, Custom Monitoring allows the Client to run a command and relay output from that command that matches a regular expression back to the Server.</p>
+<p>Finally, Custom Monitoring allows the Client to run a command and relay output from that command that matches a regular
+expression back to the Server.  Custom Monitoring is generally used for periodically running scripts.</p>
 
 <h2>
 <a id="managing-running-clients" class="anchor" href="#managing-running-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Managing Running Clients.</h2>
 
-<p>If a Client configuration is updated, the Client will need to be told that a new configuration is available.  The simplest
+<p>If a Client configuration is updated, the Client will need to be told that a new configuration is available.  The obvious
 way to do this is just to re-start the Client, but wouldn't it be better if there was an easier way ?  Well, there is - the
 "reset" procedure.  Here's how it works:</p>
 
@@ -156,7 +157,7 @@ the Client, use a "forget" file, as follows:</p>
 <ul>
 <li>Servers periodically check for a file called "forget" located in their root folder.</li>
 <li>If this file exists, the Server will open and read the file.</li>
-<li>For each host name listed in the file, the Server will remove the host from its internal Client watchlist.
+<li>For each host name listed in the file, the Server will remove the host from its internal Client watch-list.
 
 <ul>
 <li>The file should contain a new host name on each line.</li>
@@ -167,7 +168,7 @@ the Client, use a "forget" file, as follows:</p>
 <h2>
 <a id="the-browser-user-interface" class="anchor" href="#the-browser-user-interface" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Browser User Interface.</h2>
 
-<p>Each Server hosts an embedded web server which is used to serve a simple browser based user interface which can be used to view
+<p>Each Server hosts an embedded web server which is used to serve a simple browser-based user interface that can be used to view
 certain types of alerts.  The user interface page lists recently active alerts divided into three severity
 categories - Red, Amber and Green.  For alerts to appear in the Red section (at the top of the list) they must
 be tagged with the ID RED (other tags can be included beside this tag).  Alerts tagged AMBER appear below Red and
@@ -187,8 +188,9 @@ those tagged GREEN appear below Amber.</p>
 <p>A graph showing the number of Red, Amber and Green alerts over the last twelve hours is shown at the top of the UI
 page.  This gives a simple overview of recent fault history.</p>
 
-<p>Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
-UI users will need Internet access.</p>
+<p>Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework.
+These are hosted by Google, so
+UI users will need Internet access for the UI to operate correctly.</p>
 
 <h2>
 <a id="lets-present-an-example-usage-scenario-for-uhoh" class="anchor" href="#lets-present-an-example-usage-scenario-for-uhoh" aria-hidden="true"><span class="octicon octicon-link"></span></a>Let’s Present an Example Usage Scenario for Uhoh.</h2>
@@ -220,7 +222,7 @@ other two in the clump-press support workshop.”</p>
 
 <ul>
 <li>Consume the server.log log file from the Server.</li>
-<li>Pick up and correlate alerts which appear in this file.</li>
+<li>Pick up and correlate alerts which appear in this file (in addition Uhoh's built-in alert correlation feature).</li>
 <li>Write messages to other log files.</li>
 <li>Send email alerts to support staff inboxes.</li>
 </ul>
