@@ -34,28 +34,24 @@
         <h2>
 <a id="why-uhoh-" class="anchor" href="#why-uhoh-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Uhoh ?</h2>
 
-<p>Uhoh makes monitoring your network of hosts an absolute <b>doddle</b>.  Key features of Uhoh include:</p>
+<p>Uhoh makes monitoring your network of hosts an absolute doddle.  Just make sure that you have a Java Runtime installation
+(6 or above) available on your hosts to be monitored and your hosts on which you'd like alerts to be collected and
+Uhoh is ready to go.  Here are some of the key concepts and features of Uhoh:</p>
 
 <ul>
-<li><b>Clients</b> are processes which run on hosts to be monitored.</li>
+<li>A "Client" is the Uhoh process which runs on each host to be monitored.</li>
 <li>Clients perform log file, process, disk and custom monitoring tasks.</li>
 <li>Clients fetch all of their configuration from Servers.
-
-<ul>
-<li>No local configuration needed on hosts.</li>
-</ul>
-</li>
-<li><b>Servers</b> are processes which collate alarms from clients.</li>
-<li>Servers output alarm streams for other programs to consume and analyse.</li>
-<li>Servers host a basic web alarm view user interface.</li>
-<li>Alarms correlation is supported allowing combinations of alarms to trigger further alarms.</li>
-<li>100% Java &amp; Javascript.</li>
-<li>Really tiny installation (both Servers and Clients).</li>
+<li>A "Server" is a process which collects alert messages from clients.</li>
+<li>Servers output alert streams for other programs to consume and analyse.</li>
+<li>Servers host a basic web alert view user interface.</li>
+<li>Servers support alert correlation allowing combinations of alerts to trigger further alerts.</li>
+<li>The Uhoh installation is really tiny (less than 50KB for both Servers and Clients).</li>
 </ul>
 
 <p>I know what you're thinking - "There are plenty of other monitoring solutions out there, so why go with Uhoh ?".
 The answer to this is really simplicity.  Very little time needs to be invested in getting Uhoh up and running
-so you never need to leave setting up monitoring to later date.  Uhoh doesn't get in the way of your
+so you never need to leave setting up monitoring until later.  Uhoh doesn't get in the way of your
 deployment schedule and you can think of it in a similar way to Test Driven Development -
 "Monitoring Driven Deployment" maybe ?  Keeping things lightweight and simple will encourage the use of more
 complete and robust system monitoring - resulting in increased reliability all round.</p>
@@ -188,7 +184,7 @@ those tagged GREEN appear below Amber.</p>
 
 <p>All of these times can be configured in the server.properties file.</p>
 
-<p>A graph showing the number of Red, Amber and Green alarms over the last twelve hours is shown at the top of the UI
+<p>A graph showing the number of Red, Amber and Green alerts over the last twelve hours is shown at the top of the UI
 page.  This gives a simple overview of recent fault history.</p>
 
 <p>Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
@@ -229,7 +225,7 @@ other two in the clump-press support workshop.”</p>
 <li>Send email alerts to support staff inboxes.</li>
 </ul>
 </li>
-<li>The two clump-press support workshop PCs also run Uhoh Clients themselves which monitor the Python scripts’ output logs and feed alarms back to the Servers. (Derived alarms.)</li>
+<li>The two clump-press support workshop PCs also run Uhoh Clients themselves which monitor the Python scripts’ output logs and feed alerts back to the Servers. (Derived alerts.)</li>
 </ul>
       </section>
     </div>
