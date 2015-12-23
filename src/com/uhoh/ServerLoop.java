@@ -149,6 +149,10 @@ public class ServerLoop extends UhohBase
       {
         next_hb = System.currentTimeMillis() + server_heartbeat_interval;
 
+        get_ui_items(ui_red);
+        get_ui_items(ui_amber);
+        get_ui_items(ui_green);
+
         try
         {
           byte[] advert_cmd = ("SRVHB%%" + our_name).getBytes();
@@ -354,12 +358,15 @@ public class ServerLoop extends UhohBase
 
       if(((Long)ui_disp.get(msg)[0]) < (System.currentTimeMillis() - ui_rtime.get((String)ui_disp.get(msg)[1])))
       {
+        log("Purging: " + msg);
         ui_disp.remove(msg);
       }
     }
 
     return(sb.toString());
   }
+
+  // Write messages to a log file and "roll" the log file once it exceeds the given configurable size.
 
   void disk_log(String s)
   {
