@@ -10,10 +10,10 @@ to a set of centralised servers.  Key features of Uhoh include:
 - Clients perform log file, process, disk and custom monitoring tasks.
 - Clients fetch all of their configuration from Servers.
   - No local configuration needed on hosts.
-- Servers collate alarms from clients.
-- Servers output alarm streams for other programs to consume and analyse.
-- Servers host a basic web alarm view user interface.
-- Alarms correlation is supported allowing combinations of alarms to trigger further alarms.
+- Servers collate alerts from clients.
+- Servers output alert streams for other programs to consume and analyse.
+- Servers host a basic web alert view user interface.
+- Alerts correlation is supported allowing combinations of alerts to trigger further alerts.
 - 100% Java & Javascript.
 - Really tiny installation (both Servers and Clients).
 
@@ -128,7 +128,7 @@ The Server retains alerts in the web UI for a set period of time - different cat
 
 All of these times can be configured in the server.properties file.
 
-A graph showing the number of Red, Amber and Green alarms over the last twelve hours is shown at the top of the UI
+A graph showing the number of Red, Amber and Green alerts over the last twelve hours is shown at the top of the UI
 page.  This gives a simple overview of recent fault history.
 
 Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
@@ -159,6 +159,6 @@ Here’s how the system is set up from a monitoring perspective:
   - Pick up and correlate alerts which appear in this file.
   - Write messages to other log files.
   - Send email alerts to support staff inboxes.
-- The two clump-press support workshop PCs also run Uhoh Clients themselves which monitor the Python scripts’ output logs and feed alarms back to the Servers. (Derived alarms.)
+- The two clump-press support workshop PCs also run Uhoh Clients themselves which monitor the Python scripts’ output logs and feed alerts back to the Servers. (Derived alerts.)
 
 
