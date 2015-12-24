@@ -71,7 +71,7 @@ public class ProcessSchnauzer extends Schnauzer
           {
             String mtch = iter.next();
             
-            if(line.matches(mtch))
+            if(line.matches(".*" + mtch + ".*"))
             {
               ps_hash.get(mtch)[4] = (Integer)ps_hash.get(mtch)[4] + 1;
             }

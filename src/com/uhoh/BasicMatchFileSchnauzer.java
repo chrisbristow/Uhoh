@@ -57,7 +57,7 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
   {
     boolean ok = false;
     
-    if(s.matches(regex))
+    if(s.matches(".*" + regex + ".*"))
     {
       ok = true;
     }

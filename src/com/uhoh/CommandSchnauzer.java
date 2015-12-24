@@ -69,7 +69,7 @@ public class CommandSchnauzer extends Schnauzer
           {
             //log("Cmd: " + line);
 
-            if(line.trim().matches(regex))
+            if(line.trim().matches(".*" + regex + ".*"))
             {
               string_processor(line.trim());
             }

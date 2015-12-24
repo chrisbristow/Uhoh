@@ -2,7 +2,7 @@
 # to be used by programs which consume the server's logs and perform actions based
 # on the alerts and tags which appear in those logs.
 # There are also three special tags - RED, AMBER and GREEN.  Alerts tagged with these
-# values will appear in the web UI provided by the server's built-in web server.
+# values will appear in the browser UI provided by the server's built-in web server.
 
 # The following alert types are used to collect information from log files:
 # - alert_all:
@@ -28,12 +28,8 @@ alert_all:    tags=<tags>
 
 file:        logfile.log
 active:      23456;09:00-17:30,17;10:00-16:00
-match:       .*Type: \d+.*
+match:       Type: \d+
 alert_all:   tags=RED
-
-# Note that the "match:" regular expression needs to match the entire log file line and therefore
-# needs to be prefixed and suffixed with .* - to consume any characters before or
-# after the "Type: <number>" text.
 
 # The "alert_all:" line can also contain a customised message, as follows:
 
@@ -49,7 +45,7 @@ alert_all:   tags=RED  message=Type identified
 # For example, the following:
 
 file:          logfile.log
-match:         .*Type: \d+.*
+match:         Type: \d+
 alert_count:   tags=RED   seconds=60
 
 # ... triggers an alert every minute which contains the number of times the string "Type: <number>"
@@ -62,7 +58,7 @@ alert_count:   tags=RED   seconds=60
 # in logfile.log within a minute:
 
 file:         logfile.log
-match:        .*Type X.*
+match:        Type X
 alert_range:  tags=AMBER,X_RANGE  seconds=60  minimum=3  maximum=6
 
 # "minimum=" and "maximum=" can be specified on their own, for example, the
@@ -82,7 +78,7 @@ alert_range:  tags=INACTIVE  seconds=60  minimum=1
 # "Exception" appear in logfile.log within a five minute period:
 
 file:        logfile.log
-match:       .*Exception.*
+match:       Exception
 alert_range: tags=RED,EXCEPTION  seconds=300  maximum=20
 
 # "alert_range:", just like "alert_all:", can be provided with a customised
@@ -126,7 +122,7 @@ ps_command:   tasklist.exe
 # Eg. to raise an alert if no Apache httpd process are running or
 # if more than 20 are running:
 
-match:          .*httpd.*
+match:          httpd
 alert_process:  tags=AMBER,APACHE  minimum=1  maximum=20
 
 # Note that we have to specify both "minimum" and "maximum"
@@ -138,7 +134,7 @@ alert_process:  tags=AMBER,APACHE  minimum=1  maximum=20
 # For example, if only one instance of "chart_load" should be running at
 # any time:
 
-match:         .*chart_load.*
+match:         chart_load
 alert_process  tags=CHARTING  exactly=1
 
 # The client can run commands and raise alerts if an lines in the
@@ -149,7 +145,7 @@ alert_process  tags=CHARTING  exactly=1
 # number, then another one or more spaces.  The "active:" directive means
 # that the command will only be run from 17:00 - 19:00 on Saturday and Sunday.
 
-match:             .*\d+\s+\d+\s+.*
+match:             \d+\s+\d+\s+
 active:            17;17:00-19:00
 alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
 
@@ -158,11 +154,11 @@ alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
 # within a set period of time.  Here's an example:
 
 file:              test.log
-match:             .*type_1.*
+match:             type_1
 alert_all:         tags=TAG1,INFO
 
 file:              test.log
-match:             .*type_2.*
+match:             type_2
 alert_all:         tags=TAG2,INFO
 
 alert_multi:       tags=RED,DERIVED  seconds=60  collect=TAG1,TAG2  message=Both types found
