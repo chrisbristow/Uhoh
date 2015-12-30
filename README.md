@@ -59,7 +59,7 @@ Servers at 172.31.11.1 and 172.31.11.2 use:
 
 java -cp uhoh.jar com.uhoh.Client 8888 172.31.11.1,172.31.11.2
 
-(Note that the Client will always requests its configuration from the first IP address given.)
+(Note that the Client will always request its configuration from the first IP address given.)
 
 Creating a Client Configuration File.
 -------------------------------------
@@ -128,11 +128,29 @@ The Server retains alerts in the web UI for a set period of time - different cat
 
 All of these times can be configured in the server.properties file.
 
-A graph showing the number of Red, Amber and Green alerts over the last twelve hours is shown at the top of the UI
-page.  This gives a simple overview of recent fault history.
-
 Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
 UI users will need Internet access.
+
+Visual Metric Display (Charts).
+-------------------------------
+If a log file Schnauzer has been configured to record the number of matches in a log file over a period of time (using
+the "alert_count" directive), the Server can be instructed to log these metrics to disk and a browser used to
+display charts showing the variation in value over time.  Metrics are grouped together in 24-hour chunks.  To configure
+the Server to start recording metrics, simply add a "METRIC_" prefix to the tag which contains the identifying name
+of the metric - eg. "METRIC_COUNT_1" for the metric "COUNT_1".
+
+Once the Server has started recording metrics, these can be displayed in a browser via a URL of the format:
+
+- /metric/YYYY-MM-DD/METRIC_NAME
+
+Eg:
+
+- /metric/2015-12-29/COUNT_1
+
+To always display metric values from the current day, replace the YYYY-MM-DD part of the URL with the string
+TODAY - eg:
+
+- /metric/TODAY/COUNT_1
 
 Let’s Present an Example Usage Scenario for Uhoh.
 -------------------------------------------------

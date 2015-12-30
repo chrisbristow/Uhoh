@@ -1,0 +1,93 @@
+<html>
+
+  <head>
+    <title>_URL_</title>
+
+    <style>
+
+      body
+      {
+        margin: 0;
+        background-color: #ffffff;
+      }
+
+    </style>
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
+
+    <script type="text/javascript"
+            src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }">
+    </script>
+
+    <script>
+
+      var datatable = null;
+      var chartoptions = null;
+      var chart = null;
+
+      window.addEvent('domready', function()
+      {
+        chart = new google.visualization.LineChart(document.getElementById('chart'));
+
+        chartoptions = {
+          title: '_URL_',
+          titlePosition: 'none',
+          curveType: 'none',
+          hAxis: { viewWindowMode: 'pretty', textStyle: { color: '#666666', fontName: 'Roboto, arial, sans-serif', fontSize: 12 } },
+          vAxis: { minValue: 0, logScale: false, textStyle: { color: '#666666', fontName: 'Roboto, arial, sans-serif', fontSize: 12 } },
+          chartArea: { left: 100, top: 50, width: '70%', height: '80%' },
+          legend: { position: 'none', textStyle: { color: '#666666', fontName: 'Roboto, arial, sans-serif', fontSize: 12 } },
+          series: { 0: { color: '#EF0000', lineWidth: 1 }, 1: { color: '#FCA800', lineWidth: 1 }, 2: { color: '#00FF00', lineWidth: 1 } }
+        };
+
+        do_fetch(document.title);
+      });
+
+      function do_fetch(title)
+      {
+        var ajax = new Request({ noCache: true, url: "/mdata/" + title + "/", onSuccess: function(responseText, responseXML) { do_render(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
+        ajax.get();
+        setTimeout(function() { do_fetch(title); }, 60000);
+      }
+
+      function do_render(responseText)
+      {
+        var obj = JSON.decode(responseText);
+
+        datatable = null;
+        datatable = new google.visualization.DataTable();
+        datatable.addColumn('datetime', 'Time');
+        datatable.addColumn('number', 'Value')
+
+        for(var i = 0; i < obj.items.length; i ++)
+        {
+          datatable.addRow([ new Date(obj.items[i][0], obj.items[i][1] - 1, obj.items[i][2], obj.items[i][3], obj.items[i][4], obj.items[i][5], 0), obj.items[i][6]]);
+        }
+
+        chart.draw(datatable, chartoptions);
+      }
+
+      function errbox()
+      {
+        alert("Error calling the server");
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+
+  <div id="chart" style="width: 100%; height: 100%;"></div>
+
+  </body>
+
+</html>
