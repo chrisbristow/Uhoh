@@ -392,5 +392,47 @@ public class ServerLoop extends UhohBase
       log("Exception logging to disk:");
       e.printStackTrace();
     }
+
+    try
+    {
+      String[] msg = s.split("%%");
+      String[] tag = msg[5].split(",");
+
+      for(int i = 0; i < tag.length; i ++)
+      {
+        if(tag[i].startsWith("METRIC_"))
+        {
+          long metric_value = Long.parseLong(msg[6].split(": ")[1]);
+          String metric_name = tag[i].replaceFirst("METRIC_", "");
+          File metric_dir = new File("metrics");
+
+          if(!metric_dir.exists())
+          {
+            log("Creating folder: metrics");
+            metric_dir.mkdir();
+          }
+
+          GregorianCalendar gc = new GregorianCalendar();
+          String dir_name = String.format("%04d-%02d-%02d", gc.get(Calendar.YEAR), gc.get(Calendar.MONTH) + 1, gc.get(Calendar.DAY_OF_MONTH));
+          File date_dir = new File("metrics/" + dir_name);
+
+          if(!date_dir.exists())
+          {
+            log("Creating folder: metrics/" + dir_name);
+            date_dir.mkdir();
+          }
+
+          String metric_line = gc.get(Calendar.YEAR) + "," + (gc.get(Calendar.MONTH) + 1) + "," + gc.get(Calendar.DAY_OF_MONTH) + "," + gc.get(Calendar.HOUR_OF_DAY) + "," + gc.get(Calendar.MINUTE) + "," + gc.get(Calendar.SECOND) + "," + metric_value + "\n";
+          FileWriter metric_file = new FileWriter("metrics/" + dir_name + "/" + metric_name, true);
+          metric_file.write(metric_line);
+          metric_file.close();
+        }
+      }
+    }
+    catch(Exception e)
+    {
+      log("Exception logging metric: " + s + ":");
+      e.printStackTrace();
+    }
   }
 }
