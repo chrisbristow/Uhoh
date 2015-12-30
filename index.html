@@ -190,6 +190,34 @@ These are hosted by Google, so
 UI users will need Internet access for the UI to operate correctly.</p>
 
 <h2>
+<a id="visual-metric-display" class="anchor" href="#visual-metric-display" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visual Metric Display (Charts).</h2>
+
+<p>If a log file Schnauzer has been configured to record the number of matches in a log file over a period of time (using
+the "alert_count" directive), the Server can be instructed to log these metrics to disk and a browser used to
+display charts showing the variation in value over time.  Metrics are grouped together in 24-hour chunks.  To configure
+the Server to start recording metrics, simply add a "METRIC_" prefix to the tag which contains the identifying name
+of the metric - eg. "METRIC_COUNT_1" for the metric "COUNT_1".</p>
+
+<p>Once the Server has started recording metrics, these can be displayed in a browser via a URL of the format:</p>
+
+<ul>
+  <li>/metric/YYYY-MM-DD/METRIC_NAME</li>
+</ul>
+
+<p>Eg:</p>
+
+<ul>
+  <li>/metric/2015-12-29/COUNT_1</li>
+</ul>
+
+<p>To always display metric values from the current day, replace the YYYY-MM-DD part of the URL with the string
+TODAY - eg:</p>
+
+<ul>
+  <li>/metric/TODAY/COUNT_1</li>
+</ul>
+
+<h2>
 <a id="lets-present-an-example-usage-scenario-for-uhoh" class="anchor" href="#lets-present-an-example-usage-scenario-for-uhoh" aria-hidden="true"><span class="octicon octicon-link"></span></a>Let’s Present an Example Usage Scenario for Uhoh.</h2>
 
 <p>“Amalgamated Paperclips PLC has a network of Raspberry Pi 2s, running Ubuntu Linux, which are used to control the
