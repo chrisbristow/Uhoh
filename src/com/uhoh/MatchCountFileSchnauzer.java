@@ -53,7 +53,7 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
   
   public void string_processor(String s)
   {
-    if(is_matching(regex))
+    if(is_matching(s))
     {
       match_count ++;
     }
