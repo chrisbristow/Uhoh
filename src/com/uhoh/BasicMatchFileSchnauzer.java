@@ -46,7 +46,12 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     message = msg;
     tx = txlate;
 
-    log("Matching lines containing \"" + r + "\" in file " + f + " (" + a + " / " + t + ")");
+    if(regex == null)
+    {
+      regex = tx;
+    }
+
+    log("Matching lines containing \"" + regex + "\" in file " + f + " (" + a + " / " + t + ")");
 
     if(message.length() != 0)
     {

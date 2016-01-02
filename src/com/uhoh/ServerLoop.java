@@ -440,6 +440,8 @@ public class ServerLoop extends UhohBase
             FileWriter metric_file = new FileWriter("metrics/" + dir_name + "/" + metric_name, true);
             metric_file.write(metric_line);
             metric_file.close();
+
+            log("Value " + metric_value + " written to metrics/" + dir_name + "/" + metric_name);
           }
         }
       }

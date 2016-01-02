@@ -42,17 +42,29 @@ alert_all:   tags=RED  message=Type identified
 
 # We may want to extract a particular item from a log file string match - for example a numerical value.
 # This can be done using the "translate" directive which indicates which part of the log file line needs
-# to be retained.
+# to be retained instead of specifying the "match" directive.
 
 # The following example shows a numerical value being extracted from an incoming log file line:
 
 file:        logfile.log
-match:       Type: \d+
-translate:   Type: (\d+)
+translate:   Type: (\d+) .*
 alert_all:   tags=THE_VALUE
 
 # ... which would output "109" if logfile.log contained the line "Type: 109".
-# Note that if "translate" is used, you still need to specify a "match" directive.
+
+# Where an alert is of the form:
+# <string>: <numeric value>
+# ... and one of the tags for the Schnauzer starts with "METRIC_", the Server will write the numeric value
+# captured to a file in the Server's root folder called "metrics/YYYY-MM-DD/<metric_name>" - where
+# <metric_name> is the part of the tag following "METRIC_".
+# Eg:
+
+file:        logfile.log
+translate:   Type: (\d+) .*
+alert_all:   tags=METRIC_A_VALUE
+
+# ... will append a line to "metrics/YYYY-MM-DD/A_VALUE" each time "Type: <value>" is encountered in logfile.log.
+# This allows metric history to be viewed via the browser.
 
 # "alert_count:" triggers a periodic alert which indicates the number of times a particular
 # regular expression has been matched in a log file over a set period of time.
@@ -65,6 +77,9 @@ alert_count:   tags=RED   seconds=60
 # ... triggers an alert every minute which contains the number of times the string "Type: <number>"
 # appears in logfile.log.  The "RED" tag means that this alert will be displayed as a red
 # (highest priority) alarm in the browser UI.
+
+# If an "alert_count" tag starts with "METRIC_", then the Server will log the value contained in the alert
+# to "metrics/YYYY-MM-DD/<metric_name>".
 
 # "alert_range:" is used to trigger a periodic alert if the number of matches in a log file
 # falls outside a set range during that time period.  For example, the following fires off an
@@ -162,6 +177,11 @@ alert_process  tags=CHARTING  exactly=1
 match:             \d+\s+\d+\s+
 active:            17;17:00-19:00
 alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
+
+# If an "alert_cmd" tag starts with "METRIC_", and the command output is of the form:
+# <string>: <value>
+# ... then the Server will log the value contained in the alert
+# to "metrics/YYYY-MM-DD/<metric_name>".
 
 # A "Multi" monitor can be set up which will trigger an alert if
 # a Client detects a series of alerts containing tags in a watchlist

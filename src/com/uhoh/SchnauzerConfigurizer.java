@@ -83,7 +83,7 @@ public class SchnauzerConfigurizer extends UhohBase
         }
         else if(config_line.startsWith("alert_all:"))
         {
-          if(file != null && match_str != null)
+          if(file != null && (match_str != null || !translate.equals("")))
           {
             HashMap<String, String> args = get_kvps(config_line);
             String message = "";
