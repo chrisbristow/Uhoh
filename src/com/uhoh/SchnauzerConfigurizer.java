@@ -44,6 +44,7 @@ public class SchnauzerConfigurizer extends UhohBase
     String file = null;
     String match_str = null;
     String active = "ANY";
+    String translate = "";
     String ps_command = null;
     HashMap<String, Object[]> ps_hash = new HashMap<String, Object[]>();
     event_collector.multi_list = new ArrayList<MultiMatcher>();
@@ -72,6 +73,10 @@ public class SchnauzerConfigurizer extends UhohBase
         {
           match_str = config_line.replaceFirst("^match:\\s+", "");
         }
+        else if(config_line.startsWith("translate:"))
+        {
+          translate = config_line.replaceFirst("^translate:\\s+", "");
+        }
         else if(config_line.startsWith("ps_command:"))
         {
           ps_command = config_line.replaceFirst("^ps_command:\\s+", "");
@@ -90,7 +95,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null)
             {
-              BasicMatchFileSchnauzer sh = new BasicMatchFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, message);
+              BasicMatchFileSchnauzer sh = new BasicMatchFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, message, translate);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -100,6 +105,7 @@ public class SchnauzerConfigurizer extends UhohBase
           file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_count:"))
         {
@@ -119,6 +125,7 @@ public class SchnauzerConfigurizer extends UhohBase
           file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_range:"))
         {
@@ -161,6 +168,7 @@ public class SchnauzerConfigurizer extends UhohBase
           file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_n:"))
         {
@@ -186,6 +194,7 @@ public class SchnauzerConfigurizer extends UhohBase
           file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_inactive:"))
         {
@@ -211,6 +220,7 @@ public class SchnauzerConfigurizer extends UhohBase
           file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_disk:"))
         {
@@ -230,6 +240,7 @@ public class SchnauzerConfigurizer extends UhohBase
           file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_process:"))
         {
@@ -251,9 +262,11 @@ public class SchnauzerConfigurizer extends UhohBase
               }
             }
           }
-          
+
+          file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_cmd:"))
         {
@@ -272,8 +285,10 @@ public class SchnauzerConfigurizer extends UhohBase
             }
           }
 
+          file = null;
           match_str = null;
           active = "ANY";
+          translate = "";
         }
         else if(config_line.startsWith("alert_multi:"))
         {

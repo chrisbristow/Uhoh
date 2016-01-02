@@ -35,19 +35,27 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
 {
   String regex = "";
   String message = "";
+  String tx = "";
   
   // Construct a BasicMatchFileSchnauzer adding a regex expression.
   
-  BasicMatchFileSchnauzer(String f, String a, String t, EventCollector ec, String r, String msg)
+  BasicMatchFileSchnauzer(String f, String a, String t, EventCollector ec, String r, String msg, String txlate)
   {
     super(f, a, t, ec);
     regex = r;
     message = msg;
+    tx = txlate;
+
     log("Matching lines containing \"" + r + "\" in file " + f + " (" + a + " / " + t + ")");
 
     if(message.length() != 0)
     {
       log(" - Message: " + message);
+    }
+
+    if(tx.length() != 0)
+    {
+      log(" - Translate using: " + tx);
     }
   }
   
@@ -64,6 +72,29 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     
     return(ok);
   }
+
+  // Translate an input string extacting specified parts.
+
+  String translate_string(String input, String rx)
+  {
+    String output = input;
+
+    if(!rx.equals(""))
+    {
+      try
+      {
+        output = input.replaceFirst(rx, "$1");
+
+        log("Translated " + input + " to " + output);
+      }
+      catch(Exception e)
+      {
+        log("Translation failed from " + input + " to " + output);
+      }
+    }
+
+    return(output);
+  }
   
   // Override string_processor() to add the regex match.
   
@@ -73,7 +104,7 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     {
       if(message.length() == 0)
       {
-        event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + s, "FILE");
+        event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + translate_string(s, tx), "FILE");
       }
       else
       {

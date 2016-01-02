@@ -40,6 +40,20 @@ alert_all:   tags=RED  message=Type identified
 # log file which was captured.
 # Note that "message=" has to be the last attribute on the "alert_all:" line.
 
+# We may want to extract a particular item from a log file string match - for example a numerical value.
+# This can be done using the "translate" directive which indicates which part of the log file line needs
+# to be retained.
+
+# The following example shows a numerical value being extracted from an incoming log file line:
+
+file:        logfile.log
+match:       Type: \d+
+translate:   Type: (\d+)
+alert_all:   tags=THE_VALUE
+
+# ... which would output "109" if logfile.log contained the line "Type: 109".
+# Note that if "translate" is used, you still need to specify a "match" directive.
+
 # "alert_count:" triggers a periodic alert which indicates the number of times a particular
 # regular expression has been matched in a log file over a set period of time.
 # For example, the following:
