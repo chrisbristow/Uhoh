@@ -36,7 +36,7 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
   String regex = "";
   String message = "";
   String tx = "";
-  
+
   // Construct a BasicMatchFileSchnauzer adding a regex expression.
   
   BasicMatchFileSchnauzer(String f, String a, String t, EventCollector ec, String r, String msg, String txlate)
@@ -60,7 +60,7 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
 
     if(tx.length() != 0)
     {
-      log(" - Translate using: " + tx);
+      log(" - Capture using: " + tx);
     }
   }
   
@@ -88,13 +88,13 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     {
       try
       {
-        output = input.replaceFirst(rx, "$1");
+        output = input.replaceFirst(".*" + rx + ".*", "$1");
 
-        log("Translated " + input + " to " + output);
+        log("Translated \"" + input + "\" to \"" + output + "\"");
       }
       catch(Exception e)
       {
-        log("Translation failed from " + input + " to " + output);
+        log("Translation failed from \"" + input + "\" to \"" + output + "\"");
       }
     }
 

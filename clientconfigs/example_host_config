@@ -41,13 +41,13 @@ alert_all:   tags=RED  message=Type identified
 # Note that "message=" has to be the last attribute on the "alert_all:" line.
 
 # We may want to extract a particular item from a log file string match - for example a numerical value.
-# This can be done using the "translate" directive which indicates which part of the log file line needs
+# This can be done using the "capture" directive which indicates which part of the log file line needs
 # to be retained instead of specifying the "match" directive.
 
 # The following example shows a numerical value being extracted from an incoming log file line:
 
 file:        logfile.log
-translate:   Type: (\d+) .*
+capture:     Type: (\d+)
 alert_all:   tags=THE_VALUE
 
 # ... which would output "109" if logfile.log contained the line "Type: 109".
@@ -60,7 +60,7 @@ alert_all:   tags=THE_VALUE
 # Eg:
 
 file:        logfile.log
-translate:   Type: (\d+) .*
+capture:     Type: (\d+)
 alert_all:   tags=METRIC_A_VALUE
 
 # ... will append a line to "metrics/YYYY-MM-DD/A_VALUE" each time "Type: <value>" is encountered in logfile.log.
