@@ -127,6 +127,86 @@ public class SchnauzerConfigurizer extends UhohBase
           active = "ANY";
           capture = "";
         }
+        else if(config_line.startsWith("alert_total:"))
+        {
+          if(file != null && !capture.equals(""))
+          {
+            HashMap<String, String> args = get_kvps(config_line);
+
+            if(args.get("tags") != null && args.get("seconds") != null)
+            {
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.TOTAL);
+              Thread t = new Thread(sh);
+              t.start();
+              schs.add(sh);
+            }
+          }
+
+          file = null;
+          match_str = null;
+          active = "ANY";
+          capture = "";
+        }
+        else if(config_line.startsWith("alert_average:"))
+        {
+          if(file != null && !capture.equals(""))
+          {
+            HashMap<String, String> args = get_kvps(config_line);
+
+            if(args.get("tags") != null && args.get("seconds") != null)
+            {
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.AVERAGE);
+              Thread t = new Thread(sh);
+              t.start();
+              schs.add(sh);
+            }
+          }
+
+          file = null;
+          match_str = null;
+          active = "ANY";
+          capture = "";
+        }
+        else if(config_line.startsWith("alert_minimum:"))
+        {
+          if(file != null && !capture.equals(""))
+          {
+            HashMap<String, String> args = get_kvps(config_line);
+
+            if(args.get("tags") != null && args.get("seconds") != null)
+            {
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MINIMUM);
+              Thread t = new Thread(sh);
+              t.start();
+              schs.add(sh);
+            }
+          }
+
+          file = null;
+          match_str = null;
+          active = "ANY";
+          capture = "";
+        }
+        else if(config_line.startsWith("alert_maximum:"))
+        {
+          if(file != null && !capture.equals(""))
+          {
+            HashMap<String, String> args = get_kvps(config_line);
+
+            if(args.get("tags") != null && args.get("seconds") != null)
+            {
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MAXIMUM);
+              Thread t = new Thread(sh);
+              t.start();
+              schs.add(sh);
+            }
+          }
+
+          file = null;
+          match_str = null;
+          active = "ANY";
+          capture = "";
+        }
         else if(config_line.startsWith("alert_range:"))
         {
           if(file != null && match_str != null)

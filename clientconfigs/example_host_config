@@ -81,6 +81,29 @@ alert_count:   tags=RED   seconds=60
 # If an "alert_count" tag starts with "METRIC_", then the Server will log the value contained in the alert
 # to "metrics/YYYY-MM-DD/<metric_name>".
 
+# It is also possible to perform very basic mathematical operations on values captured from log files
+# using the "alert_total", "alert_minimum", "alert_maximum" and "alert_average" directives.
+# These all require a "capture" directive to be used and will output a value after a set period.
+# Here are some examples:
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_total:   tags=METRIC_TOTAL   seconds=60
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_minimum: tags=METRIC_MINIMUM   seconds=60
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_maximum: tags=METRIC_MAXIMUM   seconds=60
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_average: tags=METRIC_AVERAGE   seconds=60
+
+# Note that no alert is triggered if no matches have been made in the log file during the configured interval.
+
 # "alert_range:" is used to trigger a periodic alert if the number of matches in a log file
 # falls outside a set range during that time period.  For example, the following fires off an
 # alert if there are less than 3 or more than 6 instances of the string "Type X" appearing
