@@ -42,7 +42,6 @@ public class ThresholdFileSchnauzer extends MetricCalculationFileSchnauzer
   
   //Construct a ThresholdFileSchnauzer.
 
-  //ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   {
     //super(f, a, t, ec, r, m);

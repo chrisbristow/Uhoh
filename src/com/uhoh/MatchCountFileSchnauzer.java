@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
         of the authors and should not be interpreted as representing official policies,
         either expressed or implied, of the FreeBSD Project.
 */
+
+// THIS CLASS IS NO LONGER USED AND WILL BE REMOVED FROM THE UHOH PACKAGE SHORTLY !!
 
 package com.uhoh;
 
