@@ -92,7 +92,13 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
     }
   }
 
-  // Output match count.
+  // Output:
+  // - match count.
+  // - or, total captured.
+  // - or, average from captured - if any data has been captured.
+  // - or, maximum from captured - if any data has been captured.
+  // - or, minimum from captured - if any data has been captured.
+  // ... then reset the counters.
 
   public void timed_event_processor()
   {
@@ -100,33 +106,36 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
     {
       if(is_active(active_string))
       {
-        if(capture_type == MetricCalcs.COUNT)
+        switch(capture_type)
         {
-          event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_count, "FILE");
-        }
-        else
-        {
-          if(match_count > 0)
-          {
-            switch(capture_type)
+          case COUNT:
+            event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_count, "FILE");
+            break;
+
+          case TOTAL:
+            event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_total, "FILE");
+            break;
+
+          case AVERAGE:
+            if(match_count > 0)
             {
-              case TOTAL:
-                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_total, "FILE");
-                break;
-
-              case AVERAGE:
-                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + (match_total / match_count), "FILE");
-                break;
-
-              case MINIMUM:
-                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_minimum, "FILE");
-                break;
-
-              case MAXIMUM:
-                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_maximum, "FILE");
-                break;
+              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + (match_total / match_count), "FILE");
             }
-          }
+            break;
+
+          case MINIMUM:
+            if(match_count > 0)
+            {
+              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_minimum, "FILE");
+            }
+            break;
+
+          case MAXIMUM:
+            if(match_count > 0)
+            {
+              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_maximum, "FILE");
+            }
+            break;
         }
       }
 

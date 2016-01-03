@@ -51,6 +51,17 @@ capture:     Type: (\d+)
 alert_all:   tags=THE_VALUE
 
 # ... which would output "109" if logfile.log contained the line "Type: 109".
+# This feature can also be used, for example, to remove unwanted parts of log file lines - eg. time-stamps.
+# The line:
+
+Sun Jan 03 20:53:54 GMT 2016 [Thread-2]: Warning: Restart in progress
+
+# Could be captured as simply "Warning: Restart in progress" by using:
+
+capture:     Thread.\d+.: (.+)
+
+# (Useful for de-duplicating multiple alerts with different time-stamps when they appear in the
+# browser UI.)
 
 # Where an alert is of the form:
 # <string>: <numeric value>
@@ -83,6 +94,8 @@ alert_count:   tags=RED   seconds=60
 
 # It is also possible to perform very basic mathematical operations on values captured from log files
 # using the "alert_total", "alert_minimum", "alert_maximum" and "alert_average" directives.
+# This feature is useful for charting, for example, periodic min, max and average handling times for a web-service
+# captured from an Apache HTTPD access log file.
 # These all require a "capture" directive to be used and will output a value after a set period.
 # Here are some examples:
 
@@ -102,7 +115,8 @@ file:          logfile.log
 capture:       Type: (\d+)
 alert_average: tags=METRIC_AVERAGE   seconds=60
 
-# Note that no alert is triggered if no matches have been made in the log file during the configured interval.
+# Note that no alert is triggered for average, minimum or maximum if nothing has been captured
+# from the log file during the specified interval.
 
 # "alert_range:" is used to trigger a periodic alert if the number of matches in a log file
 # falls outside a set range during that time period.  For example, the following fires off an
