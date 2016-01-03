@@ -53,6 +53,7 @@ public class ServerLoop extends UhohBase
   HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
   FileOutputStream logmgr = null;
   String unicast_addrs = null;
+  String dead_client_tags = "GREEN";
 
   // Initialise a new ServerLoop().
   
@@ -74,6 +75,7 @@ public class ServerLoop extends UhohBase
       ui_rtime.put("PROCESS", new Long(props.getProperty("ui_display_time_PROCESS")));
       ui_rtime.put("FILE", new Long(props.getProperty("ui_display_time_FILE")));
       ui_rtime.put("IDLE", new Long(props.getProperty("ui_display_time_IDLE")));
+      dead_client_tags = props.getProperty("dead_client_tags");
 
       log("Client/Server UDP ports:              " + udp_port + " / " + (udp_port + 1));
       log("Server broadcast address:             " + broadcast_address);
@@ -82,6 +84,7 @@ public class ServerLoop extends UhohBase
       log("Server will sent heartbeats every:    " + server_heartbeat_interval + " ms");
       log("Server will log events to:            " + server_disk_log_name);
       log("Event log will roll after it reaches: " + server_disk_log_size + " bytes");
+      log("Dead client alert tags are:           " + dead_client_tags);
       log("UI: Log file events held for:         " + ui_rtime.get("FILE") + " ms");
       log("UI: Process events held for:          " + ui_rtime.get("PROCESS") + " ms");
       log("UI: Idle client events held for:      " + ui_rtime.get("IDLE") + " ms");
@@ -248,7 +251,7 @@ public class ServerLoop extends UhohBase
 
             try
             {
-              client_q.put(new Object[]{"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SERVER", "GREEN", "No updates"});
+              client_q.put(new Object[]{"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SERVER", dead_client_tags, "No updates from client"});
             }
             catch(InterruptedException e)
             {
