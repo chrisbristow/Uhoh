@@ -47,6 +47,7 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
     metrics_interval = m;
     next_checkpoint = (new Date()).getTime() + metrics_interval;
     log(" - Interval is " + m + " ms");
+    log("WARNING: CLASS MatchCountFileSchnauzer IS DEPRECATED");
   }
   
   // Override string_processor() to add the regex match and count.
@@ -57,6 +58,8 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
     {
       match_count ++;
     }
+
+    log("WARNING: CLASS MatchCountFileSchnauzer IS DEPRECATED");
   }
   
   // Output match count.
@@ -72,6 +75,8 @@ public class MatchCountFileSchnauzer extends BasicMatchFileSchnauzer
 
       match_count = 0;
       next_checkpoint = (new Date()).getTime() + metrics_interval;
+
+      log("WARNING: CLASS MatchCountFileSchnauzer IS DEPRECATED");
     }
   }
 }

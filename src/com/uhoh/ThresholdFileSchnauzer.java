@@ -33,16 +33,20 @@ package com.uhoh;
 
 import java.util.Date;
 
-public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
+//public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
+public class ThresholdFileSchnauzer extends MetricCalculationFileSchnauzer
+
 {
   long greater_than = -1;
   long less_than = -1;
   
   //Construct a ThresholdFileSchnauzer.
-  
+
+  //ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   {
-    super(f, a, t, ec, r, m);
+    //super(f, a, t, ec, r, m);
+    super(f, a, t, ec, "", m, MetricCalcs.THRESHOLD, r);
     greater_than = gt;
     less_than = lt;
     message = msg;

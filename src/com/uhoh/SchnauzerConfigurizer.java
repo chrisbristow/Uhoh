@@ -115,7 +115,8 @@ public class SchnauzerConfigurizer extends UhohBase
             
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MatchCountFileSchnauzer sh = new MatchCountFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000);
+              //MatchCountFileSchnauzer sh = new MatchCountFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.COUNT, match_str);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -135,7 +136,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.TOTAL);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.TOTAL, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -155,7 +156,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.AVERAGE);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.AVERAGE, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -175,7 +176,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MINIMUM);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MINIMUM, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -195,7 +196,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MAXIMUM);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MAXIMUM, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);

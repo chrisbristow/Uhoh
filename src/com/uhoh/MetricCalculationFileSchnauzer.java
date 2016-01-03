@@ -45,13 +45,13 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
 
   // Construct a MetricCalculationFileSchnauzer.
 
-  MetricCalculationFileSchnauzer(String f, String a, String t, EventCollector ec, String cap, long m, MetricCalcs tp)
+  MetricCalculationFileSchnauzer(String f, String a, String t, EventCollector ec, String cap, long m, MetricCalcs tp, String rx)
   {
-    super(f, a, t, ec, null, "", cap);
+    super(f, a, t, ec, rx, "", cap);
     metrics_interval = m;
     capture_type = tp;
     next_checkpoint = (new Date()).getTime() + metrics_interval;
-    log(" - Interval is " + m + " ms");
+    log(" - Interval is " + m + " ms (" + capture_type.toString() + ")");
   }
 
   // Override string_processor() to add the regex match and count.
@@ -60,27 +60,34 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
   {
     if(is_matching(s))
     {
-      try
+      if(capture_type == MetricCalcs.COUNT || capture_type == MetricCalcs.THRESHOLD)
       {
-        long captured_value = Long.parseLong(translate_string(s, tx));
-
-        match_total += captured_value;
-
-        if(captured_value > match_maximum)
-        {
-          match_maximum = captured_value;
-        }
-
-        if(captured_value < match_minimum)
-        {
-          match_minimum = captured_value;
-        }
-
-        match_count ++;
+        match_count++;
       }
-      catch(Exception e)
+      else
       {
-        log("Warning: Capture of metric from \"" + s + "\" has failed");
+        try
+        {
+          long captured_value = Long.parseLong(translate_string(s, tx));
+
+          match_total += captured_value;
+
+          if(captured_value > match_maximum)
+          {
+            match_maximum = captured_value;
+          }
+
+          if(captured_value < match_minimum)
+          {
+            match_minimum = captured_value;
+          }
+
+          match_count++;
+        }
+        catch(Exception e)
+        {
+          log("Warning: Capture of metric from \"" + s + "\" has failed");
+        }
       }
     }
   }
@@ -93,25 +100,32 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
     {
       if(is_active(active_string))
       {
-        if(match_count > 0)
+        if(capture_type == MetricCalcs.COUNT)
         {
-          switch(capture_type)
+          event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_count, "FILE");
+        }
+        else
+        {
+          if(match_count > 0)
           {
-            case TOTAL:
-              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_total, "FILE");
-              break;
+            switch(capture_type)
+            {
+              case TOTAL:
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_total, "FILE");
+                break;
 
-            case AVERAGE:
-              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + (match_total / match_count), "FILE");
-              break;
+              case AVERAGE:
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + (match_total / match_count), "FILE");
+                break;
 
-            case MINIMUM:
-              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_minimum, "FILE");
-              break;
+              case MINIMUM:
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_minimum, "FILE");
+                break;
 
-            case MAXIMUM:
-              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_maximum, "FILE");
-              break;
+              case MAXIMUM:
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_maximum, "FILE");
+                break;
+            }
           }
         }
       }

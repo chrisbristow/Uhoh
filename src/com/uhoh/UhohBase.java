@@ -40,7 +40,7 @@ public abstract class UhohBase
   long rest_request_timeout = 10000;
   String server_disk_log_name = "server.log";
   long server_disk_log_size = 100000000;
-  enum MetricCalcs { TOTAL, AVERAGE, MAXIMUM, MINIMUM };
+  enum MetricCalcs { TOTAL, AVERAGE, MAXIMUM, MINIMUM, COUNT, THRESHOLD };
 
   // Generic logging function.
   
