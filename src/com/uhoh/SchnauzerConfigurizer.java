@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,18 @@ package com.uhoh;
 
 import java.util.*;
 
-// Parse the config file and start Schnauzers.
+/*
+  The SchnauzerConfigurizer() class is used to parse a Client's configuration
+  and spawn Schnauzer() threads which will perform monitoring tasks, reporting
+  alerts back to the EventCollector().
+ */
 
 public class SchnauzerConfigurizer extends UhohBase
 {
   ArrayList<Schnauzer> schs;
+
+  // A SchnauzerConfigurizer() is created with the configuration details
+  // and a reference to the EventCollector() passed in as arguments.
 
   SchnauzerConfigurizer(String in_data, EventCollector event_collector)
   {
@@ -49,6 +56,10 @@ public class SchnauzerConfigurizer extends UhohBase
     HashMap<String, Object[]> ps_hash = new HashMap<String, Object[]>();
     event_collector.multi_list = new ArrayList<MultiMatcher>();
 
+    // An array of Schnauzers() created is maintained and this array is
+    // used to send shut down messages to Schnauzers() if a Client's
+    // configuration needs to be re-loaded.
+
     schs = new ArrayList<Schnauzer>();
     
     StringTokenizer st = new StringTokenizer(in_data, "%%");
@@ -58,6 +69,9 @@ public class SchnauzerConfigurizer extends UhohBase
       String config_line = st.nextToken();
       
       //log("Config: " + config_line);
+
+      // The following block is a large switch table which performs the parsing
+      // of the configuration and starts Schnauzer() threads as necessary.
       
       try
       {
@@ -115,7 +129,6 @@ public class SchnauzerConfigurizer extends UhohBase
             
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              //MatchCountFileSchnauzer sh = new MatchCountFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000);
               MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.COUNT, match_str);
               Thread t = new Thread(sh);
               t.start();
@@ -391,6 +404,9 @@ public class SchnauzerConfigurizer extends UhohBase
         e.printStackTrace();
       }
     }
+
+    // As there is only ever one active ProcessSchnauzer(), it is started once
+    // parsing of the configuration is complete.
     
     if(ps_command != null && ps_hash.size() != 0)
     {
@@ -403,7 +419,8 @@ public class SchnauzerConfigurizer extends UhohBase
     log(schs.size() + " schnauzer(s) have been started");
   }
 
-  // Called to stop all Schnauzers (a "reset").
+  // The terminate_all() method is called if all Schnauzers() need to be stopped
+  // if the configuration needs to be re-loaded.
 
   void terminate_all()
   {
@@ -415,7 +432,8 @@ public class SchnauzerConfigurizer extends UhohBase
     }
   }
   
-  // Get key=value pairs from a config line.
+  // The get_kvps() method is used to extract key / value pairs
+  // from the configuration.
   
   HashMap<String, String> get_kvps(String conf)
   {

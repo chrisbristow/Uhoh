@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -34,16 +34,23 @@ package com.uhoh;
 import java.net.*;
 import java.util.*;
 
+/*
+  The SocketMonitor() is used by the Client to process incoming UDP messages
+  from Servers.  For example, Server notification broadcasts, configuration
+  responses etc.
+ */
+
 public class SocketMonitor extends UhohBase implements Runnable
 {
   SocketEventCollector event_collector = null;
-  boolean is_configured = false;
   SchnauzerConfigurizer cfz = null;
   String server_ips = "";
   int udp_port;
   
-  // Construct a SocketMonitor by passing it a reference
-  // to the EventCollector.
+  // Construct a SocketMonitor() by passing it a reference
+  // to the EventCollector() as well as a list of IP addresses
+  // of Servers (if the Client has been started with a preset list)
+  // and the UDP port the Server is broadcasting on.
   
   SocketMonitor(SocketEventCollector ec, String s_ips, int u_port)
   {
@@ -53,9 +60,12 @@ public class SocketMonitor extends UhohBase implements Runnable
   }
   
   // Listen for incoming UDP messages and deal with them.  Messages
-  // are:
+  // types are:
   // SRVHB%%<server_host> - Broadcast "advert" messages from servers.
   // CONFIG%%<config_string> - Response to a CONFREQ (config request).
+  // RESET%% - Tells this Client to reset all monitoring configuration
+  //           so that it will re-initialise itself by re-loading it's
+  //           configuration.
   
   public void run()
   {
@@ -81,8 +91,11 @@ public class SocketMonitor extends UhohBase implements Runnable
           String new_server_ip = from.getAddress().getHostAddress();
           int new_server_port = from.getPort();
           event_collector.servers.put(new_server_ip + "/" + new_server_port, new Long(new Date().getTime()));
-          
-          if(!is_configured)
+
+          // Configuration requests are made each time a Client receives a Server heartbeat
+          // until such time as the Client has received a Configuration Reply message.
+
+          if(cfz == null)
           {
             String our_name = InetAddress.getLocalHost().getHostName();
             byte[] config_cmd = new String("CONFREQ%%" + our_name).getBytes();
@@ -95,16 +108,20 @@ public class SocketMonitor extends UhohBase implements Runnable
         }
         else if(in_data.startsWith("CONFIG%%"))
         {
+          // When the Server sends a configuration reply, the Client creates a
+          // SchnauzerConfigurizer() object to manage the parsing of the
+          // configuration and setting up of schnauzers.
+
           log("Configuration received");
           cfz = new SchnauzerConfigurizer(in_data, event_collector);
-          is_configured = true;
         }
         else if(in_data.startsWith("RESET%%"))
         {
+          // A reset command resets the Client back to it's start-up state.
+
           log("Received a reset command");
           cfz.terminate_all();
           cfz = null;
-          is_configured = false;
           unicast_client_init();
         }
       }
@@ -115,6 +132,11 @@ public class SocketMonitor extends UhohBase implements Runnable
       }
     }
   }
+
+  // If the Client has been started with a list of known Servers, then
+  // the unicast_client_init() method is used to add these Servers to the
+  // Client's known server list and request a configuration from the
+  // first Server in the list.
 
   void unicast_client_init()
   {

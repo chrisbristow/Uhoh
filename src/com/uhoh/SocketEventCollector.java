@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -34,17 +34,25 @@ package com.uhoh;
 import java.net.*;
 import java.util.*;
 
+/*
+  This class is derived from EventCollector() and adds UDP socket handling.
+ */
+
 public class SocketEventCollector extends EventCollector
 {
   DatagramSocket udp_socket = null;
   Hashtable<String, Long> servers = new Hashtable<String, Long>();
   long uid_c = 0;
   String our_name = null;
-  
+
   SocketEventCollector(int udp_port, String s_ips)
   {
     super();
-    
+
+    // A UDP socket is created for sending alerts to Servers.  Note that if we
+    // can't create this socket, then an Uhoh Client can't operate, so if
+    // socket creation fails, we close down the Uhoh Client.
+
     try
     {
       log("Starting listener on UDP port " + udp_port);
@@ -58,22 +66,34 @@ public class SocketEventCollector extends EventCollector
       e.printStackTrace();
       System.exit(1);
     }
-    
+
+    // Another thread, SocketMonitor(), is started to collect UDP messages from Servers.
+
     Thread smon = new Thread(new SocketMonitor(this, s_ips, udp_port));
     smon.start();
   }
-  
+
+  // The process_event() method from EventCollector() is overridden to allow it to forward
+  // alerts from the LinkedBlockingQueue() to all known servers.
+
   void process_event(Object[] event)
   {
+    // If the event in the LinkedBlockingQueue() is a null object, then create an "Idle"
+    // alert.  This is used by a Client to indicate to the Server that the Client
+    // hasn't collected any alerts recently - ie. a heartbeat to prevent the Server from
+    // thinking that a Client has died.
+
     if(event == null)
     {
       event = new Object[]{ "SYSTEM%%NULL%%Idle", "IDLE" };
     }
 
+    // Loop through the list of all known Servers and send the alert to them as a UDP message.
+
     for(Enumeration<String> e = servers.keys(); e.hasMoreElements();)
     {
       String server_info = e.nextElement();
-      
+
       try
       {
         StringTokenizer st = new StringTokenizer(server_info, "/");
@@ -87,6 +107,10 @@ public class SocketEventCollector extends EventCollector
         log(server_info + " -> (" + event[1] + ") " + event[0]);
 
         udp_socket.send(sp);
+
+        // Here, we check for alerts which may trigger a derived alert by requesting that
+        // all "multi" (ie. derived) groups are checked to see if they have registered
+        // qualifying alerts within their time windows.
 
         String alert_tags = ((String)event[0]).split("%%")[1];
 

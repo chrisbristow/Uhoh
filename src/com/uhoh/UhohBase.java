@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -33,16 +33,40 @@ package com.uhoh;
 
 import java.util.*;
 
+/*
+  UhohBase is a class which is used as a base class for (almost) all other
+  classes within the Uhoh system.  It contains global settings and various methods
+  which are used throughout Uhoh.
+ */
+
 public abstract class UhohBase
 {
+  // Time (in milliseconds) after which a Client is considered to be dead and
+  // the server will log a "lost client" alert.
   long client_timeout = 180000;
+
+  // Time (in milliseconds) between broadcasts from the Server which indicate
+  // to Clients how to contact the Server.
   long server_heartbeat_interval = 5000;
+
+  // Time (in milliseconds) that an incoming REST request to the Server is
+  // permitted to take before the Server returns an error.  REST requests
+  // are only used to serve the browser user interface.
   long rest_request_timeout = 10000;
+
+  // The rolling log file containing all alerts sent to the server.
   String server_disk_log_name = "server.log";
+
+  // The maximum size of the Server's rolling log file before it is
+  // rolled.
   long server_disk_log_size = 100000000;
+
+  // Used internally to define which type of metric should be captured.
   enum MetricCalcs { TOTAL, AVERAGE, MAXIMUM, MINIMUM, COUNT, THRESHOLD };
 
-  // Generic logging function.
+  // The log method is used throughout Uhoh to log messages to STDOUT.  It
+  // prefixes any message logged with the date/time and name of thread that
+  // called log().
   
   String log(String s)
   {
@@ -51,7 +75,8 @@ public abstract class UhohBase
     return(log_line);
   }
   
-  // Wrapper for sleep().
+  // The do_pause() method simply calls Thread.sleep() but catches
+  // any exception thrown.
   
   public void do_pause(long n)
   {
@@ -65,7 +90,23 @@ public abstract class UhohBase
     }
   }
 
-  // Check if time now is within the active time string.
+  // The is_active() method is provided with a string as it's own argument.
+  // The string is examined to see if it indicates that the current day/time
+  // sits within the definition contained in the string.  If so, true is returned,
+  // if not, false.
+  //
+  // The string is in the format:
+  // - A comma-separated list of <days>;<hour/min_range> items.
+  // - <days> are days of the week - numbered 1-7 where 1 = Sunday, 2 = Monday etc.
+  // - <hour/min_range> is written as start hour/min - end hour/min in the format HH:MM-HH:MM.
+  //
+  // For example:
+  // 23456;09:00-17:30,17;10:00-16:00
+  // - Returns true if the current time is within:
+  //   09:00 - 17:30 Monday - Friday (days 2, 3, 4, 5 & 6).
+  //   or 10:00 - 16:00 Saturday - Sunday (days 1 & 7).
+  //
+  //  If the string is set to the value "ANY" then true is always returned.
 
   public boolean is_active(String active_string)
   {

@@ -1,13 +1,7 @@
-// A FileSchnauzer is the base class for all file processors.
-// FileSchnauzer implements the basic roll-proof file read and
-// calls string_processor() for each line found.
-// Sub-classes of FileSchnauzer implement specific variants
-// of string_processor().
-
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -39,6 +33,14 @@ package com.uhoh;
 
 import java.io.*;
 
+/*
+  A FileSchnauzer() is the base class for all file processing schnauzers.
+  FileSchnauzer() implements the basic roll-proof file read and
+  calls string_processor() for each line found.
+  Sub-classes of FileSchnauzer() implement specific variants
+  of string_processor() so FileSchnauzer() isn't ever used as-is.
+  */
+
 public abstract class FileSchnauzer extends Schnauzer
 {
   String filename;
@@ -49,7 +51,7 @@ public abstract class FileSchnauzer extends Schnauzer
   // - Filename to read from.
   // - Active time string (DAY;HH:MM-HH:MM[,...]).
   // - Tags.
-  // - Reference of the EventCollector.
+  // - Reference of the EventCollector().
   
   FileSchnauzer(String f, String a, String t, EventCollector ec)
   {
@@ -59,9 +61,12 @@ public abstract class FileSchnauzer extends Schnauzer
     event_collector = ec;
   }
   
-  // Read lines from the file and dispatch to the EventCollector via the
+  // Read lines from the file and dispatch to the EventCollector() via the
   // string_processor() method.  Also calls timed_event_processor()
   // when idle (used for timed metric counts).
+  //
+  // The "keep_running" flag is used to close down a FileSchnauzer() if a Client's
+  // configuration has changed.
   
   public void run()
   {

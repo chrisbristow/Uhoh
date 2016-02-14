@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -31,13 +31,18 @@
 
 package com.uhoh;
 
+/*
+  A BasicMatchFileSchnauzer() implements a usable file reader and processor.
+ */
+
 public class BasicMatchFileSchnauzer extends FileSchnauzer
 {
   String regex = "";
   String message = "";
   String tx = "";
 
-  // Construct a BasicMatchFileSchnauzer adding a regex expression.
+  // Construct a BasicMatchFileSchnauzer() adding a regex expression, translator string and custome
+  // alert message to the parameters used to construct a FileSchnauzer().
   
   BasicMatchFileSchnauzer(String f, String a, String t, EventCollector ec, String r, String msg, String txlate)
   {
@@ -64,7 +69,9 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     }
   }
   
-  // Check to see if a string matches the regex.
+  // The is_matching() method checks whether a line in a file matches the regex for this
+  // BasicMatchFileSchnauzer().  Note that the ".*" prefix and suffix ensures that the
+  // configuration can specify only a partial string match (similar to Perl regexes).
   
   boolean is_matching(String s)
   {
@@ -78,7 +85,8 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     return(ok);
   }
 
-  // Translate an input string extacting specified parts.
+  // The translate_string() method is used to replace a section in a file line with another
+  // string - for example, translating "Row: 5" to "5", for metric collection purposes.
 
   String translate_string(String input, String rx)
   {
@@ -101,7 +109,10 @@ public class BasicMatchFileSchnauzer extends FileSchnauzer
     return(output);
   }
   
-  // Override string_processor() to add the regex match.
+  // The string_processor() implementation in a BasicMatchFileSchnauzer():
+  // - Checks that a file line matches the regex.
+  // - Translates the file line, if necessary.
+  // - Decides if to log the actual file line or use the custom alert message in the alert dispatched.
   
   public void string_processor(String s)
   {

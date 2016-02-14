@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,16 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+/*
+  The RestServerWorker() class is used to create threads which handle incoming
+  HTTP requests from the Web UI.  These requests are:
+  - To serve static content (ie. when a user first loads the Web UI).
+  - To serve REST requests containing currently active alerts.
+  - To serve REST requests containing metric information.
+  RestServerWorker() threads terminate once the Web UI client (browser)
+  requesting content has closed its HTTP connection.
+ */
+
 public class RestServerWorker extends UhohBase implements Runnable
 {
   ServerLoop server_loop;
@@ -67,6 +77,8 @@ public class RestServerWorker extends UhohBase implements Runnable
 
           if(sb.toString().startsWith("GET"))
           {
+            // Server REST requests for active alert data.
+
             String url = sb.toString().split(" ")[1];
 
             log("Serving REST request for " + url);
@@ -87,6 +99,8 @@ public class RestServerWorker extends UhohBase implements Runnable
             }
             else if(url.equals("/"))
             {
+              // Serve the alerts Web UI static container page.
+
               StringBuffer wb = new StringBuffer();
               String next_line;
               BufferedReader rr = new BufferedReader(new FileReader("web/ui.html"));
@@ -103,6 +117,8 @@ public class RestServerWorker extends UhohBase implements Runnable
             }
             else if(url.startsWith("/metric/"))
             {
+              // Serve the metrics Web UI static container page.
+
               String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
               StringBuffer wb = new StringBuffer();
               String next_line;
@@ -120,6 +136,8 @@ public class RestServerWorker extends UhohBase implements Runnable
             }
             else if(url.startsWith("/mdata/"))
             {
+              // Serve REST requests containing metric data.
+
               String[] rest_items = url.split("/");
               StringBuffer wb = new StringBuffer();
               String next_line;

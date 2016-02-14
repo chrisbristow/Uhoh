@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -34,12 +34,24 @@ package com.uhoh;
 import java.io.*;
 import java.util.*;
 
+/*
+  The CommandSchnauzer() runs a command periodically and collects the command output.
+ */
+
 public class CommandSchnauzer extends Schnauzer
 {
   String command;
   String active_string;
   long interval;
   String regex = "";
+
+  // A CommandSchnauzer() is started with the following arguments:
+  // - The command to run.
+  // - During which times/days the command should run.
+  // - Tags to attach to alerts raised from the command output.
+  // - A reference to the EventCollector().
+  // - The time interval between invocations of the command.
+  // - A regex to use to match output from the command.
 
   CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r)
   {
@@ -50,6 +62,10 @@ public class CommandSchnauzer extends Schnauzer
     interval = i;
     regex = r;
   }
+
+  // The run() method actually runs the command, collects the output, filters
+  // using the regex and dispatches any alerts.  Note that a command can trigger
+  // multiple alerts each time it runs.
 
   public void run()
   {

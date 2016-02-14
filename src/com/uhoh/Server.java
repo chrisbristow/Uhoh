@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -31,10 +31,21 @@
 
 package com.uhoh;
 
+/*
+  This class contains the static main() method used to start the Server.  It
+  accepts a single argument - the name of the Server properties file.
+  The Server itself is controlled by the ServerLoop() thread.
+
+  Here's the start-up sequence for a Server:
+  - The Server() creates a ServerLoop() object.
+  - The ServerLoop() object spawns a ServerSocketMonitor() thread to listen for incoming
+    UDP messages from Clients.
+  - The ServerLoop() object spawns a RestServerListener() thread to handle incoming
+    TCP requests (HTTP) from web browsers.
+ */
+
 public class Server
 {
-  // Launch a standalone Uhoh server.
-  
   public static void main(String[] args)
   {
     try

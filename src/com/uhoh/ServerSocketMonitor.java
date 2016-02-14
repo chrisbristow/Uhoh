@@ -1,9 +1,7 @@
-// Listen for incoming UDP messages from Clients.
-
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -37,16 +35,29 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+/*
+  A ServerSocketMonitor() object is created to handle incoming UDP
+  traffic from Clients - ie:
+  - Alerts.
+  - Configuration requests.
+ */
+
 public class ServerSocketMonitor extends UhohBase implements Runnable
 {
   DatagramSocket udp_socket = null;
   ServerLoop server_loop;
+
+  // The ServerLoop() object creates the UDP socket for the Server and the socket
+  // reference is passed to the ServerSocketMonitor() for use.  A reference to
+  // the ServerLoop() for alert dispatch is also passed to ServerSocketMonitor().
 
   ServerSocketMonitor(DatagramSocket u, ServerLoop s)
   {
     udp_socket = u;
     server_loop = s;
   }
+
+  // This is the loop which handles incoming UDP traffic.
   
   public void run()
   {

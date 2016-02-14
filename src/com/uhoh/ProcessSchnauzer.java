@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -34,12 +34,21 @@ package com.uhoh;
 import java.util.*;
 import java.io.*;
 
+/*
+  The ProcessSchnauzer() uses a configurable process listing command to check
+  whether specific process are running, and how many instances are running.
+
+  Note that only one ProcessSchnauzer() ever runs in a Client.  This single instance
+  performs all process checking from a list of processes to check.
+ */
+
 public class ProcessSchnauzer extends Schnauzer
 {
   String ps_command;
   HashMap<String, Object[]> ps_hash;
   
-  // Start a ProcessSchnauzer thread.
+  // Start a ProcessSchnauzer() thread.  The HashMap supplied contains the
+  // list of processes to check.
   
   ProcessSchnauzer(EventCollector ec, String ps_c, HashMap<String, Object[]> ps_h)
   {

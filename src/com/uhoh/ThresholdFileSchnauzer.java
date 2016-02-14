@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,23 @@ package com.uhoh;
 
 import java.util.Date;
 
-//public class ThresholdFileSchnauzer extends MatchCountFileSchnauzer
+/*
+  The ThresholdFileSchnauzer() class is a file reading schnauzer which raises an
+  alert if more than (or less than) a configurable number of matches are found
+  within a file in a specific time window.
+ */
+
 public class ThresholdFileSchnauzer extends MetricCalculationFileSchnauzer
 
 {
   long greater_than = -1;
   long less_than = -1;
   
-  //Construct a ThresholdFileSchnauzer.
+  // Construct a ThresholdFileSchnauzer(). The super class MetricCalculationFileSchnauzer()
+  // is used.
 
   ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   {
-    //super(f, a, t, ec, r, m);
     super(f, a, t, ec, "", m, MetricCalcs.THRESHOLD, r);
     greater_than = gt;
     less_than = lt;

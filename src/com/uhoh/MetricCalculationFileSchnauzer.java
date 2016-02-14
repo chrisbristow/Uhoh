@@ -33,6 +33,14 @@ package com.uhoh;
 
 import java.util.*;
 
+/*
+  The MetricCalculationFileSchnauzer() class is an versatile FileSchnauzer() which is used
+  to capture the number of times a line has appeared in a log file, or to capture specific metrics
+  from a log file.  After a configurable period, the MetricCalculationFileSchnauzer() can log:
+  - The number of times a match has occurred.
+  - The total / minimum / maximum / average from a metric captured.
+ */
+
 public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
 {
   long match_count = 0;
@@ -43,7 +51,7 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
   long next_checkpoint = 0;
   MetricCalcs capture_type;
 
-  // Construct a MetricCalculationFileSchnauzer.
+  // Construct a MetricCalculationFileSchnauzer().
 
   MetricCalculationFileSchnauzer(String f, String a, String t, EventCollector ec, String cap, long m, MetricCalcs tp, String rx)
   {
@@ -54,7 +62,11 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
     log(" - Interval is " + m + " ms (" + capture_type.toString() + ")");
   }
 
-  // Override string_processor() to add the regex match and count.
+  // Override string_processor() to perform the regex match and either count
+  // matches or collect metrics (using the translate_string() method).
+  //
+  // Note that the THRESHOLD type is used by the ThresholdFileSchnauzer() class
+  // which is derived from this one.
 
   public void string_processor(String s)
   {

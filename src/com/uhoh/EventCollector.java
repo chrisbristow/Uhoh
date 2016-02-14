@@ -1,9 +1,7 @@
-// Consumes all events.
-
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -36,12 +34,24 @@ package com.uhoh;
 import java.util.concurrent.*;
 import java.util.*;
 
-public class EventCollector extends UhohBase implements Runnable
+/*
+  This class forms the main thread which is used within a Client to collect alert messages from
+  all schnauzer threads.  EventCollector() itself isn't ever used as it only contains
+  generic methods which are used to process the events.  EventCollector() is used to derive
+  classes with more specialised event handling methods.
+ */
+
+public class EventCollector extends UhohBase
 {
+  // A LinkedBlockingQueue() is created where all alerts are dispatched to.
   LinkedBlockingQueue<Object[]> q = null;
+
+  // A list of MultiMatcher() objects is declared.  MultiMatcher() objects are used
+  // to process derived alerts - ie. alerts that are triggered if certain combinations
+  // of other alerts occur with a specific time window.
   ArrayList<MultiMatcher> multi_list = null;
   
-  // Basic EventCollector constructor.
+  // The constructor creates the shared LinkedBlockingQueue() for capturing all alerts.
   
   EventCollector()
   {
@@ -49,7 +59,10 @@ public class EventCollector extends UhohBase implements Runnable
     multi_list = new ArrayList<MultiMatcher>();
   }
   
-  // This is the basic EventCollector loop.
+  // This run() method for EventCollector() polls the LinkedBlockingQueue()
+  // and then calls the process_event() method for each alert received.  The
+  // process_event() method is overridden in order to implement specific
+  // alert processing actions.
   
   public void run()
   {
@@ -65,13 +78,15 @@ public class EventCollector extends UhohBase implements Runnable
       }
       catch(Exception e)
       {
-        log("Exception: EventCollector take()");
+        log("Exception: EventCollector poll()");
         e.printStackTrace();
       }
     }
   }
   
-  // Override this method to customise processing of events.
+  // The default implementation of the process_event() method, below, simply
+  // writes event details to STDOUT.  This is usually overridden to implement
+  // more advanced alert processing logic.
   
   void process_event(Object[] event)
   {
@@ -85,7 +100,10 @@ public class EventCollector extends UhohBase implements Runnable
     }
   }
   
-  // Called by external threads to send a message to the EventCollector.
+  // When external threads need to log an event, the use a reference to an EventCollector()
+  // (or more often a reference to an object derived from EventCollector()) and call that object's
+  // dispatch() method.  The dispatch() method simply places the event into the EventCollector()
+  // LinkedBlockingQueue().
   
   public void dispatch(String event, String type)
   {

@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,11 @@
 package com.uhoh;
 
 import java.net.*;
+
+/*
+  The RestServerListener() object listens for incoming HTTP connections from the
+  Web UI and spawns RestServerWorker() threads to handle serving the content.
+ */
 
 public class RestServerListener extends UhohBase implements Runnable
 {

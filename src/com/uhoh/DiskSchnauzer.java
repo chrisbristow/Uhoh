@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,12 @@ package com.uhoh;
 
 import java.io.*;
 
+/*
+  The DiskSchnauzer() periodically checks the amount of space used
+  on a file system and raises an alert if the space used exceeds
+  a configured percentage of overall available space.
+ */
+
 public class DiskSchnauzer extends Schnauzer
 {
   String filename;
@@ -57,7 +63,8 @@ public class DiskSchnauzer extends Schnauzer
     log("Filesystem alert if " + filename + " usage is > " + pct_threshold + "% (" + a + " / " + t + ")");
   }
   
-  // Periodically check the filesystem space utilisation.
+  // The run() method periodically checks the filesystem space utilisation
+  // and dispatches alerts as necessary.
   
   public void run()
   {

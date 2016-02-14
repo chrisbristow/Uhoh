@@ -1,8 +1,3 @@
-// A Schnauzer is the base class for all monitorable items
-// (eg. files, processes etc.)
-// This is where we stash common helper methods used by
-// derived items.
-
 /*
         Licence
         -------
@@ -36,15 +31,25 @@
 
 package com.uhoh;
 
-import java.util.*;
+/*
+  A Schnauzer() is the base class for all monitorable items
+  (eg. files, processes etc.)
+  */
 
 public abstract class Schnauzer extends UhohBase implements Runnable
 {
+  // Contains the list of tags attached to alerts raised by this schnauzer.
   String tags = "";
+
+  // A reference to the EventCollector() where alerts are dispatched to.
   EventCollector event_collector = null;
+
+  // Setting keep_running to false causes a Schnauzer() to complete it's
+  // current work and close down.  This happens when an Uhoh Client
+  // is re-configured.
   boolean keep_running = true;
   
-  // string_processor() is overridden for all items - ie. all
+  // The string_processor() method is overridden for all items - ie. all
   // different types of FileSchnauzer, ProcessSchnauzer etc.
   // The implementation here is just made available as a fall-back
   // for debug use whilst derived classes are being developed.
@@ -54,7 +59,10 @@ public abstract class Schnauzer extends UhohBase implements Runnable
     event_collector.dispatch("CLIENT%%" + tags + "%%" + s, "ALL");
   }
   
-  // Called periodically.
+  // Certain schnauzers run periodic checks.  The timed_event_processor() is a method
+  // which contains the logic which is run periodically.  The default implementation
+  // of timed_event_processor() does nothing an is overridden by classes derived
+  // from Schnauzer().
   
   public void timed_event_processor()
   {

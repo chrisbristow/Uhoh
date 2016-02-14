@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,11 @@ package com.uhoh;
 
 import java.util.*;
 
+/*
+  A MultiMatcher() object contains a configuration for an alert which is triggered when
+  one or more other alerts are raised.
+ */
+
 public class MultiMatcher extends UhohBase
 {
   long milliseconds;
@@ -41,6 +46,15 @@ public class MultiMatcher extends UhohBase
   HashMap<String, Long> collect;
   String active;
   EventCollector event_collector;
+
+  // To create a MultiMatcher() object, supply:
+  // - The list of tags attached to this alert.
+  // - The time window (in seconds) within which all qualifying alerts must be
+  //   seen in order to trigger this alert.
+  // - The message to appear in the multi alert, if triggered.
+  // - The time periods that this multi alert can be active within.
+  // - The reference to the EventCollector() where alerts will be dispatched
+  //   to if triggered.
 
   MultiMatcher(String t, long s, String m, String c, String a, EventCollector ec)
   {
@@ -56,6 +70,10 @@ public class MultiMatcher extends UhohBase
       collect.put(tg, 0L);
     }
   }
+
+  // The check_for_complete() method is called to check whether any alerts contain tags
+  // which would trigger a multi alert.  "complete" is set to true if all tags configured
+  // have been seen.
 
   void check_for_complete(String in_tags)
   {

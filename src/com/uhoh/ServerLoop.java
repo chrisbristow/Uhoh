@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2015, Chris Bristow
+        Copyright (c) 2016, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,17 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
-// A ServerLoop is called to create an Uhoh server.
+/*
+  The ServerLoop() object is the main control part of an Uhoh Server.
+  It handles:
+  - Loading an parsing of the Server properties file.
+  - Spawning the ServerSocketMonitor() and RestServerListener() threads.
+  - Sending Server heartbeat messages.
+  - Handling "reset" and "forget" commands from an adminstrator.
+  - Monitoring for unresponsive clients.
+  - Management of active alerts for the web UI.
+  - Logging of alerts to the Server disk log.
+ */
 
 public class ServerLoop extends UhohBase
 {
@@ -55,7 +65,8 @@ public class ServerLoop extends UhohBase
   String unicast_addrs = null;
   String dead_client_tags = "GREEN";
 
-  // Initialise a new ServerLoop().
+  // Initialise a new ServerLoop() by loading and parsing the Server
+  // properties file.
   
   ServerLoop(String props_file)
   {
@@ -106,23 +117,11 @@ public class ServerLoop extends UhohBase
   // Start and run the ServerLoop.  Note that this class isn't to be used as
   // a Thread - the run() method never returns to the caller (ie. runs in the
   // same Thread as the caller).
-  //
-  // If we can't create a UDP listener, then it's game over and we stop the JVM.
-  //
-  // This method does a number of things:
-  // - Initialises the server's listening UDP port.
-  // - Creates a Thread (ServerSocketMonitor) to listen for incoming UDP messages.
-  //   The ServerSocketMonitor Thread communicates back to ServerLoop using
-  //   a LinkedBlockingQueue.
-  // - In a never-ending loop:
-  //   - Sends periodic heartbeat (SRVHB) broadcast UDP messages.
-  //   - Checks for the "reset" file and sends reset messages to clients listed
-  //     in the file.
-  //   - Checks for clients which have stopped transmitting and flags them as dead.
-  //   - Stores details of new clients.
   
   public void run()
   {
+    // If we can't create a UDP listener, then it's game over and we stop the JVM.
+
     try
     {
       log("Starting server on UDP port " + (udp_port + 1));
@@ -137,9 +136,15 @@ public class ServerLoop extends UhohBase
       e.printStackTrace();
       System.exit(1);
     }
+
+    // Spawn the ServerSocketMonitor() thread to handling incoming UDP
+    // messages from Clients.
     
     Thread ssm = new Thread(new ServerSocketMonitor(udp_socket, this));
     ssm.start();
+
+    // Spawn a RestServerListener() thread to handling incoming HTTP
+    // requests from the Web UI.
 
     Thread rest = new Thread(new RestServerListener(tcp_port, this));
     rest.start();
@@ -150,6 +155,8 @@ public class ServerLoop extends UhohBase
     {
       if(System.currentTimeMillis() > next_hb)
       {
+        // Send a Server heartbeat (broadcast or unicast - if unicast heartbeating is configured).
+
         next_hb = System.currentTimeMillis() + server_heartbeat_interval;
 
         get_ui_items(ui_red);
@@ -176,6 +183,8 @@ public class ServerLoop extends UhohBase
           log("Exception sending UDP broadcast:");
           e.printStackTrace();
         }
+
+        // Handle Client resets.
 
         File reset_file = new File("reset");
 
@@ -211,6 +220,9 @@ public class ServerLoop extends UhohBase
           reset_file.delete();
         }
 
+        // Remove a Client from the Server's watchlist if the Client is to be
+        // decommissioned.
+
         File forget_file = new File("forget");
 
         if(forget_file.exists())
@@ -238,6 +250,8 @@ public class ServerLoop extends UhohBase
 
           forget_file.delete();
         }
+
+        // Check to see if any Clients have become unresponsive.
 
         Iterator<String> iter = clients.keySet().iterator();
 
@@ -274,6 +288,8 @@ public class ServerLoop extends UhohBase
           {
             if(new_update[0].equals("CLIENT_UPD"))
             {
+              // Add a newly started Client to the Server watchlist.
+
               String new_client = (String)new_update[1];
 
               if(!(clients.containsKey(new_client)))
@@ -285,6 +301,8 @@ public class ServerLoop extends UhohBase
             }
             else if(new_update[0].equals("REST_REQ"))
             {
+              // Handle incoming Web UI requests.
+
               StringBuffer sb = new StringBuffer("{\"status\":\"ok\",");
               sb.append("\"red\":[");
               sb.append(get_ui_items(ui_red));
@@ -300,6 +318,8 @@ public class ServerLoop extends UhohBase
             }
             else if(new_update[0].equals("ALERT"))
             {
+              // Handle alerts.
+
               HashSet<String> tags = new HashSet<String>(Arrays.asList(((String)new_update[5]).split(",")));
 
               if(tags.contains("RED"))
@@ -327,6 +347,9 @@ public class ServerLoop extends UhohBase
       }
     }
   }
+
+  // The get_ui_items() method sorts and maintains the list of current
+  // alerts.  This list is used by the Web UI.
 
   String get_ui_items(HashMap<String, Object[]> ui_disp)
   {
@@ -370,6 +393,8 @@ public class ServerLoop extends UhohBase
   }
 
   // Write messages to a log file and "roll" the log file once it exceeds the given configurable size.
+  // The disk_log() method also handles alerts which contain tags indicating that they should be
+  // written to metric capture files.
 
   void disk_log(String s)
   {
