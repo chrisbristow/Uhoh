@@ -102,12 +102,12 @@ public class ProcessSchnauzer extends Schnauzer
             if((Integer)ps_hash.get(mtch)[4] < (Integer)ps_hash.get(mtch)[2])
             {
               event_collector.dispatch("CLIENT%%" + tags + "%%Too few instances of " + mtch + " running", "PROCESS");
-              log("Process: " + mtch + " " + ps_hash.get(mtch)[4] + " / " + ps_hash.get(mtch)[2] + " -> " + ps_hash.get(mtch)[3]);
+              log("Process: " + mtch + " = " + ps_hash.get(mtch)[4] + " : " + ps_hash.get(mtch)[2] + " -> " + ps_hash.get(mtch)[3]);
             }
             else if((Integer)ps_hash.get(mtch)[4] > (Integer)ps_hash.get(mtch)[3])
             {
               event_collector.dispatch("CLIENT%%" + tags + "%%Too many instances of " + mtch + " running", "PROCESS");
-              log("Process: " + mtch + " " + ps_hash.get(mtch)[4] + " / " + ps_hash.get(mtch)[2] + " -> " + ps_hash.get(mtch)[3]);
+              log("Process: " + mtch + " = " + ps_hash.get(mtch)[4] + " : " + ps_hash.get(mtch)[2] + " -> " + ps_hash.get(mtch)[3]);
             }
           }
           

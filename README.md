@@ -63,7 +63,7 @@ java -cp uhoh.jar com.uhoh.Client 8888 172.31.11.1,172.31.11.2
 
 Creating a Client Configuration File.
 -------------------------------------
-The example_client_config file provided with the base install of Uhoh contains detailed notes on how the different
+The "example_client_config" file provided with the base install of Uhoh contains detailed notes on how the different
 directives used for configuring log file, process, disk and custom monitoring work.
 
 An Uhoh client will create a separate thread (known as a Schnauzer) to monitor each item it has been instructed
@@ -86,6 +86,9 @@ The command used to fetch the process table can be specified - eg. “ps -fe” 
 “tasklist.exe” for Windows, “/usr/ucb/ps -wwaux” for Solaris etc.
 
 Disk Monitoring checks periodically that the free space available for a particular filesystem or volume hasn’t exceeded a given amount.
+
+Socket monitoring checks to see if a TCP socket is available and accepting incoming connections (for example for checking
+whether a web server is running).
 
 Finally, Custom Monitoring allows the Client to run a command and relay output from that command that matches a regular expression back to the Server.
 

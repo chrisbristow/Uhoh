@@ -397,6 +397,22 @@ public class SchnauzerConfigurizer extends UhohBase
 
           active = "ANY";
         }
+        else if(config_line.startsWith("alert_tcp:"))
+        {
+          HashMap<String, String> args = get_kvps(config_line);
+
+          if(args.get("message") != null && args.get("tags") != null && args.get("seconds") != null && args.get("ip") != null && args.get("port") != null && args.get("timeout") != null)
+          {
+            String message = config_line.replaceFirst("^\\s*alert_tcp:\\s+.+message=", "");
+            log("Checking TCP server at: " + args.get("ip") + "/" + args.get("port") + " (time-out: " + args.get("timeout") + ") every " + args.get("seconds") + " second(s) to output: " + message + " (" + args.get("tags") + ")");
+            SocketSchnauzer sh = new SocketSchnauzer(args.get("ip"), Integer.parseInt(args.get("port")), active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, Integer.parseInt(args.get("timeout")) * 1000, message);
+            Thread t = new Thread(sh);
+            t.start();
+            schs.add(sh);
+          }
+
+          active = "ANY";
+        }
       }
       catch(Exception e)
       {

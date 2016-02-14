@@ -220,6 +220,18 @@ alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
 # ... then the Server will log the value contained in the alert
 # to "metrics/YYYY-MM-DD/<metric_name>".
 
+# In order to check whether a TCP server is ready to accept incoming connections
+# (eg. a web server), use the "alert_tcp" directive.
+#
+# For example, the following line checks if port 80 at 127.0.0.1 is accepting
+# connections every 60 seconds.
+
+alert_tcp:         tags=WEB_SRV,RED  seconds=60  ip=127.0.0.1  port=80  timeout=2  message=Apache HTTPD is not running
+
+# The "timeout" parameter specifies that the check
+# will only wait two seconds before giving up.  The "message" parameter (must be
+# at the end of the line) contains the message to log if the connection test fails.
+
 # A "Multi" monitor can be set up which will trigger an alert if
 # a Client detects a series of alerts containing tags in a watchlist
 # within a set period of time.  Here's an example:
