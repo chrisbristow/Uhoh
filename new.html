@@ -4,25 +4,164 @@
       Uhoh - Keep an eye on your stuff. Find out when things go wrong. Simple, lightweight distributed system monitoring.
     </title>
     
-    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,800' rel='stylesheet' type='text/css'>
     
     <style>
+
       body
       {
-        position: absolute;
         margin: 0;
         padding: 0;
-        font: bold 16px 'Raleway', sans-serif;
+        font-family: 'Raleway', sans-serif;
+        font-size: 16pt;
+        font-weight: 400;
+        background-color: #ffffff;
+        color: #000000;
       }
       
-      .titlebar
+      .menubar
       {
-        
+        position: fixed;
+        top: 0px;
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        height: 220px;
+        text-align: right;
       }
+
+      .big
+      {
+        font-weight: 800;
+        font-size: 24pt;
+      }
+
+      .block1
+      {
+        background-color: #B26600;
+        color: #ffffff;
+        padding: 0px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        width: 100%;
+        font-size: 24pt;
+      }
+
+      .block2
+      {
+        background-color: #FF9D19;
+        color: #ffffff;
+        padding: 0px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        width: 100%;
+        font-size: 24pt;
+      }
+
+      .block3
+      {
+        background-color: #FF9200;
+        color: #ffffff;
+        padding: 0px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        width: 100%;
+        font-size: 24pt;
+      }
+
+      .block4
+      {
+        background-color: #0071B2;
+        color: #ffffff;
+        padding: 0px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        width: 100%;
+        font-size: 24pt;
+      }
+
+      .block5
+      {
+        background-color: #00A2FF;
+        color: #ffffff;
+        padding: 0px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        width: 100%;
+        font-size: 24pt;
+      }
+
+      .block6
+      {
+        background-color: #ffffff;
+        padding: 0px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        width: 100%;
+      }
+
+      .dummy
+      {
+        background-color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        height: 220px;
+      }
+
     </style>
+
+    <script>
+
+      function toggle_menu()
+      {
+        var curr_menu_sz = document.getElementById('menubar').style.height.replace('px', '');
+
+        if(curr_menu_sz == '')
+        {
+          curr_menu_sz = 35;
+        }
+
+        var new_menu_sz = 435 - curr_menu_sz;
+        document.getElementById('menubar').style.height = new_menu_sz + "px";
+      }
+
+    </script>
   </head>
   
   <body>
-    Hello.
+
+    <div class="dummy">
+    </div>
+
+    <div class="block1">
+      Block 1
+    </div>
+
+    <div class="block2">
+      Block 2
+    </div>
+
+    <div class="block3">
+      Block 3
+    </div>
+
+    <div class="block4">
+      Block 4
+    </div>
+
+    <div class="block5">
+      Block 5
+    </div>
+
+    <div class="block6">
+      Block 6
+    </div>
+
+    <div class="menubar" id="menubar">
+      <p class="big">Uhoh&nbsp;&nbsp;&nbsp;&nbsp;</p>
+      <p>Keep an eye on your stuff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Find out when things go wrong&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Simple, lightweight distributed system monitoring&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <div>
+
   </body>
 </html>
