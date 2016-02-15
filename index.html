@@ -1,270 +1,250 @@
-<!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Uhoh : Keep an eye on your stuff.  Find out when things go wrong.  Simple, lightweight distributed system monitoring.">
+    <title>
+      Uhoh - Keep an eye on your stuff. Find out when things go wrong. Simple, lightweight distributed system monitoring.
+    </title>
+    
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,800' rel='stylesheet' type='text/css'>
+    
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        font-family: 'Raleway', sans-serif;
+        font-size: 14pt;
+        font-weight: 400;
+        background-color: #ffffff;
+        color: #555555;
+      }
+      
+      .menubar
+      {
+        position: fixed;
+        top: 0px;
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        height: 240px;
+        text-align: right;
+      }
+      .logobar
+      {
+        position: fixed;
+        top: 40px;
+        left: 30px;
+        background-color: #000000;
+        width: 10px;
+        height: 10px;
+      }
+      .big
+      {
+        font-weight: 800;
+        font-size: 24pt;
+      }
+      .block1
+      {
+        background-color: #B26600;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        font-size: 24pt;
+        text-align: right;
+      }
+      .block2
+      {
+        background-color: #FF9D19;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        font-size: 24pt;
+        text-align: right;
+      }
+      .block3
+      {
+        background-color: #FF9200;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        font-size: 24pt;
+        text-align: right;
+      }
+      .block4
+      {
+        background-color: #0071B2;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        font-size: 24pt;
+        text-align: right;
+      }
+      .block5
+      {
+        background-color: #00A2FF;
+        color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        font-size: 24pt;
+        text-align: right;
+      }
+      .block6
+      {
+        background-color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        line-height: 150%;
+      }
+      .dummy
+      {
+        background-color: #ffffff;
+        padding: 0px;
+        width: 100%;
+        height: 240px;
+      }
+      .blocktext
+      {
+        padding: 30px;
+      }
+    </style>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Uhoh</title>
+    <script>
+      function toggle_menu()
+      {
+        var curr_menu_sz = document.getElementById('menubar').style.height.replace('px', '');
+        if(curr_menu_sz == '')
+        {
+          curr_menu_sz = 35;
+        }
+        var new_menu_sz = 435 - curr_menu_sz;
+        document.getElementById('menubar').style.height = new_menu_sz + "px";
+      }
+    </script>
   </head>
-
+  
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/chrisbristow/Uhoh">View on GitHub</a>
-
-          <h1 id="project_title">Uhoh</h1>
-          <h2 id="project_tagline">Keep an eye on your stuff.  Find out when things go wrong.  Simple, lightweight distributed system monitoring.</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/chrisbristow/Uhoh/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/chrisbristow/Uhoh/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+    <div class="dummy">
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h2>
-<a id="why-uhoh-" class="anchor" href="#why-uhoh-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why Uhoh ?</h2>
-
-<p>Uhoh makes monitoring your network of hosts an absolute doddle.  Just make sure that you have a Java Runtime installation
-(6 or above) available on all your hosts and
-Uhoh is ready to go.  Here are some of the key concepts and features of Uhoh:</p>
-
-<ul>
-<li>A "Client" is the Uhoh process which runs on each host to be monitored.</li>
-<li>Clients perform log file, process, disk and custom monitoring tasks.</li>
-<li>Clients fetch all of their configuration from Servers.
-<li>A "Server" is a process which collects alert messages from clients.</li>
-<li>Servers output alert streams for other programs to consume and analyse.</li>
-<li>Servers host a basic web alert view user interface.</li>
-<li>Servers support alert correlation allowing combinations of alerts to trigger further alerts.</li>
-<li>The Uhoh installation is really tiny (less than 50KB for both Servers and Clients).</li>
-</ul>
-
-<p>I know what you're thinking - "There are plenty of other monitoring solutions out there, so why go with Uhoh ?".
-The answer to this is really simplicity.  Very little time needs to be invested in getting Uhoh up and running
-so you never need to leave setting up monitoring until later.  Uhoh doesn't get in the way of your
-deployment schedule and you can think of it in a similar way to Test Driven Development -
-"Monitoring Driven Deployment" maybe ?  Keeping things lightweight and simple will encourage the use of more
-complete and robust system monitoring - resulting in increased reliability all round.</p>
-
-<h2>
-<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started.</h2>
-
-<p>Download the zip file and unpack onto a host suitable for use as a Server.
-You should have the following folders:</p>
-
-<ul>
-<li>src</li>
-<li>web</li>
-<li>clientconfigs</li>
-</ul>
-
-<p>Compile the source and create uhoh.jar:</p>
-
-<p>javac -d . src/com/uhoh/*.java
-jar -cvf uhoh.jar com</p>
-
-<p>The clientconfigs folder contains Client monitoring configuration files.
-For a fresh installation, only the example configuration file will exist in this folder.
-Create configuration files for your hosts (filenames are the names of your hosts) in clientconfigs.</p>
-
-<p>Start the Server:</p>
-
-<p>java -cp uhoh.jar com.uhoh.Server server.properties</p>
-
-<p>Copy uhoh.jar to a Client host and start as follows:</p>
-
-<p>java -cp uhoh.jar com.uhoh.Client 8888</p>
-
-<p>Point your browser to the UI web server (http://server_host:7777/).</p>
-
-<p>Servers use UDP broadcast to indicate their presence to Clients.  However, for environments which don't
-support UDP broadcast (eg. AWS), Clients can be provided with a comma-separated list of Server IP
-addresses in addition to the UDP port.  For example, to start a Client in a system with two
-Servers at 172.31.11.1 and 172.31.11.2 use:</p>
-
-<p>java -cp uhoh.jar com.uhoh.Client 8888 172.31.11.1,172.31.11.2</p>
-
-<p>(Note that the Client will always request its configuration from the first IP address given.)</p>
-
-<h2>
-<a id="creating-a-client-configuration-file" class="anchor" href="#creating-a-client-configuration-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a Client Configuration File.</h2>
-
-<p>The example_client_config file provided with the base install of Uhoh contains detailed notes on how the different
-directives used for configuring log file, process, disk and custom monitoring work.</p>
-
-<p>Uhoh clients create threads (called Schnauzers) which are used to action the checks given in the Client
-configuration file.</p>
-
-<p>For Log File Monitoring, Schauzers will consume the file - coping with files that are “rolled” (where the
-existing log is copied to another name and a new log is created once the log reaches a certain size).  Lines in
-the log file are matched using a regular expression and then an action is taken.  Action types available for log files are:</p>
-
-<ul>
-<li>Send the log file line matched back to the Server.</li>
-<li>Send a custom message back to the Server for each match.</li>
-<li>Count how many matches there have been over a set period of time and send the number of matches to the Server at the end of the period.</li>
-<li>Count how many matches there have been over a set period of time and sent a custom alert or the count value back to the Server if the count is outside an expected range.</li>
-</ul>
-
-<p>For Process Monitoring, the Schnauzer will:</p>
-
-<ul>
-<li>Send an alert back to the Server if the number of running instances of a process (identified via a regular expression) is outside a given acceptable range.</li>
-</ul>
-
-<p>The command used to fetch the process table can be specified - eg. “ps -fe” for Linux,
-“tasklist.exe” for Windows, “/usr/ucb/ps -wwaux” for Solaris etc.</p>
-
-<p>Disk Monitoring checks periodically that the free space available for a particular filesystem or volume hasn’t exceeded a given amount.</p>
-
-<p>Finally, Custom Monitoring allows the Client to run a command and relay output from that command that matches a regular
-expression back to the Server.  Custom Monitoring is generally used for periodically running scripts.</p>
-
-<h2>
-<a id="managing-running-clients" class="anchor" href="#managing-running-clients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Managing Running Clients.</h2>
-
-<p>If a Client configuration is updated, the Client will need to be told that a new configuration is available.  The obvious
-way to do this is just to re-start the Client, but wouldn't it be better if there was an easier way ?  Well, there is - the
-"reset" procedure.  Here's how it works:</p>
-
-<ul>
-<li>Servers periodically check for a file called "reset" located in their root folder.</li>
-<li>If this file exists, the Server will open and read the file.</li>
-<li>For each host name listed in the file, the Server will send a "reset" command to the appropriate Client.
-
-<ul>
-<li>The file should contain a new host name on each line.</li>
-</ul>
-</li>
-<li>The Clients which have been reset will close down their existing Schnauzers and re-request configuration from the Server.</li>
-<li>The Server finally deletes the "reset" file.</li>
-</ul>
-
-<p>Occasionally, a host will need to be decommissioned.  If this host is running a Client and the Client is closed down, then
-the Server will repeatedly log a "No updates" alert for the Client.  To prevent this happening and make the Server forget about
-the Client, use a "forget" file, as follows:</p>
-
-<ul>
-<li>Servers periodically check for a file called "forget" located in their root folder.</li>
-<li>If this file exists, the Server will open and read the file.</li>
-<li>For each host name listed in the file, the Server will remove the host from its internal Client watch-list.
-
-<ul>
-<li>The file should contain a new host name on each line.</li>
-</ul>
-</li>
-</ul>
-
-<h2>
-<a id="the-browser-user-interface" class="anchor" href="#the-browser-user-interface" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Browser User Interface.</h2>
-
-<p>Each Server hosts an embedded web server which is used to serve a simple browser-based user interface that can be used to view
-certain types of alerts.  The user interface page lists recently active alerts divided into three severity
-categories - Red, Amber and Green.  For alerts to appear in the Red section (at the top of the list) they must
-be tagged with the ID RED (other tags can be included beside this tag).  Alerts tagged AMBER appear below Red and
-those tagged GREEN appear below Amber.</p>
-
-<p>The Server retains alerts in the web UI for a set period of time - different categories of alert are retained for different times:</p>
-
-<ul>
-<li>Log file alerts are retained for 10 minutes.</li>
-<li>Process alerts are retained for 65 seconds.</li>
-<li>Disk usage and Custom alerts are retained for 125 seconds.</li>
-<li>Idle client alerts are retained for 75 seconds.</li>
-</ul>
-
-<p>All of these times can be configured in the server.properties file.</p>
-
-<p>Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
-UI users will need Internet access.</p>
-
-<h2>
-<a id="visual-metric-display" class="anchor" href="#visual-metric-display" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visual Metric Display (Charts).</h2>
-
-<p>If a log file Schnauzer has been configured to record the number of matches in a log file over a period of time (using
-the "alert_count" directive), the Server can be instructed to log these metrics to disk and a browser used to
-display charts showing the variation in value over time.  Metrics are grouped together in 24-hour chunks.  To configure
-the Server to start recording metrics, simply add a "METRIC_" prefix to the tag which contains the identifying name
-of the metric - eg. "METRIC_COUNT_1" for the metric "COUNT_1".</p>
-
-<p>Once the Server has started recording metrics, these can be displayed in a browser via a URL of the format:</p>
-
-<ul>
-  <li>/metric/YYYY-MM-DD/METRIC_NAME</li>
-</ul>
-
-<p>Eg:</p>
-
-<ul>
-  <li>/metric/2015-12-29/COUNT_1</li>
-</ul>
-
-<p>To always display metric values from the current day, replace the YYYY-MM-DD part of the URL with the string
-TODAY - eg:</p>
-
-<ul>
-  <li>/metric/TODAY/COUNT_1</li>
-</ul>
-
-<h2>
-<a id="lets-present-an-example-usage-scenario-for-uhoh" class="anchor" href="#lets-present-an-example-usage-scenario-for-uhoh" aria-hidden="true"><span class="octicon octicon-link"></span></a>Let’s Present an Example Usage Scenario for Uhoh.</h2>
-
-<p>“Amalgamated Paperclips PLC has a network of Raspberry Pi 2s, running Ubuntu Linux, which are used to control the
-factory clump-presses.  Although the clump-press control software running on each of them is very reliable, it
-needs to be monitored constantly so that issues logged concerning the health of the clump-presses themselves can
-be captured, a clump-press minder dispatched to fix the problem, so to avoid the entire production line grinding to a halt.
-Three beige-box PCs, also running Ubuntu, are also deployed on the network.  One sits in the management office and the
-other two in the clump-press support workshop.”</p>
-
-<p>Here’s how the system is set up from a monitoring perspective:</p>
-
-<ul>
-<li>Uhoh is installed on all of the Pi 2s and Clients started, listening on UDP port 8888.</li>
-<li>The three PCs also have Uhoh installed on them and have been set up to run Uhoh Servers.</li>
-<li>The three Servers maintain all Client configuration files and if a Client config is updated, then that config is pushed to the other two Servers such that they all stay in sync.  Once the push has been performed, a “reset” for the updated Client can be sent from one of the Servers.</li>
-<li>Each Client config contains configuration directives to:
-
-<ul>
-<li>Check that the clump-press minding daemon (“clumppressd”) is running.</li>
-<li>Check that no more than 80% of disk space is in use.</li>
-<li>Check the /var/log/clumppressd.log file for indications that the press being controlled hasn’t developed a fault.</li>
-</ul>
-</li>
-<li>Remember, if a clump-press catches fire, Uhoh will notice that its Client is no longer running and generate an alert - probably before the smell of smoke makes it to the clump-press minders.</li>
-<li>The three Servers, of course, are all used as Web UI servers for the factory management office users and clump-press minders.</li>
-<li>The two PCs located in the clump-press support workshop also run various other Python scripts which:
-
-<ul>
-<li>Consume the server.log log file from the Server.</li>
-<li>Pick up and correlate alerts which appear in this file (in addition Uhoh's built-in alert correlation feature).</li>
-<li>Write messages to other log files.</li>
-<li>Send email alerts to support staff inboxes.</li>
-</ul>
-</li>
-<li>The two clump-press support workshop PCs also run Uhoh Clients themselves which monitor the Python scripts’ output logs and feed alerts back to the Servers. (Derived alerts.)</li>
-</ul>
-      </section>
+    <div class="block6">
+      <div class="blocktext">
+To keep your digital production line running smoothly, you need to know
+what's going on.  Whether that means noticing the big things which
+may cause systems to grind to a halt, uncovering the minor niggles
+which can be fixed to prevent problems from escalating, or just
+for the occasional spot check.
+<br/><br/>
+<span style="color: #FF9200;">Uhoh</span> comes to your rescue - reaching out to all of the
+components on your production line and feeding back all of the
+information you need to maintain quality, trouble-free running.
+      </div>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Uhoh maintained by <a href="https://github.com/chrisbristow">chrisbristow</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
+    <div class="block2">
+      <div class="blocktext">&#8220;Monitoring a large distributed system is a major undertaking, isn't it ?&#8221;</div>
     </div>
 
-    
+    <div class="block6">
+      <div class="blocktext">
+Yes, it certainly is.  Even with single-digit numbers of hosts running multiple
+processes, there can be a large number of log files to track, file systems to keep
+an eye on and processes to monitor.  And this is before you've decided how to
+shape and correlate the raw alarm data collected in order to make sense of it.
+<br/><br/>
+One of the main design aims for <span style="color: #FF9200;">Uhoh</span> was to
+produce an ultra-lightweight core so that users can focus on configuring what they
+would like to monitor without a steep learning-curve to ascend.  With all functionality
+bundled into a single, tiny Java jar file, <span style="color: #FF9200;">Uhoh</span> is a doddle to deploy,
+whether on your own tin, on cloud-hosted virtual machines or embedded in a Docker
+container.  Apart from a Java 1.6+ Runtime, no other software is required.
+<br/><br/>
+The complexity of many system monitoring packages on the market is often the
+reason why organisations fail to deploy effective service and quality assurance
+tools.  The ease of deploying <span style="color: #FF9200;">Uhoh</span> can
+prevent this from happening.
+      </div>
+    </div>
+
+    <div class="block4">
+      <div class="blocktext">&#8220;How is our production line looking today ?&#8221;</div>
+    </div>
+
+    <div class="block6">
+      <div class="blocktext">
+As <span style="color: #FF9200;">Uhoh</span> performs the task of collecting information
+from your systems, a stream of information is generated.  This stream can contain alerts, numerical data
+(for example performance metrics) or just information messages which can be used to feed
+other systems with a near real-time flow of quality assurance information.
+<br/><br/>
+Each <span style="color: #FF9200;">Uhoh</span> server hosts two browser-based user interfaces.
+The first of which provides a view of currently active alerts stacked by priority (red, amber, green)
+and time (most recent to the top).  The second user interface is used to view charts of metrics
+plotted over time - for example a historical view of throughput, execution time and error rate
+for your systems.
+      </div>
+    </div>
+
+    <div class="block3">
+      <div class="blocktext">&#8220;Nuts and bolts&#8221;</div>
+    </div>
+
+    <div class="block6">
+      <div class="blocktext">
+The key components of an <span style="color: #FF9200;">Uhoh</span> monitoring system are:
+<ul>
+  <li>The <span style="color: #00A2FF;">Client</span>: Client processes run on machines which host components which need monitoring.  No configuration files need to reside on Clients as all configuration is requested from the Server.
+  <li>The <span style="color: #00A2FF;">Server</span>: Server processes collect alert messages from Clients, store all Client configurations and host the browser user interface web server.
+</ul>
+Clients can be configured to:
+<ul>
+  <li>Check for specific strings in log files.
+  <li>Count string matches in log files, with alerts if the count falls short of or exceeds a threshold.
+  <li>Extract numerical figures from log files and calculate totals, averages, minimum or maximum values.
+  <li>Check to see if processes are running (or are not running).
+  <li>Keep an eye on disk space usage.
+  <li>Run periodic commands.
+  <li>Check to see if TCP sockets are accepting connections.
+</ul>
+And all checks can be configured to run only at specific times of the day and days
+of the week.
+      </div>
+    </div>
+
+    <div class="block5">
+      <div class="blocktext">&#8220;Services - a birds-eye view&#8221;</div>
+    </div>
+
+    <div class="block6">
+      <div class="blocktext">
+Raw alert and metric data is super-useful in it's own right, but often you really need
+to know if your organisation's end-to-end services are healthy.  With resilient distributed
+systems there often isn't a straightforward indicator of service availability - it will
+depend on many factors.
+<br/><br/>
+Fortunately, <span style="color: #FF9200;">Uhoh</span> again comes to the rescue by virtue of
+its comprehensive and flexible alert correlation capabilities.  Escalating service-impacting
+issues to the wider organisation, whilst restricting less critical alerts to system support
+teams is implemented via just a few simple configuration statements.
+      </div>
+    </div>
+
+    <div class="block1">
+      <div class="blocktext" style="font-size: 12pt;">
+Want to get started with Uhoh ?<br/>Download as a ZIP file <a class="lnk" href="https://github.com/chrisbristow/Uhoh/zipball/master">here</a> or as a TAR file <a class="lnk" href="https://github.com/chrisbristow/Uhoh/tarball/master">here</a><br/>View on GitHub <a class="lnk" href="https://github.com/chrisbristow/Uhoh">here</a>
+      </div>
+    </div>
+
+    <div class="menubar">
+      <div class="blocktext">
+        <p class="big" style="color: #FF9D19;">&#8220;Uhoh&#8221;</p>
+        <p>Keep an eye on your stuff<br/>Find out when things go wrong<br/>Simple, lightweight distributed system monitoring</p>
+      </div>
+    <div>
+
+    <div class="logobar">
+      <img src="https://cloud.githubusercontent.com/assets/3986008/13057920/4514273e-d417-11e5-806e-5169a1c564e8.png" width="160" height="160" />
+    </div>
 
   </body>
 </html>
