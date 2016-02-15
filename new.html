@@ -13,10 +13,10 @@
         margin: 0;
         padding: 0;
         font-family: 'Raleway', sans-serif;
-        font-size: 16pt;
+        font-size: 14pt;
         font-weight: 400;
         background-color: #ffffff;
-        color: #000000;
+        color: #555555;
       }
       
       .menubar
@@ -27,8 +27,18 @@
         color: #ffffff;
         padding: 0px;
         width: 100%;
-        height: 220px;
+        height: 240px;
         text-align: right;
+      }
+
+      .logobar
+      {
+        position: fixed;
+        top: 40px;
+        left: 30px;
+        background-color: #000000;
+        width: 10px;
+        height: 10px;
       }
 
       .big
@@ -42,10 +52,9 @@
         background-color: #B26600;
         color: #ffffff;
         padding: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         width: 100%;
         font-size: 24pt;
+        text-align: right;
       }
 
       .block2
@@ -53,10 +62,9 @@
         background-color: #FF9D19;
         color: #ffffff;
         padding: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         width: 100%;
         font-size: 24pt;
+        text-align: right;
       }
 
       .block3
@@ -64,10 +72,9 @@
         background-color: #FF9200;
         color: #ffffff;
         padding: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         width: 100%;
         font-size: 24pt;
+        text-align: right;
       }
 
       .block4
@@ -75,10 +82,9 @@
         background-color: #0071B2;
         color: #ffffff;
         padding: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         width: 100%;
         font-size: 24pt;
+        text-align: right;
       }
 
       .block5
@@ -86,19 +92,17 @@
         background-color: #00A2FF;
         color: #ffffff;
         padding: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         width: 100%;
         font-size: 24pt;
+        text-align: right;
       }
 
       .block6
       {
         background-color: #ffffff;
         padding: 0px;
-        padding-top: 30px;
-        padding-bottom: 30px;
         width: 100%;
+        line-height: 150%;
       }
 
       .dummy
@@ -106,7 +110,12 @@
         background-color: #ffffff;
         padding: 0px;
         width: 100%;
-        height: 220px;
+        height: 240px;
+      }
+
+      .blocktext
+      {
+        padding: 30px;
       }
 
     </style>
@@ -134,34 +143,86 @@
     <div class="dummy">
     </div>
 
-    <div class="block1">
-      Block 1
+    <div class="block6">
+      <div class="blocktext">
+To keep your digital production line running smoothly, you need to know
+what's going on.  Whether that means noticing the big things which
+may cause systems to grind to a halt, uncovering the minor niggles
+which can be fixed to prevent problems from escalating, or just
+for the occasional spot check.
+<br/><br/>
+<span style="color: #FF9200;">Uhoh</span> comes to your rescue - reaching out to all of the
+components on your production line and feeding back all of the
+information you need to maintain quality, trouble-free running.
+      </div>
     </div>
 
     <div class="block2">
-      Block 2
-    </div>
-
-    <div class="block3">
-      Block 3
-    </div>
-
-    <div class="block4">
-      Block 4
-    </div>
-
-    <div class="block5">
-      Block 5
+      <div class="blocktext">&#8220;Monitoring a large distributed system is a major undertaking, isn't it ?&#8221;</div>
     </div>
 
     <div class="block6">
-      Block 6
+      <div class="blocktext">
+Yes, it certainly is.  Even with single-digit numbers of hosts running multiple
+processes, there can be a large number of log files to track, file systems to keep
+an eye on and processes to monitor.  And this is before you've decided how to
+shape and correlate the raw alarm data collected in order to make sense of it.
+<br/><br/>
+One of the main design aims for <span style="color: #FF9200;">Uhoh</span> was to
+produce an ultra-lightweight core so that users can focus on configuring what they
+would like to monitor without a steep learning-curve to ascend.
+<br/><br/>
+The complexity of many system monitoring packages on the market is often the
+reason why organisations fail to deploy effective service and quality assurance
+tools.  The ease of deploying <span style="color: #FF9200;">Uhoh</span> can
+prevent this from happening.
+      </div>
     </div>
 
-    <div class="menubar" id="menubar">
-      <p class="big">Uhoh&nbsp;&nbsp;&nbsp;&nbsp;</p>
-      <p>Keep an eye on your stuff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Find out when things go wrong&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>Simple, lightweight distributed system monitoring&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <div class="block4">
+      <div class="blocktext">&#8220;How is our production line looking today ?&#8221;</div>
+    </div>
+
+    <div class="block6">
+      <div class="blocktext">
+
+      </div>
+    </div>
+
+    <div class="block3">
+      <div class="blocktext">&#8220;Nuts and bolts&#8221;</div>
+    </div>
+
+    <div class="block6">
+      <div class="blocktext">
+
+      </div>
+    </div>
+
+    <div class="block5">
+      <div class="blocktext">&#8220;&#8221;</div>
+    </div>
+
+    <div class="block6">
+      <div class="blocktext">
+
+      </div>
+    </div>
+
+    <div class="block1">
+      <div class="blocktext">About</div>
+    </div>
+
+    <div class="menubar">
+      <div class="blocktext">
+        <p class="big" style="color: #FF9D19;">&#8220;Uhoh&#8221;</p>
+        <p>Keep an eye on your stuff<br/>Find out when things go wrong<br/>Simple, lightweight distributed system monitoring</p>
+      </div>
     <div>
+
+    <div class="logobar">
+      <img src="logo.png" width="650" height="500" />
+    </div>
 
   </body>
 </html>
