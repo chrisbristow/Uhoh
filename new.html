@@ -170,7 +170,10 @@ shape and correlate the raw alarm data collected in order to make sense of it.
 <br/><br/>
 One of the main design aims for <span style="color: #FF9200;">Uhoh</span> was to
 produce an ultra-lightweight core so that users can focus on configuring what they
-would like to monitor without a steep learning-curve to ascend.
+would like to monitor without a steep learning-curve to ascend.  With all functionality
+bundled into a single, tiny Java jar file, <span style="color: #FF9200;">Uhoh</span> is a doddle to deploy,
+whether on your own tin, on cloud-hosted virtual machines or embedded in a Docker
+container.  Apart from a Java 1.6+ Runtime, no other software is required.
 <br/><br/>
 The complexity of many system monitoring packages on the market is often the
 reason why organisations fail to deploy effective service and quality assurance
@@ -185,7 +188,16 @@ prevent this from happening.
 
     <div class="block6">
       <div class="blocktext">
-
+As <span style="color: #FF9200;">Uhoh</span> performs the task of collecting information
+from your systems, a stream of information is generated.  This stream can contain alerts, numerical data
+(for example performance metrics) or just information messages which can be used to feed
+other systems with a near real-time flow of quality assurance information.
+<br/><br/>
+Each <span style="color: #FF9200;">Uhoh</span> server hosts two browser-based user interfaces.
+The first of which provides a view of currently active alerts stacked by priority (red, amber, green)
+and time (most recent to the top).  The second user interface is used to view charts of metrics
+plotted over time - for example a historical view of throughput, execution time and error rate
+for your systems.
       </div>
     </div>
 
@@ -195,17 +207,29 @@ prevent this from happening.
 
     <div class="block6">
       <div class="blocktext">
-
+The key components of an <span style="color: #FF9200;">Uhoh</span> monitoring system are:
+<ul>
+  <li>The <span style="color: #00A2FF;">Client</span>: Client processes run on machines which host components which need monitoring.  No configuration files need to reside on Clients as all configuration is requested from the Server.
+  <li>The <span style="color: #00A2FF;">Server</span>: Server processes collect alert messages from Clients, store all Client configurations and host the browser user interface web server.
+</ul>
       </div>
     </div>
 
     <div class="block5">
-      <div class="blocktext">&#8220;&#8221;</div>
+      <div class="blocktext">&#8220;Services - a birds-eye view&#8221;</div>
     </div>
 
     <div class="block6">
       <div class="blocktext">
-
+Raw alert and metric data is super-useful in it's own right, but often you really need
+to know if your organisation's end-to-end services are healthy.  With resilient distributed
+systems there often isn't a straightforward indicator of service availability - it will
+depend on many factors.
+<br/><br/>
+Fortunately, <span style="color: #FF9200;">Uhoh</span> again comes to the rescue by virtue of
+its comprehensive and flexible alert correlation capabilities.  Escalating service-impacting
+issues to the wider organisation, whilst restricting less critical alerts to system support
+teams is implemented via just a few simple configuration statements.
       </div>
     </div>
 
