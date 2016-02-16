@@ -187,7 +187,7 @@ help get your <span style="color: #00A2FF;">quality assurance</span> tooling up 
     </div>
 
     <div class="block4">
-      <div class="blocktext">&#8220;How is our production line looking today ?&#8221;</div>
+      <div class="blocktext">&#8220;How is our digital production line looking today ?&#8221;</div>
     </div>
 
     <div class="block6">
@@ -206,7 +206,7 @@ for your systems.
     </div>
 
     <div class="block3">
-      <div class="blocktext">&#8220;Nuts and bolts&#8221;</div>
+      <div class="blocktext">&#8220;How does Uhoh work ? The nuts and bolts&#8221;</div>
     </div>
 
     <div class="block6">
@@ -216,15 +216,17 @@ The key components of an <span style="color: #FF9200;">Uhoh</span> monitoring sy
   <li>The <span style="color: #00A2FF;">Client</span>: Client processes run on machines which host components which need monitoring.  No configuration files need to reside on Clients as all configuration is requested from the Server.
   <li>The <span style="color: #00A2FF;">Server</span>: Server processes collect alert messages from Clients, store all Client configurations and host the browser user interface web server.
 </ul>
+Communication between Clients and Servers is via lightweight UDP.
+<br/><br/>
 Clients can be configured to:
 <ul>
   <li>Check for specific strings in log files.
   <li>Count string matches in log files, with alerts if the count falls short of or exceeds a threshold.
   <li>Extract numerical figures from log files and calculate totals, averages, minimum or maximum values.
   <li>Check to see if processes are running (or are not running).
-  <li>Keep an eye on disk space usage.
-  <li>Run periodic commands.
-  <li>Check to see if TCP sockets are accepting connections.
+  <li>Keep an eye on disk usage.
+  <li>Run commands.
+  <li>Check to see if TCP sockets are ready to accept connections.
 </ul>
 And all checks can be configured to run only at specific times of the day and days
 of the week.
@@ -232,7 +234,7 @@ of the week.
     </div>
 
     <div class="block5">
-      <div class="blocktext">&#8220;Services - a birds-eye view&#8221;</div>
+      <div class="blocktext">&#8220;Getting a birds-eye view of your services&#8221;</div>
     </div>
 
     <div class="block6">
@@ -240,8 +242,12 @@ of the week.
 Raw alert and metric data is super-useful in it's own right, but often you really need
 to know if your organisation's end-to-end <span style="color: #00A2FF;">services</span> are healthy.  With resilient distributed
 systems there often isn't a straightforward indicator of service availability - it will
-depend on many factors.
-<br/><br/>
+depend on many factors.  For example, a service may be tolerant of a number of redundant components
+not running so:
+<ul>
+  <li>You would need your support engineering group to be aware of individual components not running and therefore needing attention.
+  <li>But, if all redundant instances of the component are down, then your Service Desk will need to be made aware.
+</ul>
 Fortunately, <span style="color: #FF9200;">Uhoh</span> is again here to help out by virtue of
 its comprehensive and flexible <span style="color: #00A2FF;">alert correlation</span> capabilities.  Escalating service-impacting
 issues to the wider organisation, whilst restricting less critical alerts to system support
