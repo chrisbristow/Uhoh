@@ -50,7 +50,8 @@ public class Server
   {
     try
     {
-      new ServerLoop(args[0]).run();
+      //new ServerLoop(args[0]).run();
+      new ServerLoop(args[0]);
     }
     catch(Exception e)
     {

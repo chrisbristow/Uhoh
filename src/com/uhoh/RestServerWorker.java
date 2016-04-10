@@ -73,15 +73,13 @@ public class RestServerWorker extends UhohBase implements Runnable
         }
         else
         {
-          //log("HTTP_REC: " + sb.toString());
-
           if(sb.toString().startsWith("GET"))
           {
             // Server REST requests for active alert data.
 
             String url = sb.toString().split(" ")[1];
 
-            log("Serving REST request for " + url);
+            System.out.println("Serving REST request for " + url);
 
             OutputStream os = ss.getOutputStream();
             String content = "{ \"status\": \"error\" }";
@@ -179,7 +177,7 @@ public class RestServerWorker extends UhohBase implements Runnable
     }
     catch(Exception e)
     {
-      log("Exception handling REST request:");
+      System.out.println("Exception handling REST request:");
       e.printStackTrace();
     }
   }

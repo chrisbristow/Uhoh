@@ -61,7 +61,6 @@ public class ServerLoop extends UhohBase
   HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
   HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
-  FileOutputStream logmgr = null;
   String unicast_addrs = null;
   String dead_client_tags = "GREEN";
 
@@ -70,6 +69,8 @@ public class ServerLoop extends UhohBase
   
   ServerLoop(String props_file)
   {
+    logging_pfx = "S";
+
     try
     {
       Properties props = new Properties();
@@ -106,6 +107,8 @@ public class ServerLoop extends UhohBase
         unicast_addrs = props.getProperty("udp_unicast_address").trim();
         log("Server unicast address(es):           " + unicast_addrs);
       }
+
+      run();
     }
     catch(Exception e)
     {
@@ -278,7 +281,7 @@ public class ServerLoop extends UhohBase
 
       try
       {
-        Object[] new_update = new Object[]{ "MT"};
+        Object[] new_update = new Object[]{"MT"};
 
         while(new_update != null)
         {
@@ -335,7 +338,7 @@ public class ServerLoop extends UhohBase
                 ui_green.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
               }
 
-              disk_log(log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]));
+              disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]);
             }
           }
         }
@@ -392,34 +395,13 @@ public class ServerLoop extends UhohBase
     return(sb.toString());
   }
 
-  // Write messages to a log file and "roll" the log file once it exceeds the given configurable size.
+  // Write messages to a log file using the log() method.
   // The disk_log() method also handles alerts which contain tags indicating that they should be
   // written to metric capture files.
 
   void disk_log(String s)
   {
-    try
-    {
-      if(logmgr == null)
-      {
-        logmgr = new FileOutputStream(server_disk_log_name, true);
-      }
-
-      logmgr.write((s + "\n").getBytes());
-
-      if(logmgr.getChannel().size() > server_disk_log_size)
-      {
-        logmgr.close();
-        logmgr = null;
-        (new File(server_disk_log_name)).renameTo(new File(server_disk_log_name + ".1"));
-        (new File(server_disk_log_name)).createNewFile();
-      }
-    }
-    catch(Exception e)
-    {
-      log("Exception logging to disk:");
-      e.printStackTrace();
-    }
+    log(s);
 
     try
     {

@@ -61,7 +61,7 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
   
   public void run()
   {
-    log("Listening for incoming UDP messages");
+    System.out.println("Listening for incoming UDP messages");
     
     while(true)
     {
@@ -73,15 +73,13 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
         udp_socket.receive(pk);
         String in_data = new String(pk.getData()).trim();
         InetSocketAddress from = (InetSocketAddress)pk.getSocketAddress();
-        
-        //log("UDP_REC: " + in_data);
-        
+
         String[] cmd = in_data.split("%%");
         server_loop.client_q.put(new Object[]{ "CLIENT_UPD", cmd[1], from });
         
         if(cmd[0].equals("CONFREQ"))
         {
-          log("Loading configuration for " + cmd[1]);
+          System.out.println("Loading configuration for " + cmd[1]);
           
           StringBuffer sb = new StringBuffer("CONFIG%%");
           File config_file = new File("clientconfigs/" + cmd[1]);
@@ -102,13 +100,13 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
             byte[] config_reply = new String(sb.toString()).getBytes();
             DatagramPacket sp = new DatagramPacket(config_reply, config_reply.length, from.getAddress(), from.getPort());
 
-            log("Sending config reply for " + cmd[1] + " to: " + from.getAddress().getHostAddress() + "/" + from.getPort());
+            System.out.println("Sending config reply for " + cmd[1] + " to: " + from.getAddress().getHostAddress() + "/" + from.getPort());
 
             udp_socket.send(sp);
           }
           else
           {
-            log("Warning: A client configuration file for " + cmd[1] + " doesn't exist");
+            System.out.println("Warning: A client configuration file for " + cmd[1] + " doesn't exist");
             server_loop.client_q.put(new Object[]{"ALERT", cmd[1], "IDLE", new Long(System.currentTimeMillis()), "SERVER", "GREEN", "No configuration available"});
           }
         }
@@ -122,7 +120,7 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
       }
       catch(Exception e)
       {
-        log("Exception processing incoming UDP command:");
+        System.out.println("Exception processing incoming UDP command:");
         e.printStackTrace();
       }
     }

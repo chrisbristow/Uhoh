@@ -31,6 +31,7 @@
 
 package com.uhoh;
 
+import java.io.*;
 import java.util.*;
 
 /*
@@ -55,23 +56,31 @@ public abstract class UhohBase
   long rest_request_timeout = 10000;
 
   // The rolling log file containing all alerts sent to the server.
-  String server_disk_log_name = "server.log";
+  String server_disk_log_name = "client.log";
 
   // The maximum size of the Server's rolling log file before it is
   // rolled.
-  long server_disk_log_size = 100000000;
+  long server_disk_log_size = 1000000;
+
+  // Prefix for log messages.
+  String logging_pfx = "C";
 
   // Used internally to define which type of metric should be captured.
   enum MetricCalcs { TOTAL, AVERAGE, MAXIMUM, MINIMUM, COUNT, THRESHOLD };
 
+  // Used as a file handle for rolling log files.
+  FileOutputStream logmgr = null;
+
   // The log method is used throughout Uhoh to log messages to STDOUT.  It
   // prefixes any message logged with the date/time and name of thread that
-  // called log().
+  // called log(). It also calls the rolling_log() method to write all
+  // log messages to rolling disk files.
   
   String log(String s)
   {
-    String log_line = new Date() + " [" + Thread.currentThread().getName() + "]: " + s;
+    String log_line = new Date() + " [" + logging_pfx + "] [" + Thread.currentThread().getName() + "]: " + s;
     System.out.println(log_line);
+    rolling_log(log_line);
     return(log_line);
   }
   
@@ -151,5 +160,34 @@ public abstract class UhohBase
     }
 
     return(ok);
+  }
+
+  // The rolling_log() method manages the writing of log information to disk.
+  // Two files are kept - the current log file and one previous log file.
+
+  void rolling_log(String s)
+  {
+    try
+    {
+      if(logmgr == null)
+      {
+        logmgr = new FileOutputStream(server_disk_log_name, true);
+      }
+
+      logmgr.write((s + "\n").getBytes());
+
+      if(logmgr.getChannel().size() > server_disk_log_size)
+      {
+        logmgr.close();
+        logmgr = null;
+        (new File(server_disk_log_name)).renameTo(new File(server_disk_log_name + ".1"));
+        (new File(server_disk_log_name)).createNewFile();
+      }
+    }
+    catch(Exception e)
+    {
+      System.out.println("Exception logging to disk:");
+      e.printStackTrace();
+    }
   }
 }

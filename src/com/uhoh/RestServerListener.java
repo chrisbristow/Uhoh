@@ -55,12 +55,12 @@ public class RestServerListener extends UhohBase implements Runnable
 
     try
     {
-      log("Starting a REST server on: " + tcp_port);
+      System.out.println("Starting a REST server on: " + tcp_port);
       ss = new ServerSocket(tcp_port);
     }
     catch(Exception e)
     {
-      log("Exception starting REST server:");
+      System.out.println("Exception starting REST server:");
       e.printStackTrace();
       System.exit(1);
     }
@@ -76,7 +76,7 @@ public class RestServerListener extends UhohBase implements Runnable
       }
       catch(Exception e)
       {
-        log("Exception: accept() failed:");
+        System.out.println("Exception: accept() failed:");
         e.printStackTrace();
       }
     }
