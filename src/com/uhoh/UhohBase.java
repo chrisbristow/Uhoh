@@ -55,12 +55,12 @@ public abstract class UhohBase
   // are only used to serve the browser user interface.
   long rest_request_timeout = 10000;
 
-  // The rolling log file containing all alerts sent to the server.
-  String server_disk_log_name = "client.log";
+  // The rolling log file for the Server or Client.
+  String rolling_disk_log_name = "client.log";
 
-  // The maximum size of the Server's rolling log file before it is
+  // The maximum size of the Client/Server's rolling log file before it is
   // rolled.
-  long server_disk_log_size = 1000000;
+  long rolling_disk_log_size = 1000000;
 
   // Prefix for log messages.
   String logging_pfx = "C";
@@ -171,17 +171,17 @@ public abstract class UhohBase
     {
       if(logmgr == null)
       {
-        logmgr = new FileOutputStream(server_disk_log_name, true);
+        logmgr = new FileOutputStream(rolling_disk_log_name, true);
       }
 
       logmgr.write((s + "\n").getBytes());
 
-      if(logmgr.getChannel().size() > server_disk_log_size)
+      if(logmgr.getChannel().size() > rolling_disk_log_size)
       {
         logmgr.close();
         logmgr = null;
-        (new File(server_disk_log_name)).renameTo(new File(server_disk_log_name + ".1"));
-        (new File(server_disk_log_name)).createNewFile();
+        (new File(rolling_disk_log_name)).renameTo(new File(rolling_disk_log_name + ".1"));
+        (new File(rolling_disk_log_name)).createNewFile();
       }
     }
     catch(Exception e)
