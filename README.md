@@ -33,7 +33,8 @@ You should have the following folders:
 - web
 - clientconfigs
 
-Compile the source and create uhoh.jar:
+An uhoh.jar archive, containing both the Server and Client is provided, but if
+you would like to compile from source, it's as simple as running:
 
 javac -d . src/com/uhoh/*.java
 jar -cvf uhoh.jar com
