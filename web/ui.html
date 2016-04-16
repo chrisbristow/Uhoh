@@ -107,6 +107,11 @@
           response += get_alerts(obj.green, "alert_green");
         }
 
+        if(response == "")
+        {
+          response = "<div class=\"alert_green\">&nbsp;</div>";
+        }
+
         $('alerts').innerHTML = response;
       }
 
