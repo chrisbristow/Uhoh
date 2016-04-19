@@ -49,15 +49,43 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
   long match_maximum = 0;
   long metrics_interval = 60000;
   long next_checkpoint = 0;
+  long greater_than = -1;
+  long less_than = -1;
   MetricCalcs capture_type;
 
   // Construct a MetricCalculationFileSchnauzer().
 
-  MetricCalculationFileSchnauzer(String f, String a, String t, EventCollector ec, String cap, long m, MetricCalcs tp, String rx)
+  MetricCalculationFileSchnauzer(String f, String a, String t, EventCollector ec, String cap, long m, MetricCalcs tp, String rx, String lt, String gt, String msg)
   {
     super(f, a, t, ec, rx, "", cap);
     metrics_interval = m;
     capture_type = tp;
+
+    try
+    {
+      if(msg != null)
+      {
+        message = msg;
+
+        if(gt != null)
+        {
+          greater_than = Long.parseLong(gt);
+        }
+
+        if(lt != null)
+        {
+          less_than = Long.parseLong(lt);
+        }
+
+        log(" - Min: " + less_than + " Max: " + greater_than + " Message: " + message);
+      }
+    }
+    catch(Exception e)
+    {
+      log("Warning: Unable to parse minimum / maximum / message configuration parameters");
+    }
+
+    message = msg;
     next_checkpoint = (new Date()).getTime() + metrics_interval;
     log(" - Interval is " + m + " ms (" + capture_type.toString() + ")");
   }
@@ -125,13 +153,44 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
             break;
 
           case TOTAL:
-            event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_total, "FILE");
+            if(message != null && (greater_than >= 0 || less_than > 0))
+            {
+              if(greater_than >= 0 && match_total > greater_than)
+              {
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + message, "FILE");
+              }
+
+              if(less_than > 0 && match_total < less_than)
+              {
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + message, "FILE");
+              }
+            }
+            else
+            {
+              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_total, "FILE");
+            }
             break;
 
           case AVERAGE:
             if(match_count > 0)
             {
-              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + (match_total / match_count), "FILE");
+              long match_average = match_total / match_count;
+
+              if(message != null && (greater_than >= 0 || less_than > 0))
+              {
+                if(greater_than >= 0 && match_average > greater_than)
+                {
+                  event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + message, "FILE");
+                }
+                else if(less_than > 0 && match_average < less_than)
+                {
+                  event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + message, "FILE");
+                }
+              }
+              else
+              {
+                event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_average, "FILE");
+              }
             }
             break;
 

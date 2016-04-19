@@ -40,7 +40,6 @@ import java.util.Date;
  */
 
 public class ThresholdFileSchnauzer extends MetricCalculationFileSchnauzer
-
 {
   long greater_than = -1;
   long less_than = -1;
@@ -50,7 +49,7 @@ public class ThresholdFileSchnauzer extends MetricCalculationFileSchnauzer
 
   ThresholdFileSchnauzer(String f, String a, String t, EventCollector ec, String r, long m, long lt, long gt, String msg)
   {
-    super(f, a, t, ec, "", m, MetricCalcs.THRESHOLD, r);
+    super(f, a, t, ec, "", m, MetricCalcs.THRESHOLD, r, null, null, null);
     greater_than = gt;
     less_than = lt;
     message = msg;

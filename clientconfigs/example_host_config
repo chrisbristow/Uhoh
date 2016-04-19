@@ -8,6 +8,10 @@
 # - alert_all:
 # - alert_count:
 # - alert_range:
+# - alert_total:
+# - alert_minimum:
+# - alert_maximum:
+# - alert_average:
 
 # "alert_all:" consumes a log file and triggers an alert each time a line containing a particular
 # string match is found:
@@ -31,7 +35,7 @@ active:      23456;09:00-17:30,17;10:00-16:00
 match:       Type: \d+
 alert_all:   tags=RED
 
-# The "alert_all:" line can also contain a customised message, as follows:
+# The "alert_all:" line can also trigger a customised message, as follows:
 
 alert_all:   tags=RED  message=Type identified
 
@@ -117,6 +121,38 @@ alert_average: tags=METRIC_AVERAGE   seconds=60
 
 # Note that no alert is triggered for average, minimum or maximum if nothing has been captured
 # from the log file during the specified interval.
+
+# The "alert_total" and "alert_average" directives can also be used for threshold alerting
+# by specifying a minimum or maximum value plus alert message, for example:
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_total:   tags=ALERT_TOTAL   seconds=60   minimum=10   message=Total is below ten
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_total:   tags=ALERT_TOTAL   seconds=60   maximum=10   message=Total is above ten
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_total:   tags=ALERT_TOTAL   seconds=60   minimum=5   minimum=10   message=Total is outside of range 5-10
+
+# Or:
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_average: tags=ALERT_AVERAGE   seconds=60   minimum=10   message=Average is below ten
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_average: tags=ALERT_AVERAGE   seconds=60   maximum=10   message=Average is above ten
+
+file:          logfile.log
+capture:       Type: (\d+)
+alert_average: tags=ALERT_AVERAGE   seconds=60   minimum=5   minimum=10   message=Average is outside of range 5-10
+
+# The above are extremely useful for raising alerts based on component throughput and average handling
+# times exceeding design thresholds.
 
 # "alert_range:" is used to trigger a periodic alert if the number of matches in a log file
 # falls outside a set range during that time period.  For example, the following fires off an

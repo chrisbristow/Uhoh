@@ -129,7 +129,7 @@ public class SchnauzerConfigurizer extends UhohBase
             
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.COUNT, match_str);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.COUNT, match_str, null, null, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -146,10 +146,16 @@ public class SchnauzerConfigurizer extends UhohBase
           if(file != null && !capture.equals(""))
           {
             HashMap<String, String> args = get_kvps(config_line);
+            String message = null;
+
+            if(args.get("message") != null)
+            {
+              message = config_line.replaceFirst("^\\s*alert_total:\\s+.+message=", "");
+            }
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.TOTAL, null);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.TOTAL, null, args.get("minimum"), args.get("maximum"), message);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -166,10 +172,16 @@ public class SchnauzerConfigurizer extends UhohBase
           if(file != null && !capture.equals(""))
           {
             HashMap<String, String> args = get_kvps(config_line);
+            String message = null;
+
+            if(args.get("message") != null)
+            {
+              message = config_line.replaceFirst("^\\s*alert_average:\\s+.+message=", "");
+            }
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.AVERAGE, null);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.AVERAGE, null, args.get("minimum"), args.get("maximum"), message);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -189,7 +201,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MINIMUM, null);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MINIMUM, null, null, null, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
@@ -209,7 +221,7 @@ public class SchnauzerConfigurizer extends UhohBase
 
             if(args.get("tags") != null && args.get("seconds") != null)
             {
-              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MAXIMUM, null);
+              MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, capture, Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.MAXIMUM, null, null, null, null);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
