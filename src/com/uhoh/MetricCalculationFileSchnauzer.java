@@ -60,24 +60,26 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
     super(f, a, t, ec, rx, "", cap);
     metrics_interval = m;
     capture_type = tp;
+    message = msg;
+    next_checkpoint = (new Date()).getTime() + metrics_interval;
 
     try
     {
-      if(msg != null)
+      if(message != null && message != "")
       {
-        message = msg;
+        log(" - Message: " + message);
+      }
 
-        if(gt != null)
-        {
-          greater_than = Long.parseLong(gt);
-        }
+      if(gt != null)
+      {
+        greater_than = Long.parseLong(gt);
+        log(" - Alert if N > " + greater_than);
+      }
 
-        if(lt != null)
-        {
-          less_than = Long.parseLong(lt);
-        }
-
-        log(" - Min: " + less_than + " Max: " + greater_than + " Message: " + message);
+      if(lt != null)
+      {
+        less_than = Long.parseLong(lt);
+        log(" - Alert if N < " + less_than);
       }
     }
     catch(Exception e)
@@ -85,9 +87,8 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
       log("Warning: Unable to parse minimum / maximum / message configuration parameters");
     }
 
-    message = msg;
-    next_checkpoint = (new Date()).getTime() + metrics_interval;
-    log(" - Interval is " + m + " ms (" + capture_type.toString() + ")");
+    log(" - Interval is " + m + " ms");
+    log(" - Type is " + capture_type.toString());
   }
 
   // Override string_processor() to perform the regex match and either count
@@ -148,6 +149,25 @@ public class MetricCalculationFileSchnauzer extends BasicMatchFileSchnauzer
       {
         switch(capture_type)
         {
+          case THRESHOLD:
+            String threshold_msg = message;
+
+            if(threshold_msg == null || threshold_msg == "")
+            {
+              threshold_msg = "" + match_count;
+            }
+
+            if(greater_than >= 0 && match_count > greater_than)
+            {
+              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + threshold_msg, "FILE");
+            }
+
+            if(less_than > 0 && match_count < less_than)
+            {
+              event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + threshold_msg, "FILE");
+            }
+            break;
+
           case COUNT:
             event_collector.dispatch("CLIENT%%" + tags + "%%" + filename + ": " + match_count, "FILE");
             break;

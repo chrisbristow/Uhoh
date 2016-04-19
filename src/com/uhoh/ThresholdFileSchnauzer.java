@@ -68,6 +68,8 @@ public class ThresholdFileSchnauzer extends MetricCalculationFileSchnauzer
     {
       log(" - Message: " + message);
     }
+
+    log("WARNING: CLASS ThresholdFileSchnauzer() IS DEPRECATED AND SHOULD NO LONGER BE USED");
   }
   
   // Output match count if count falls outside of the given
