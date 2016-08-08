@@ -100,7 +100,7 @@ public class EventCollector extends UhohBase
     }
   }
   
-  // When external threads need to log an event, the use a reference to an EventCollector()
+  // When external threads need to log an event, they use a reference to an EventCollector()
   // (or more often a reference to an object derived from EventCollector()) and call that object's
   // dispatch() method.  The dispatch() method simply places the event into the EventCollector()
   // LinkedBlockingQueue().

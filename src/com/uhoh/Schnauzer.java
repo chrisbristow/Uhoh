@@ -39,14 +39,17 @@ package com.uhoh;
 public abstract class Schnauzer extends UhohBase implements Runnable
 {
   // Contains the list of tags attached to alerts raised by this schnauzer.
+
   String tags = "";
 
   // A reference to the EventCollector() where alerts are dispatched to.
+
   EventCollector event_collector = null;
 
   // Setting keep_running to false causes a Schnauzer() to complete it's
   // current work and close down.  This happens when an Uhoh Client
   // is re-configured.
+
   boolean keep_running = true;
   
   // The string_processor() method is overridden for all items - ie. all

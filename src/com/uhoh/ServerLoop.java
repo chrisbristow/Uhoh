@@ -62,6 +62,7 @@ public class ServerLoop extends UhohBase
   HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
   HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
   String unicast_addrs = null;
+  String secondary_server = null;
   String dead_client_tags = "GREEN";
 
   // Initialise a new ServerLoop() by loading and parsing the Server
@@ -106,6 +107,12 @@ public class ServerLoop extends UhohBase
       {
         unicast_addrs = props.getProperty("udp_unicast_address").trim();
         log("Server unicast address(es):           " + unicast_addrs);
+      }
+
+      if(props.getProperty("secondary_server") != null)
+      {
+        secondary_server = props.getProperty("secondary_server").trim();
+        log("Secondary server:                     " + secondary_server);
       }
 
       run();
@@ -180,10 +187,18 @@ public class ServerLoop extends UhohBase
               udp_socket.send(sp_u);
             }
           }
+
+          if(secondary_server != null) //"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SERVER", dead_client_tags, "No updates from client"
+          {
+            long utime = (new Date()).getTime();
+            byte[] ss_cmd = ("ALERT%%" + our_name + "%%FT%%" + utime + "%%SERVER%%FT_SECONDARY%%FT sync").getBytes();
+            DatagramPacket sp_u = new DatagramPacket(ss_cmd, ss_cmd.length, InetAddress.getByName(secondary_server.trim()), udp_port + 1);
+            udp_socket.send(sp_u);
+          }
         }
         catch(Exception e)
         {
-          log("Exception sending UDP broadcast:");
+          log("Exception sending UDP message:");
           e.printStackTrace();
         }
 
