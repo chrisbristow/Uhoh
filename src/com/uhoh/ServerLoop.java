@@ -279,7 +279,7 @@ public class ServerLoop extends UhohBase
 
           if((Long)clients.get(client_host_name)[0] < (System.currentTimeMillis() - client_timeout))
           {
-            log(client_host_name + " has stopped tranmitting");
+            log(client_host_name + " has stopped transmitting");
 
             try
             {
