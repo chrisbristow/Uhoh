@@ -239,7 +239,7 @@ alert_process:  tags=AMBER,APACHE  minimum=1  maximum=20
 match:         chart_load
 alert_process  tags=CHARTING  exactly=1
 
-# The client can run commands and raise alerts if an lines in the
+# The client can run commands and raise alerts if any lines in the
 # command output match a regular expression.  This is generally used for
 # custom monitoring by running a script.
 # The following runs "df -i ." every 150 seconds and captures any lines
@@ -292,4 +292,22 @@ alert_multi:       tags=RED,DERIVED  seconds=60  collect=TAG1,TAG2  message=Both
 # An example usage of Multi monitors would be to raise a high-priority alert if an entire group
 # of servers aren't running a particular process.
 
+# It's also possible to configure a Client to receive alert notifications as incoming
+# REST web hooks.  To set this up, use the "alert_rest" directive:
 
+alert_rest:        port=<tcp_port_number>
+
+# For example:
+
+alert_rest:        port=5656
+
+# REST requests use a URL formed in this way:
+
+# /alert/<TAGS>/<MESSAGE>
+
+# For example, using curl:
+
+# curl 'http://192.168.1.20:5656/alert/RED,MSGQ/Inbound_queue_server:%020Queue%20is%20full'
+
+# Note '%20' used for spaces in the message text and that the alert hostname will be the name of the
+# host on which the Client is running.

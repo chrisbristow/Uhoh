@@ -249,7 +249,6 @@ public class SchnauzerConfigurizer extends UhohBase
             {
               if(args.get("minimum") != null && args.get("maximum") != null)
               {
-                //ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, Long.parseLong(args.get("minimum")), Long.parseLong(args.get("maximum")), message);
                 MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.THRESHOLD, match_str, args.get("minimum"), args.get("maximum"), message);
                 Thread t = new Thread(sh);
                 t.start();
@@ -257,7 +256,6 @@ public class SchnauzerConfigurizer extends UhohBase
               }
               else if(args.get("minimum") != null)
               {
-                //ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, Long.parseLong(args.get("minimum")), -1, message);
                 MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.THRESHOLD, match_str, args.get("minimum"), null, message);
                 Thread t = new Thread(sh);
                 t.start();
@@ -265,7 +263,6 @@ public class SchnauzerConfigurizer extends UhohBase
               }
               else if(args.get("maximum") != null)
               {
-                //ThresholdFileSchnauzer sh = new ThresholdFileSchnauzer(file, active, args.get("tags"), event_collector, match_str, Long.parseLong(args.get("seconds")) * 1000, -1, Long.parseLong(args.get("maximum")), message);
                 MetricCalculationFileSchnauzer sh = new MetricCalculationFileSchnauzer(file, active, args.get("tags"), event_collector, "", Long.parseLong(args.get("seconds")) * 1000, MetricCalcs.THRESHOLD, match_str, null, args.get("maximum"), message);
                 Thread t = new Thread(sh);
                 t.start();
@@ -369,6 +366,21 @@ public class SchnauzerConfigurizer extends UhohBase
             String message = config_line.replaceFirst("^\\s*alert_tcp:\\s+.+message=", "");
             log("Checking TCP server at: " + args.get("ip") + "/" + args.get("port") + " (time-out: " + args.get("timeout") + ") every " + args.get("seconds") + " second(s) to output: " + message + " (" + args.get("tags") + ")");
             SocketSchnauzer sh = new SocketSchnauzer(args.get("ip"), Integer.parseInt(args.get("port")), active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, Integer.parseInt(args.get("timeout")) * 1000, message);
+            Thread t = new Thread(sh);
+            t.start();
+            schs.add(sh);
+          }
+
+          active = "ANY";
+        }
+        else if(config_line.startsWith("alert_rest:"))
+        {
+          HashMap<String, String> args = get_kvps(config_line);
+
+          if(args.get("port") != null)
+          {
+            log("REST server configured on port " + args.get("port"));
+            RestSchnauzer sh = new RestSchnauzer(event_collector, Integer.parseInt(args.get("port")));
             Thread t = new Thread(sh);
             t.start();
             schs.add(sh);
