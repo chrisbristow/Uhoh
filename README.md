@@ -190,18 +190,18 @@ for code maintainers.
 
 The class structure for the Uhoh Client looks like this ((a) means abstract):
 
-UhohBase(a) -> Schnauzer(a) -> FileSchnauzer(a) -> BasicMatchFileSchnauzer
-UhohBase(a) -> Schnauzer(a) -> FileSchnauzer(a) -> BasicMatchFileSchnauzer -> MetricCalculationFileSchnauzer
-UhohBase(a) -> Schnauzer(a) -> FileSchnauzer(a) -> BasicMatchFileSchnauzer -> MetricCalculationFileSchnauzer -> ThresholdSchnauzer
-UhohBase(a) -> Schnauzer(a) -> CommandSchnauzer
-UhohBase(a) -> Schnauzer(a) -> DiskSchnauzer
-UhohBase(a) -> Schnauzer(a) -> ProcessSchnauzer
-UhohBase(a) -> Schnauzer(a) -> RestSchnauzer
-UhohBase(a) -> Schnauzer(a) -> SocketSchnauzer
-UhohBase(a) -> SchnauzerConfigurizer
-UhohBase(a) -> SocketMonitor
-UhohBase(a) -> EventCollector(a) -> SocketEventCollector
-UhohBase(a) -> MultiMatcher
+- UhohBase(a) -> Schnauzer(a) -> FileSchnauzer(a) -> BasicMatchFileSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> FileSchnauzer(a) -> BasicMatchFileSchnauzer -> MetricCalculationFileSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> FileSchnauzer(a) -> BasicMatchFileSchnauzer -> MetricCalculationFileSchnauzer -> ThresholdSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> CommandSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> DiskSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> ProcessSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> RestSchnauzer
+- UhohBase(a) -> Schnauzer(a) -> SocketSchnauzer
+- UhohBase(a) -> SchnauzerConfigurizer
+- UhohBase(a) -> SocketMonitor
+- UhohBase(a) -> EventCollector(a) -> SocketEventCollector
+- UhohBase(a) -> MultiMatcher
 
 This is what happens when a Client is started:
 
@@ -234,10 +234,10 @@ This is what happens when a Client is started:
 
  The class structure for the Uhoh Server looks like this ((a) means abstract):
 
- UhohBase(a) -> ServerLoop
- UhohBase(a) -> ServerSocketMonitor
- UhohBase(a) -> RestServerListener
- UhohBase(a) -> RestServerWorker
+ - UhohBase(a) -> ServerLoop
+ - UhohBase(a) -> ServerSocketMonitor
+ - UhohBase(a) -> RestServerListener
+ - UhohBase(a) -> RestServerWorker
 
  This is what happens when a Server is started:
 
