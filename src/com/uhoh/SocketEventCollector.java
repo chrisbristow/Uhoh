@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2016, Chris Bristow
+        Copyright (c) 2015-2017, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ public class SocketEventCollector extends EventCollector
 
     try
     {
-      log("Starting listener on UDP port " + udp_port);
+      log("Listening for messages from Servers on UDP port " + udp_port);
       udp_socket = new DatagramSocket(udp_port);
       udp_socket.setReuseAddress(true);
       our_name = InetAddress.getLocalHost().getHostName();

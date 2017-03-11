@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2016, Chris Bristow
+        Copyright (c) 2015-2017, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,12 @@ import java.util.concurrent.*;
 import java.util.*;
 
 /*
-  This class forms the main thread which is used within a Client to collect alert messages from
-  all schnauzer threads.  EventCollector() itself isn't ever used as it only contains
-  generic methods which are used to process the events.  EventCollector() is used to derive
-  classes with more specialised event handling methods.
+  This abstract class is used to derive classes used within the Client by the Client's
+  main thread.  It defines the main LinkedBlockingQueue used within the Client
+  as well as methods to dispatch to and and read from that queue.
  */
 
-public class EventCollector extends UhohBase
+public abstract class EventCollector extends UhohBase
 {
   // A LinkedBlockingQueue() is created where all alerts are dispatched to.
   LinkedBlockingQueue<Object[]> q = null;
