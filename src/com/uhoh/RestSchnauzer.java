@@ -34,6 +34,18 @@ package com.uhoh;
 import java.io.*;
 import java.net.*;
 
+/*
+  The RestSchnauzer initialises a simple, single-threaded HTTP server
+  within an Uhoh Client.  This server accepts HTTP GET requests in the format:
+
+  /alert/<TAGS>/<MESSAGE>
+
+  In receipt of such a request, the Client will forward an alert to the
+  Server containing the given tags and message.
+
+  This facility can be used to collect incoming webhooks from applications.
+ */
+
 public class RestSchnauzer extends Schnauzer
 {
   int tcp_port;

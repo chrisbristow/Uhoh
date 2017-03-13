@@ -1,7 +1,7 @@
 /*
         Licence
         -------
-        Copyright (c) 2016, Chris Bristow
+        Copyright (c) 20165-2017, Chris Bristow
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
