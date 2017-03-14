@@ -135,6 +135,14 @@ All of these times can be configured in the server.properties file.
 Note that the Browser UI requires the Mootools Javascript library, Google Fonts and the Google Visualization framework, so
 UI users will need Internet access.
 
+The browser UI URL can also contain a list of tags which all alerts to display must have been tagged with.
+For example, if the URL is given as:
+
+http://server_host:7777/?ONE,TWO
+
+then only alerts tagged with ONE or TWO (as well as RED, AMBER or GREEN) will be displayed.  This feature
+is used for creating customised views of alerts for specific user groups.
+
 Visual Metric Display (Charts).
 -------------------------------
 If a log file Schnauzer has been configured to record the number of matches in a log file over a period of time (using

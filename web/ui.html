@@ -52,9 +52,19 @@
   <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
 
   <script>
+      var tags = [];
 
       window.addEvent('domready', function()
       {
+        if(location.search.startsWith("?"))
+        {
+          var filter = (location.search).replace(/\?/, "");
+
+          document.title = "Uhoh (" + filter + ")";
+
+          tags = decodeURIComponent(filter).split(",");
+        }
+
         do_fetch();
         do_fade_out();
       });
@@ -121,7 +131,22 @@
 
         for(var i = 0; i < aobj.length; i ++)
         {
-          html += ( "<div class=\"" + categ + "\">" + aobj[i] + "</div>" );
+          if(tags.length == 0)
+          {
+            html += ( "<div class=\"" + categ + "\">" + aobj[i][0] + "</div>" );
+          }
+          else
+          {
+            for(var j = 0; j < tags.length; j ++)
+            {
+              var itags = aobj[i][1].split(",");
+
+              if(itags.indexOf(tags[j]) >= 0)
+              {
+                html += ( "<div class=\"" + categ + "\">" + aobj[i][0] + "</div>" );
+              }
+            }
+          }
         }
 
         return(html);

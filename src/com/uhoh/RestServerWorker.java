@@ -95,24 +95,6 @@ public class RestServerWorker extends UhohBase implements Runnable
                 content = json;
               }
             }
-            else if(url.equals("/"))
-            {
-              // Serve the alerts Web UI static container page.
-
-              StringBuffer wb = new StringBuffer();
-              String next_line;
-              BufferedReader rr = new BufferedReader(new FileReader("web/ui.html"));
-
-              while((next_line = rr.readLine()) != null)
-              {
-                wb.append(next_line);
-                wb.append("\r\n");
-              }
-
-              rr.close();
-
-              content = wb.toString();
-            }
             else if(url.startsWith("/metric/"))
             {
               // Serve the metrics Web UI static container page.
@@ -159,6 +141,24 @@ public class RestServerWorker extends UhohBase implements Runnable
               }
 
               wb.append("\r\n  ]\r\n}");
+
+              rr.close();
+
+              content = wb.toString();
+            }
+            else
+            {
+              // Serve the alerts Web UI static container page.
+
+              StringBuffer wb = new StringBuffer();
+              String next_line;
+              BufferedReader rr = new BufferedReader(new FileReader("web/ui.html"));
+
+              while((next_line = rr.readLine()) != null)
+              {
+                wb.append(next_line);
+                wb.append("\r\n");
+              }
 
               rr.close();
 

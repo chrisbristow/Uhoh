@@ -68,7 +68,7 @@ public class ServerLoop extends UhohBase
   // Initialise a new ServerLoop() by loading and parsing the Server
   // properties file.
   
-  ServerLoop(String props_file)
+  public ServerLoop(String props_file)
   {
     logging_pfx = "S";
 
@@ -115,7 +115,7 @@ public class ServerLoop extends UhohBase
         log("Secondary server:                     " + secondary_server);
       }
 
-      run();
+      //run();
     }
     catch(Exception e)
     {
@@ -188,7 +188,7 @@ public class ServerLoop extends UhohBase
             }
           }
 
-          if(secondary_server != null) //"ALERT", client_host_name, "IDLE", new Long(System.currentTimeMillis()), "SERVER", dead_client_tags, "No updates from client"
+          if(secondary_server != null)
           {
             long utime = (new Date()).getTime();
             byte[] ss_cmd = ("ALERT%%" + our_name + "%%FT%%" + utime + "%%SERVER%%FT_SECONDARY%%FT sync").getBytes();
@@ -342,15 +342,15 @@ public class ServerLoop extends UhohBase
 
               if(tags.contains("RED"))
               {
-                ui_red.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
+                ui_red.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
               }
               else if(tags.contains("AMBER"))
               {
-                ui_amber.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
+                ui_amber.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
               }
               else if(tags.contains("GREEN"))
               {
-                ui_green.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2]});
+                ui_green.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
               }
 
               disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]);
@@ -369,7 +369,7 @@ public class ServerLoop extends UhohBase
   // The get_ui_items() method sorts and maintains the list of current
   // alerts.  This list is used by the Web UI.
 
-  String get_ui_items(HashMap<String, Object[]> ui_disp)
+  public String get_ui_items(HashMap<String, Object[]> ui_disp)
   {
     LinkedList<Map.Entry<String, Object[]>> lst = new LinkedList<Map.Entry<String, Object[]>>(ui_disp.entrySet());
 
@@ -397,7 +397,7 @@ public class ServerLoop extends UhohBase
       Date ev_dt = new Date();
       ev_dt.setTime(((Long)ui_disp.get(msg)[0]));
       sb.append(pfx);
-      sb.append("\"" + ev_dt.toString() + ": " + msg.replaceAll("\"", "") + "\"");
+      sb.append("[\"" + ev_dt.toString() + ": " + msg.replaceAll("\"", "") + "\", \"" + (String)ui_disp.get(msg)[2] + "\"]");
       pfx = ",";
 
       if(((Long)ui_disp.get(msg)[0]) < (System.currentTimeMillis() - ui_rtime.get((String)ui_disp.get(msg)[1])))
