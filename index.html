@@ -243,16 +243,25 @@ Communication between Clients and Servers is via super-lightweight UDP messaging
 <br/><br/>
 Clients can be configured to:
 <ul>
-  <li>Check for specific strings in log files.
+  <li>Slurp up log files and match specific strings.
   <li>Count string matches in log files, with alerts if the count falls short of or exceeds a threshold.
   <li>Extract numerical figures from log files and calculate totals, averages, minimum or maximum values.
   <li>Check to see if processes are running (or are not running).
   <li>Keep an eye on disk usage.
   <li>Run commands.
   <li>Check to see if TCP sockets are ready to accept connections.
+  <li>Log events from HTTP inbound webhooks.
 </ul>
 And all checks can be configured to run only at specific times of the day and days
 of the week.
+<br/><br/>
+Servers can ran as single instances or active/active pairs and:
+        <ul>
+          <li>Emit a <span style="color: #00A2FF;">Firehose</span> of event and metric traffic for consumption by other applications - for instance to feed a ChatOps group.
+          <li>Instruct consuming applications as to whether they need to process events or not (when Servers are running in pairs).
+          <li>Deliver simple event and metric view user interfaces.
+          <li>Supply Clients with configuration data.
+        </ul>
       </div>
     </div>
 
