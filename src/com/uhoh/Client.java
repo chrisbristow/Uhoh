@@ -57,17 +57,47 @@ public class Client
     try
     {
       String server_ips = "";
+      String client_type = "";
 
-      if(args.length == 2)
+      // If either of the optional parameters have been set:
+      // - servers=XXX
+      // - type=XXX
+      // ... collect their values and pass onto the SocketEventCollector().
+
+      for(int i = 1; i < args.length; i ++)
       {
-        server_ips = args[1];
+        String[] marg = args[i].split("=");
+
+        if(marg.length == 2)
+        {
+          if(marg[0].equals("servers"))
+          {
+            server_ips = marg[1];
+          }
+          else if(marg[0].equals("type"))
+          {
+            client_type = marg[1];
+          }
+          else
+          {
+            System.err.println("Unknown argument: " + marg[0]);
+            throw new Exception("Unknown argument");
+          }
+        }
+        else
+        {
+          System.err.println("Unknown argument: " + marg[0]);
+          throw new Exception("Unknown argument");
+        }
       }
 
-      new SocketEventCollector(Integer.parseInt(args[0]), server_ips).run();
+      // Start the SocketEventCollect() to initialise the Client.
+
+      new SocketEventCollector(Integer.parseInt(args[0]), server_ips, client_type).run();
     }
     catch(Exception e)
     {
-      System.err.println("Usage: com.uhoh.Client <udp_port_number> [<server_ip_address(es)>]");
+      System.err.println("Usage: com.uhoh.Client <udp_port_number> [servers=<server_ip_address(es)>] [type=<client_config_file>]");
       System.exit(1);
     }
   }

@@ -46,17 +46,19 @@ public class SocketMonitor extends UhohBase implements Runnable
   SchnauzerConfigurizer cfz = null;
   String server_ips = "";
   int udp_port;
+  String cl_type = "";
   
   // Construct a SocketMonitor() by passing it a reference
   // to the EventCollector() as well as a list of IP addresses
   // of Servers (if the Client has been started with a preset list)
   // and the UDP port the Server is broadcasting on.
   
-  SocketMonitor(SocketEventCollector ec, String s_ips, int u_port)
+  SocketMonitor(SocketEventCollector ec, String s_ips, int u_port, String client_type)
   {
     event_collector = ec;
     server_ips = s_ips;
     udp_port = u_port;
+    cl_type = client_type;
   }
   
   // Listen for incoming UDP messages and deal with them.  Messages
@@ -98,7 +100,7 @@ public class SocketMonitor extends UhohBase implements Runnable
           if(cfz == null)
           {
             String our_name = InetAddress.getLocalHost().getHostName();
-            byte[] config_cmd = new String("CONFREQ%%" + our_name).getBytes();
+            byte[] config_cmd = new String("CONFREQ%%" + our_name + "%%" + cl_type).getBytes();
             DatagramPacket sp = new DatagramPacket(config_cmd, config_cmd.length, from.getAddress(), new_server_port);
             
             log("Sending config request to: " + new_server_ip + "/" + new_server_port);
@@ -155,7 +157,7 @@ public class SocketMonitor extends UhohBase implements Runnable
           try
           {
             String our_name = InetAddress.getLocalHost().getHostName();
-            byte[] config_cmd = new String("CONFREQ%%" + our_name).getBytes();
+            byte[] config_cmd = new String("CONFREQ%%" + our_name + "%%" + cl_type).getBytes();
             DatagramPacket sp = new DatagramPacket(config_cmd, config_cmd.length, InetAddress.getByName(svr), (udp_port + 1));
 
             log("Sending unicast config request to: " + svr + "/" + (udp_port + 1));

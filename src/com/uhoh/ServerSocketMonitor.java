@@ -79,10 +79,17 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
         
         if(cmd[0].equals("CONFREQ"))
         {
-          System.out.println("Loading configuration for " + cmd[1]);
+          String config_file_name = cmd[1];
+          System.out.println("Loading configuration for " + config_file_name);
+
+          if(cmd.length == 3)
+          {
+            config_file_name = cmd[2];
+            System.out.println("Configuration override: " + config_file_name);
+          }
           
           StringBuffer sb = new StringBuffer("CONFIG%%");
-          File config_file = new File("clientconfigs/" + cmd[1]);
+          File config_file = new File("clientconfigs/" + config_file_name);
 
           if(config_file.exists())
           {
@@ -106,8 +113,8 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
           }
           else
           {
-            System.out.println("Warning: A client configuration file for " + cmd[1] + " doesn't exist");
-            server_loop.client_q.put(new Object[]{"ALERT", cmd[1], "IDLE", new Long(System.currentTimeMillis()), "SERVER", server_loop.no_config_tags, "No configuration available"});
+            System.out.println("Warning: A client configuration file for " + config_file_name + " doesn't exist");
+            server_loop.client_q.put(new Object[]{"ALERT", cmd[1], "IDLE", new Long(System.currentTimeMillis()), "SERVER", server_loop.no_config_tags, "No configuration available for " + config_file_name});
           }
         }
         else

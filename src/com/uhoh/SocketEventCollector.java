@@ -45,7 +45,7 @@ public class SocketEventCollector extends EventCollector
   long uid_c = 0;
   String our_name = null;
 
-  SocketEventCollector(int udp_port, String s_ips)
+  SocketEventCollector(int udp_port, String s_ips, String client_type)
   {
     super();
 
@@ -69,7 +69,7 @@ public class SocketEventCollector extends EventCollector
 
     // Another thread, SocketMonitor(), is started to collect UDP messages from Servers.
 
-    Thread smon = new Thread(new SocketMonitor(this, s_ips, udp_port));
+    Thread smon = new Thread(new SocketMonitor(this, s_ips, udp_port, client_type));
     smon.start();
   }
 
