@@ -46,6 +46,10 @@ public abstract class UhohBase
   // the server will log a "lost client" alert.
   long client_timeout = 180000;
 
+  // Time (in milliseconds) after which the Server stops logging "lost client"
+  // alerts for Clients considered to be dead.
+  long client_remove_time = 300000;
+
   // Time (in milliseconds) between broadcasts from the Server which indicate
   // to Clients how to contact the Server.
   long server_heartbeat_interval = 5000;

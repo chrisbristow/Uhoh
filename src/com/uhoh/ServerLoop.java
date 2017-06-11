@@ -64,6 +64,7 @@ public class ServerLoop extends UhohBase
   String unicast_addrs = null;
   String secondary_server = null;
   String dead_client_tags = "GREEN";
+  String no_config_tags = "GREEN,NO_CLIENT_CONFIG";
 
   // Initialise a new ServerLoop() by loading and parsing the Server
   // properties file.
@@ -81,6 +82,7 @@ public class ServerLoop extends UhohBase
       broadcast_address = props.getProperty("udp_broadcast_address");
       tcp_port = Integer.parseInt(props.getProperty("tcp_port_number"));
       client_timeout = Long.parseLong(props.getProperty("client_timeout"));
+      client_remove_time = Long.parseLong(props.getProperty("client_remove_time"));
       server_heartbeat_interval = Long.parseLong(props.getProperty("heartbeat_interval"));
       rolling_disk_log_name = props.getProperty("disk_log_name");
       rolling_disk_log_size = Long.parseLong(props.getProperty("disk_log_size"));
@@ -89,15 +91,18 @@ public class ServerLoop extends UhohBase
       ui_rtime.put("FILE", new Long(props.getProperty("ui_display_time_FILE")));
       ui_rtime.put("IDLE", new Long(props.getProperty("ui_display_time_IDLE")));
       dead_client_tags = props.getProperty("dead_client_tags");
+      no_config_tags = props.getProperty("no_config_tags");
 
       log("Client/Server UDP ports:              " + udp_port + " / " + (udp_port + 1));
       log("Server broadcast address:             " + broadcast_address);
       log("Web UI server TCP port:               " + tcp_port);
       log("Client inactivity timeout:            " + client_timeout + " ms");
+      log("Client watchlist timeout:             " + client_remove_time + " ms");
       log("Server will sent heartbeats every:    " + server_heartbeat_interval + " ms");
       log("Server will log events to:            " + rolling_disk_log_name);
       log("Event log will roll after it reaches: " + rolling_disk_log_size + " bytes");
       log("Dead client alert tags are:           " + dead_client_tags);
+      log("Unknown client alert tags are:        " + no_config_tags);
       log("UI: Log file events held for:         " + ui_rtime.get("FILE") + " ms");
       log("UI: Process events held for:          " + ui_rtime.get("PROCESS") + " ms");
       log("UI: Idle client events held for:      " + ui_rtime.get("IDLE") + " ms");
@@ -160,6 +165,8 @@ public class ServerLoop extends UhohBase
     rest.start();
     
     long next_hb = System.currentTimeMillis() - 10;
+    long ka_log_interval = 60000;
+    long next_ka_log = System.currentTimeMillis() + ka_log_interval;
     
     while(true)
     {
@@ -290,7 +297,19 @@ public class ServerLoop extends UhohBase
               log("Exception queueing client idle alert:");
               e.printStackTrace();
             }
+
+            if((Long)clients.get(client_host_name)[0] < (System.currentTimeMillis() - client_remove_time))
+            {
+              log(client_host_name + " will now be removed from the watchlist");
+              clients.remove(client_host_name);
+            }
           }
+        }
+
+        if(System.currentTimeMillis() > next_ka_log)
+        {
+          log("Uhoh");
+          next_ka_log = System.currentTimeMillis() + ka_log_interval;
         }
       }
 

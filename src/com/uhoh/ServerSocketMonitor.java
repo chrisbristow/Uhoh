@@ -107,7 +107,7 @@ public class ServerSocketMonitor extends UhohBase implements Runnable
           else
           {
             System.out.println("Warning: A client configuration file for " + cmd[1] + " doesn't exist");
-            server_loop.client_q.put(new Object[]{"ALERT", cmd[1], "IDLE", new Long(System.currentTimeMillis()), "SERVER", "GREEN", "No configuration available"});
+            server_loop.client_q.put(new Object[]{"ALERT", cmd[1], "IDLE", new Long(System.currentTimeMillis()), "SERVER", server_loop.no_config_tags, "No configuration available"});
           }
         }
         else
