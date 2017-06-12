@@ -324,7 +324,7 @@ public class SchnauzerConfigurizer extends UhohBase
         }
         else if(config_line.startsWith("alert_cmd:"))
         {
-          if(config_line.contains("command=") && match_str != null)
+          if(config_line.contains("command=") && (match_str != null || !capture.equals("")))
           {
             String cmd = config_line.replaceFirst("^\\s*alert_cmd:\\s+.+command=", "");
             HashMap<String, String> args = get_kvps(config_line);
@@ -332,7 +332,7 @@ public class SchnauzerConfigurizer extends UhohBase
             if(args.get("tags") != null && args.get("seconds") != null && args.get("command") != null)
             {
               log("Running: " + args.get("command") + " every " + args.get("seconds") + " second(s)");
-              CommandSchnauzer sh = new CommandSchnauzer(cmd, active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, match_str);
+              CommandSchnauzer sh = new CommandSchnauzer(cmd, active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, match_str, capture);
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);

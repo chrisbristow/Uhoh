@@ -210,6 +210,7 @@ The class structure for the Uhoh Client looks like this ((a) means abstract):
 - UhohBase(a) -> SocketMonitor
 - UhohBase(a) -> EventCollector(a) -> SocketEventCollector
 - UhohBase(a) -> MultiMatcher
+- UhohBase(a) -> UnicastFetcher
 
 This is what happens when a Client is started:
 
@@ -223,6 +224,7 @@ This is what happens when a Client is started:
     - Check for associated alerts ("alert_multi").
 - The SocketMonitor():
   - Sets up the list of Servers (if the Server list has been manually specified to the Client).
+  - Starts a UnicastFetcher() (if the Server list has been manually specified to the Client).
   - On receipt of a UDP message from a Server:
     - For heartbeats from the Server:
       - if the Client is newly started, then it will send a "request configuration" UDP message to the Server.

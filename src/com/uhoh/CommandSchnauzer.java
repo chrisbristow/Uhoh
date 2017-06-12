@@ -44,6 +44,7 @@ public class CommandSchnauzer extends Schnauzer
   String active_string;
   long interval;
   String regex = "";
+  String capture = "";
 
   // A CommandSchnauzer() is started with the following arguments:
   // - The command to run.
@@ -53,7 +54,7 @@ public class CommandSchnauzer extends Schnauzer
   // - The time interval between invocations of the command.
   // - A regex to use to match output from the command.
 
-  CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r)
+  CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r, String cptr)
   {
     command = c;
     active_string = a;
@@ -61,6 +62,7 @@ public class CommandSchnauzer extends Schnauzer
     event_collector = ec;
     interval = i;
     regex = r;
+    capture = cptr;
   }
 
   // The run() method actually runs the command, collects the output, filters
@@ -70,6 +72,11 @@ public class CommandSchnauzer extends Schnauzer
   public void run()
   {
     log("Running " + command + " every " + interval + " ms (" + active_string + " / " + tags + ")");
+
+    if(capture.length() != 0)
+    {
+      log(" - Capture using: " + capture);
+    }
 
     while(keep_running)
     {
@@ -83,9 +90,14 @@ public class CommandSchnauzer extends Schnauzer
 
           while((line = input.readLine()) != null)
           {
-            //log("Cmd: " + line);
-
-            if(line.trim().matches(".*" + regex + ".*"))
+            if(capture.length() != 0)
+            {
+              if(line.trim().matches(".*" + capture + ".*"))
+              {
+                string_processor(translate_string(line.trim(), capture));
+              }
+            }
+            else if(line.trim().matches(".*" + regex + ".*"))
             {
               string_processor(line.trim());
             }

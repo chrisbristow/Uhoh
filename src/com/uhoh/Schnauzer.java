@@ -71,4 +71,28 @@ public abstract class Schnauzer extends UhohBase implements Runnable
   {
     // Does nothing by default.
   }
+
+  // The translate_string() method is used to replace a section in a file line with another
+  // string - for example, translating "Row: 5" to "5", for metric collection purposes.
+
+  String translate_string(String input, String rx)
+  {
+    String output = input;
+
+    if(!rx.equals(""))
+    {
+      try
+      {
+        output = input.replaceFirst(".*" + rx + ".*", "$1");
+
+        log("Translated \"" + input + "\" to \"" + output + "\"");
+      }
+      catch(Exception e)
+      {
+        log("Translation failed from \"" + input + "\" to \"" + output + "\"");
+      }
+    }
+
+    return(output);
+  }
 }
