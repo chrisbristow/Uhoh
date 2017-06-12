@@ -71,9 +71,22 @@ public class SocketMonitor extends UhohBase implements Runnable
   
   public void run()
   {
-    unicast_client_init();
 
     log("Listening for incoming UDP messages");
+
+    // If the Client has been started with the "servers=XXX" parameter set, then add the given
+    // servers to the Client's server list and start a UnicastFetcher() thread.
+
+    if(server_ips.length() > 0)
+    {
+      for(String svr : server_ips.split(","))
+      {
+        log("Unicast server: " + svr + "/" + (udp_port + 1));
+        event_collector.servers.put(svr + "/" + (udp_port + 1), new Long(new Date().getTime()));
+      }
+
+      new Thread(new UnicastFetcher(event_collector, server_ips, udp_port, cl_type, this)).start();
+    }
     
     while(true)
     {
@@ -84,10 +97,10 @@ public class SocketMonitor extends UhohBase implements Runnable
         DatagramPacket pk = new DatagramPacket(buffer, 65536);
         event_collector.udp_socket.receive(pk);
         String in_data = new String(pk.getData());
-        
-        //System.out.println("DBG: UDP_REC: " + in_data);
-        
-        if(in_data.startsWith("SRVHB%%"))
+
+        // If "servers=XXX" was set, ignore SRVHB messages from Servers.
+
+        if(in_data.startsWith("SRVHB%%") && server_ips.equals(""))
         {
           InetSocketAddress from = (InetSocketAddress)pk.getSocketAddress();
           String new_server_ip = from.getAddress().getHostAddress();
@@ -124,53 +137,12 @@ public class SocketMonitor extends UhohBase implements Runnable
           log("Received a reset command");
           cfz.terminate_all();
           cfz = null;
-          unicast_client_init();
         }
       }
       catch(Exception e)
       {
         log("Exception processing incoming UDP data:");
         e.printStackTrace();
-      }
-    }
-  }
-
-  // If the Client has been started with a list of known Servers, then
-  // the unicast_client_init() method is used to add these Servers to the
-  // Client's known server list and request a configuration from the
-  // first Server in the list.
-
-  void unicast_client_init()
-  {
-    if(server_ips.length() > 0)
-    {
-      boolean send_cfg = true;
-
-      for(String svr : server_ips.split(","))
-      {
-        log("Unicast server: " + svr + "/" + (udp_port + 1));
-
-        event_collector.servers.put(svr + "/" + (udp_port + 1), new Long(new Date().getTime()));
-
-        if(send_cfg)
-        {
-          try
-          {
-            String our_name = InetAddress.getLocalHost().getHostName();
-            byte[] config_cmd = new String("CONFREQ%%" + our_name + "%%" + cl_type).getBytes();
-            DatagramPacket sp = new DatagramPacket(config_cmd, config_cmd.length, InetAddress.getByName(svr), (udp_port + 1));
-
-            log("Sending unicast config request to: " + svr + "/" + (udp_port + 1));
-
-            event_collector.udp_socket.send(sp);
-            send_cfg = false;
-          }
-          catch(Exception e)
-          {
-            log("Exception sending configuration request to " + svr);
-            e.printStackTrace();
-          }
-        }
       }
     }
   }
