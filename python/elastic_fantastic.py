@@ -1,6 +1,6 @@
 #       Licence
 #       -------
-#       Copyright (c) 20165-2017, Chris Bristow
+#       Copyright (c) 2015-2017, Chris Bristow
 #       All rights reserved.
 #
 #       Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,9 @@
 # - Name of the Log Stream file.
 # - URL of the ElasticSearch cluster including "index" and "type" for the data:
 #       eg. http://localhost:9200/uhoh/server
+#
+# The script suppresses loading of data into ElasticSearch if it detects
+# that the server is an FT Secondary instance.
 
 import sys
 import os
@@ -51,6 +54,7 @@ def main(filename, url_x):
   inode = 0
   seek = 2
   fsize = 0
+  suppress_until = 0
 
   while(True):
     if fisopen == False:
@@ -92,13 +96,22 @@ def main(filename, url_x):
         alert_s = nextline.rstrip().split('%%')
         try:
           if alert_s[0].endswith("ALERT"):
-            ztime = datetime.datetime.fromtimestamp(int(alert_s[3]) // 1000).isoformat() + time.strftime('%z')
-            payload = '{ "host": "' + alert_s[1] + '", "datetime": "' + ztime + '", "tags": "' + alert_s[5] + '", "message": "' + alert_s[6] + '" }'
-            req = urllib.request.Request(url=url_x, method='POST', data=payload.encode())
-            xreq = urllib.request.urlopen(req)
-            all_lines = xreq.readlines()
-            xreq.close()
-            print("Loaded: " + payload)
+            if alert_s[5] == "FT_SECONDARY":
+              suppress_until = int(time.time() + 17)
+              print("FT Secondary")
+
+            else:
+              if int(time.time() > suppress_until):
+                ztime = datetime.datetime.fromtimestamp(int(alert_s[3]) // 1000).isoformat() + time.strftime('%z')
+                payload = '{ "host": "' + alert_s[1] + '", "datetime": "' + ztime + '", "tags": "' + alert_s[5] + '", "message": "' + alert_s[6] + '" }'
+                req = urllib.request.Request(url=url_x, method='POST', data=payload.encode())
+                xreq = urllib.request.urlopen(req)
+                all_lines = xreq.readlines()
+                xreq.close()
+                print("Loaded: " + payload)
+
+              else:
+                print("Loading: Suppressed")
 
         except Exception:
           print("Warning: Not processed: " + nextline.rstrip())
