@@ -58,9 +58,7 @@ support UDP broadcast (eg. AWS), Clients can be provided with a comma-separated 
 addresses in addition to the UDP port.  For example, to start a Client in a system with two
 Servers at 172.31.11.1 and 172.31.11.2 use:
 
-java -cp uhoh.jar com.uhoh.Client 8888 172.31.11.1,172.31.11.2
-
-(Note that the Client will always request its configuration from the first IP address given.)
+java -cp uhoh.jar com.uhoh.Client 8888 servers=172.31.11.1,172.31.11.2
 
 Creating a Client Configuration File.
 -------------------------------------

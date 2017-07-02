@@ -256,6 +256,28 @@ alert_cmd:         tags=CMD,GREEN  seconds=150   command=df -i .
 # ... then the Server will log the value contained in the alert
 # to "metrics/YYYY-MM-DD/<metric_name>".
 
+# The alert_cmd directive can also be used with capture rather than match, for example:
+
+capture: DISK2\s+\d+\s+(\d+)
+alert_cmd: tags=CMD,GREEN seconds=150 command=df -i .
+
+# The above will find lines that are of the form:
+# DISK2 <number1> <number2>
+# ... and return the value of <number2> only.
+
+# The alert_cmd directive can also be provided with threshold values which apply when used in conjunction with the capture directive.  For example:
+
+capture: DISK2\s+\d+\s+(\d+)
+alert_cmd: tags=CMD,GREEN seconds=150 maximum=10 command=df -i .
+
+# ... will raise a second alert (in addition to the alert containing the actual value of the metric), containing the text Exceeded Upper Bound if the value captured exceeds 10.  Likewise:
+
+capture: DISK2\s+\d+\s+(\d+)
+alert_cmd: tags=CMD,GREEN seconds=150 minimum=5 command=df -i .
+
+# ... will raise a second alert, containing the text Below Lower Bound if the value captured is below 5.
+# Both the maximum and minimum parameters can be used in the same alert_cmd declaration.
+
 # In order to check whether a TCP server is ready to accept incoming connections
 # (eg. a web server), use the "alert_tcp" directive.
 #
