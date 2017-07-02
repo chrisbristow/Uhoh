@@ -32,12 +32,13 @@
 # --------------------
 #
 # This script reads the Uhoh Server Log Stream file and pushes alert data into
-# an ElasticSearch cluster.
+# an ElasticSearch cluster.  The index for the data is of the form "uhoh-YYYYMMDD"
+# and type is "server".
 #
 # Start-up arguments are:
 # - Name of the Log Stream file.
-# - URL of the ElasticSearch cluster including "index" and "type" for the data:
-#       eg. http://localhost:9200/uhoh/server
+# - URL of the ElasticSearch cluster:
+#       eg. http://localhost:9200
 #
 # The script suppresses loading of data into ElasticSearch if it detects
 # that the server is an FT Secondary instance.
@@ -55,6 +56,7 @@ def main(filename, url_x):
   seek = 2
   fsize = 0
   suppress_until = 0
+  ft_timeout = 17
 
   while(True):
     if fisopen == False:
@@ -93,32 +95,36 @@ def main(filename, url_x):
       else:
         print("")
         print("Log Stream: " + nextline.rstrip())
-        alert_s = nextline.rstrip().split('%%')
-        try:
-          if alert_s[0].endswith("ALERT"):
-            if alert_s[5] == "FT_SECONDARY":
-              suppress_until = int(time.time() + 17)
-              print("FT Secondary")
 
-            else:
-              if int(time.time() > suppress_until):
-                ztime = datetime.datetime.fromtimestamp(int(alert_s[3]) // 1000).isoformat() + time.strftime('%z')
-                payload = '{ "host": "' + alert_s[1] + '", "datetime": "' + ztime + '", "tags": "' + alert_s[5] + '", "message": "' + alert_s[6] + '" }'
-                req = urllib.request.Request(url=url_x, method='POST', data=payload.encode())
+        alert_s = nextline.rstrip().split('%%')
+
+        if alert_s[0].endswith("ALERT"):
+          if alert_s[5] == "FT_SECONDARY":
+            suppress_until = int(time.time() + ft_timeout)
+            print("FT Secondary")
+
+          else:
+            if int(time.time() > suppress_until):
+              ztime = datetime.datetime.fromtimestamp(int(alert_s[3]) // 1000).isoformat() + time.strftime('%z')
+              payload = '{ "host": "' + alert_s[1] + '", "datetime": "' + ztime + '", "tags": "' + alert_s[5] + '", "message": "' + alert_s[6] + '" }'
+              a_url = url_x + "/uhoh-" + time.strftime('%Y%m%d') + "/server"
+              req = urllib.request.Request(url=a_url, method='POST', data=payload.encode())
+
+              try:
                 xreq = urllib.request.urlopen(req)
                 all_lines = xreq.readlines()
                 xreq.close()
-                print("Loaded: " + payload)
+                print("Posted: " + payload + " to " + a_url)
 
-              else:
-                print("Loading: Suppressed")
+              except Exception:
+                print("Warning: Posting to ElasticSearch has failed: " + nextline.rstrip())
 
-        except Exception:
-          print("Warning: Not processed: " + nextline.rstrip())
+            else:
+              print("Posting to ElasticSearch: Suppressed for " + str(suppress_until - int(time.time())) + " second(s)")
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    print('Usage: elastic_fantastic.py <log_stream_file> <url_index_type>')
+    print('Usage: elastic_fantastic.py <log_stream_file> <elastic_url>')
     exit(1)
 
   else:

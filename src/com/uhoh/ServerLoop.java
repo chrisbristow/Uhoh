@@ -198,7 +198,7 @@ public class ServerLoop extends UhohBase
           if(secondary_server != null)
           {
             long utime = (new Date()).getTime();
-            byte[] ss_cmd = ("ALERT%%" + our_name + "%%FT%%" + utime + "%%SERVER%%FT_SECONDARY%%FT sync").getBytes();
+            byte[] ss_cmd = ("ALERT%%" + our_name + "%%FT%%" + utime + "%%SERVER%%FT_SECONDARY%%FT primary is: " + our_name).getBytes();
             DatagramPacket sp_u = new DatagramPacket(ss_cmd, ss_cmd.length, InetAddress.getByName(secondary_server.trim()), udp_port + 1);
             udp_socket.send(sp_u);
           }

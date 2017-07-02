@@ -55,7 +55,7 @@ def main(filename, tag, s_url, channel, throttle):
   seek = 2
   fsize = 0
   suppress_until = 0
-  next_message = 0
+  ft_timeout = 17
 
   while(True):
     if fisopen == False:
@@ -94,31 +94,36 @@ def main(filename, tag, s_url, channel, throttle):
       else:
         print("")
         print("Log Stream: " + nextline.rstrip())
-        alert_s = nextline.rstrip().split('%%')
-        try:
-          if alert_s[0].endswith("ALERT"):
-            if alert_s[5] == "FT_SECONDARY":
-              suppress_until = int(time.time() + 17)
-              print("FT Secondary")
 
-            else:
-              if (int(time.time()) > suppress_until) and (int(time.time()) > next_message):
-                tags = alert_s[5].split(',')
-                if tag in tags:
-                  msg = alert_s[1] + ": " + alert_s[6]
-                  payload = 'payload={"channel": "#' + channel + '", "username": "Uhoh", "text": "' + msg + '"}'
-                  req = urllib.request.Request(url=s_url, method='POST', data=payload.encode())
+        alert_s = nextline.rstrip().split('%%')
+
+        if alert_s[0].endswith("ALERT"):
+          if alert_s[5] == "FT_SECONDARY":
+            suppress_until = int(time.time() + ft_timeout)
+            print("FT Secondary")
+
+          else:
+            if int(time.time()) > suppress_until:
+              tags = alert_s[5].split(',')
+
+              if tag in tags:
+                msg = alert_s[1] + ": " + alert_s[6]
+                payload = 'payload={"channel": "#' + channel + '", "username": "Uhoh", "text": "' + msg + '"}'
+                req = urllib.request.Request(url=s_url, method='POST', data=payload.encode())
+
+                try:
                   xreq = urllib.request.urlopen(req)
                   all_lines = xreq.readlines()
                   xreq.close()
                   print("Posted: [Uhoh, #" + channel + "]: " + msg)
-                  next_message = int(time.time()) + int(throttle)
 
-              else:
-                print("Loading: Suppressed")
+                except Exception:
+                  print("Warning: Posting to Slack has failed: " + nextline.rstrip())
 
-        except Exception:
-          print("Warning: Not processed: " + nextline.rstrip())
+                suppress_until = int(time.time()) + int(throttle)
+
+            else:
+              print("Posting to Slack: Suppressed for " + str(suppress_until - int(time.time())) + " second(s)")
 
 if __name__ == '__main__':
   if len(sys.argv) < 5:

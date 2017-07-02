@@ -54,6 +54,8 @@ public class Server
     }
     catch(Exception e)
     {
+      e.printStackTrace();
+      System.err.println("");
       System.err.println("Usage: com.uhoh.Server <server_properties_file>");
       System.exit(1);
     }
