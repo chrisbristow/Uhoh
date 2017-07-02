@@ -278,6 +278,11 @@ alert_cmd: tags=CMD,GREEN seconds=150 minimum=5 command=df -i .
 # ... will raise a second alert, containing the text Below Lower Bound if the value captured is below 5.
 # Both the maximum and minimum parameters can be used in the same alert_cmd declaration.
 
+# Alternative tags can be specified for the threshold breach alert within alert_cmd as follows:
+
+capture: DISK2\s+\d+\s+(\d+)
+alert_cmd: tags=CMD,GREEN seconds=150 minimum=5 threshold_tags=RED command=df -i .
+
 # In order to check whether a TCP server is ready to accept incoming connections
 # (eg. a web server), use the "alert_tcp" directive.
 #

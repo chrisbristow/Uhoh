@@ -49,6 +49,7 @@ public class CommandSchnauzer extends Schnauzer
   String capture = "";
   long greater_than = 999999999999999L;
   long less_than = -1;
+  String threshold_tags = null;
 
   // A CommandSchnauzer() is started with the following arguments:
   // - The command to run.
@@ -58,7 +59,7 @@ public class CommandSchnauzer extends Schnauzer
   // - The time interval between invocations of the command.
   // - A regex to use to match output from the command.
 
-  CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r, String cptr, String lt, String gt)
+  CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r, String cptr, String lt, String gt, String tt)
   {
     command = c;
     active_string = a;
@@ -67,6 +68,7 @@ public class CommandSchnauzer extends Schnauzer
     interval = i;
     regex = r;
     capture = cptr;
+    threshold_tags = tt;
 
     try
     {
@@ -81,10 +83,15 @@ public class CommandSchnauzer extends Schnauzer
         less_than = Long.parseLong(lt);
         log(" - Alert if N < " + less_than);
       }
+
+      if(threshold_tags != null)
+      {
+        log(" - Tags for threshold breaches: " + threshold_tags);
+      }
     }
     catch(Exception e)
     {
-      log("Warning: Unable to parse minimum / maximum / message configuration parameters");
+      log("Warning: Unable to parse minimum / maximum / threshold tags configuration parameters");
     }
   }
 
@@ -126,12 +133,12 @@ public class CommandSchnauzer extends Schnauzer
 
                   if(act_cap_val > greater_than)
                   {
-                    string_processor(command + ": Exceeded upper bound");
+                    string_processor(command + ": Exceeded upper bound", tags, threshold_tags);
                   }
 
                   if(act_cap_val < less_than)
                   {
-                    string_processor(command + ": Below lower bound");
+                    string_processor(command + ": Below lower bound", tags, threshold_tags);
                   }
                 }
                 catch(Exception e)
@@ -159,5 +166,20 @@ public class CommandSchnauzer extends Schnauzer
     }
 
     log("Running of " + command + " stopped");
+  }
+
+  // Override string_processor(s) from the Schnauzer() class so that alternative tags can be
+  // attached for alert_cmd.
+
+  public void string_processor(String s, String ord_tags, String alt_tags)
+  {
+    String the_tags = ord_tags;
+
+    if(alt_tags != null)
+    {
+      the_tags = alt_tags;
+    }
+
+    event_collector.dispatch("CLIENT%%" + the_tags + "%%" + s, "ALL");
   }
 }
