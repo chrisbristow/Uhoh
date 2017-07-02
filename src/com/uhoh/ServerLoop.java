@@ -446,12 +446,12 @@ public class ServerLoop extends UhohBase
       {
         if(tag[i].startsWith("METRIC_"))
         {
-          long metric_value = 0;
+          double metric_value = 0;
           boolean contains_metric = false;
 
           try
           {
-            metric_value = Long.parseLong(msg[6].split(": ")[1]);
+            metric_value = Double.parseDouble(msg[6].split(": ")[1]);
             contains_metric = true;
           }
           catch(Exception e1)
