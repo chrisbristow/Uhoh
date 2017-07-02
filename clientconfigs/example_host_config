@@ -67,6 +67,9 @@ capture:     Thread.\d+.: (.+)
 # (Useful for de-duplicating multiple alerts with different time-stamps when they appear in the
 # browser UI.)
 
+# In any part of an alert (message, tags etc.), the string #hostname# will be replaced by the name
+# of the host that the Client is running on.
+
 # Where an alert is of the form:
 # <string>: <numeric value>
 # ... and one of the tags for the Schnauzer starts with "METRIC_", the Server will write the numeric value
@@ -80,6 +83,15 @@ alert_all:   tags=METRIC_A_VALUE
 
 # ... will append a line to "metrics/YYYY-MM-DD/A_VALUE" each time "Type: <value>" is encountered in logfile.log.
 # This allows metric history to be viewed via the browser.
+
+# For:
+
+file:        logfile.log
+capture:     Type: (\d+)
+alert_all:   tags=METRIC_A_#hostname#
+
+# ... the metric will be written to "metrics/YYYY-MM-DD/A_<hostname>" where <hostname> is the name of the
+# host where the Client is running.
 
 # "alert_count:" triggers a periodic alert which indicates the number of times a particular
 # regular expression has been matched in a log file over a set period of time.
