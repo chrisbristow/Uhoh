@@ -332,7 +332,7 @@ public class SchnauzerConfigurizer extends UhohBase
             if(args.get("tags") != null && args.get("seconds") != null && args.get("command") != null)
             {
               log("Running: " + args.get("command") + " every " + args.get("seconds") + " second(s)");
-              CommandSchnauzer sh = new CommandSchnauzer(cmd, active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, match_str, capture);
+              CommandSchnauzer sh = new CommandSchnauzer(cmd, active, args.get("tags"), event_collector, Long.parseLong(args.get("seconds")) * 1000, match_str, capture, args.get("minimum"), args.get("maximum"));
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);

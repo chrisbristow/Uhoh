@@ -31,6 +31,8 @@
 
 package com.uhoh;
 
+import org.w3c.dom.DOMImplementation;
+
 import java.io.*;
 import java.util.*;
 
@@ -45,6 +47,8 @@ public class CommandSchnauzer extends Schnauzer
   long interval;
   String regex = "";
   String capture = "";
+  long greater_than = 999999999999999L;
+  long less_than = -1;
 
   // A CommandSchnauzer() is started with the following arguments:
   // - The command to run.
@@ -54,7 +58,7 @@ public class CommandSchnauzer extends Schnauzer
   // - The time interval between invocations of the command.
   // - A regex to use to match output from the command.
 
-  CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r, String cptr)
+  CommandSchnauzer(String c, String a, String t, EventCollector ec, long i, String r, String cptr, String lt, String gt)
   {
     command = c;
     active_string = a;
@@ -63,6 +67,25 @@ public class CommandSchnauzer extends Schnauzer
     interval = i;
     regex = r;
     capture = cptr;
+
+    try
+    {
+      if(gt != null)
+      {
+        greater_than = Long.parseLong(gt);
+        log(" - Alert if N > " + greater_than);
+      }
+
+      if(lt != null)
+      {
+        less_than = Long.parseLong(lt);
+        log(" - Alert if N < " + less_than);
+      }
+    }
+    catch(Exception e)
+    {
+      log("Warning: Unable to parse minimum / maximum / message configuration parameters");
+    }
   }
 
   // The run() method actually runs the command, collects the output, filters
@@ -94,7 +117,27 @@ public class CommandSchnauzer extends Schnauzer
             {
               if(line.trim().matches(".*" + capture + ".*"))
               {
-                string_processor(command + ": " + translate_string(line.trim(), capture));
+                String cap_val = translate_string(line.trim(), capture);
+                string_processor(command + ": " + cap_val);
+
+                try
+                {
+                  double act_cap_val = Double.parseDouble(cap_val);
+
+                  if(act_cap_val > greater_than)
+                  {
+                    string_processor(command + ": Exceeded upper bound");
+                  }
+
+                  if(act_cap_val < less_than)
+                  {
+                    string_processor(command + ": Below lower bound");
+                  }
+                }
+                catch(Exception e)
+                {
+                  log("Warning: Bounds checking has not been passed a numerical value");
+                }
               }
             }
             else if(line.trim().matches(".*" + regex + ".*"))
