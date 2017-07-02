@@ -94,12 +94,12 @@ public class CommandSchnauzer extends Schnauzer
             {
               if(line.trim().matches(".*" + capture + ".*"))
               {
-                string_processor(translate_string(line.trim(), capture));
+                string_processor(command + ": " + translate_string(line.trim(), capture));
               }
             }
             else if(line.trim().matches(".*" + regex + ".*"))
             {
-              string_processor(line.trim());
+              string_processor(command + ": " + line.trim());
             }
           }
 
