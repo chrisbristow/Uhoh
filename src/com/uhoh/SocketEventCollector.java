@@ -104,7 +104,7 @@ public class SocketEventCollector extends EventCollector
         byte[] alert_cmd = ("ALERT%%" + our_name + "%%" + event[1] + "%%" + utime + "%%" + event[0]).replaceAll("#hostname#", our_name).getBytes();
         DatagramPacket sp = new DatagramPacket(alert_cmd, alert_cmd.length, InetAddress.getByName(ip_addr), ip_port);
 
-        log(server_info + " -> (" + event[1] + ") " + event[0]);
+        log((server_info + " -> (" + event[1] + ") " + event[0]).replaceAll("#hostname#", our_name));
 
         udp_socket.send(sp);
 
