@@ -40,6 +40,9 @@
 # Handlers - which read from Uhoh Server log files and act on
 # the alerts contained therein (for example, sending emails or
 # generating derived alarms).
+#
+# FT_SECONDARY is supported and the incoming alert messages
+# are broken into constituent parts.
 
 import sys
 import os
@@ -50,6 +53,8 @@ def main(filename):
   inode = 0
   seek = 2
   fsize = 0
+  suppress_until = 0
+  ft_timeout = 17
 
   while(True):
     if fisopen == False:
@@ -86,7 +91,24 @@ def main(filename):
           time.sleep(1)
 
       else:
-        print(nextline.rstrip())
+        print("")
+        print("Log Stream:  " + nextline.rstrip())
+
+        alert_s = nextline.rstrip().split('%%')
+
+        if alert_s[0].endswith("ALERT"):
+          if alert_s[5] == "FT_SECONDARY":
+            suppress_until = int(time.time() + ft_timeout)
+            print("FT Secondary")
+
+          else:
+            if int(time.time() > suppress_until):
+              print("Hostname:    " + alert_s[1])
+              print("Type:        " + alert_s[2])
+              print("Time:        " + alert_s[3])
+              print("Source:      " + alert_s[4])
+              print("Tags:        " + alert_s[5])
+              print("Message:     " + alert_s[6])
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
