@@ -102,17 +102,26 @@ public class RestServerWorker extends UhohBase implements Runnable
               String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
               StringBuffer wb = new StringBuffer();
               String next_line;
-              BufferedReader rr = new BufferedReader(new FileReader("web/metric.html"));
 
-              while((next_line = rr.readLine()) != null)
+              try
               {
-                wb.append(next_line.replaceFirst("_URL_", rest_items[2] + "/" + rest_items[3]));
-                wb.append("\r\n");
+                BufferedReader rr = new BufferedReader(new FileReader("web/metric.html"));
+
+                while((next_line = rr.readLine()) != null)
+                {
+                  wb.append(next_line.replaceFirst("_URL_", rest_items[2] + "/" + rest_items[3]));
+                  wb.append("\r\n");
+                }
+
+                rr.close();
+
+                content = wb.toString();
               }
-
-              rr.close();
-
-              content = wb.toString();
+              catch(Exception fnf)
+              {
+                System.out.println("Exception loading performance management view:");
+                fnf.printStackTrace();
+              }
             }
             else if(url.startsWith("/mdata/"))
             {
@@ -129,22 +138,30 @@ public class RestServerWorker extends UhohBase implements Runnable
                 dir_name = String.format("%04d-%02d-%02d", gc.get(Calendar.YEAR), gc.get(Calendar.MONTH) + 1, gc.get(Calendar.DAY_OF_MONTH));
               }
 
-              BufferedReader rr = new BufferedReader(new FileReader("metrics/" + dir_name + "/" + rest_items[3]));
-              String pfx = "";
-
-              wb.append("{\r\n  \"items\":\r\n  [\r\n");
-
-              while((next_line = rr.readLine()) != null)
+              try
               {
-                wb.append(pfx + "    [ " + next_line + " ]");
-                pfx = ",\r\n";
+                BufferedReader rr = new BufferedReader(new FileReader("metrics/" + dir_name + "/" + rest_items[3]));
+                String pfx = "";
+
+                wb.append("{\r\n  \"items\":\r\n  [\r\n");
+
+                while((next_line = rr.readLine()) != null)
+                {
+                  wb.append(pfx + "    [ " + next_line + " ]");
+                  pfx = ",\r\n";
+                }
+
+                wb.append("\r\n  ]\r\n}");
+
+                rr.close();
+
+                content = wb.toString();
               }
-
-              wb.append("\r\n  ]\r\n}");
-
-              rr.close();
-
-              content = wb.toString();
+              catch(Exception fnf)
+              {
+                System.out.println("Exception loading performance management data:");
+                fnf.printStackTrace();
+              }
             }
             else
             {
@@ -152,17 +169,26 @@ public class RestServerWorker extends UhohBase implements Runnable
 
               StringBuffer wb = new StringBuffer();
               String next_line;
-              BufferedReader rr = new BufferedReader(new FileReader("web/ui.html"));
 
-              while((next_line = rr.readLine()) != null)
+              try
               {
-                wb.append(next_line);
-                wb.append("\r\n");
+                BufferedReader rr = new BufferedReader(new FileReader("web/ui.html"));
+
+                while((next_line = rr.readLine()) != null)
+                {
+                  wb.append(next_line);
+                  wb.append("\r\n");
+                }
+
+                rr.close();
+
+                content = wb.toString();
               }
-
-              rr.close();
-
-              content = wb.toString();
+              catch(Exception fnf)
+              {
+                System.out.println("Exception loading fault management view:");
+                fnf.printStackTrace();
+              }
             }
 
             os.write("HTTP/1.1 200 OK\r\n".getBytes());
