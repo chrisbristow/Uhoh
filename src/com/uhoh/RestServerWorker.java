@@ -123,6 +123,62 @@ public class RestServerWorker extends UhohBase implements Runnable
                 fnf.printStackTrace();
               }
             }
+            else if(url.startsWith("/service/"))
+            {
+              // Serve the service view Web UI static container page.
+
+              String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
+              StringBuffer wb = new StringBuffer();
+              String next_line;
+
+              try
+              {
+                BufferedReader rr = new BufferedReader(new FileReader("web/service.html"));
+
+                while((next_line = rr.readLine()) != null)
+                {
+                  wb.append(next_line.replaceFirst("_URL_", rest_items[2]));
+                  wb.append("\r\n");
+                }
+
+                rr.close();
+
+                content = wb.toString();
+              }
+              catch(Exception fnf)
+              {
+                System.out.println("Exception loading service view:");
+                fnf.printStackTrace();
+              }
+            }
+            else if(url.startsWith("/sview/"))
+            {
+              // Serve the service view configuration pages.
+
+              String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
+              StringBuffer wb = new StringBuffer();
+              String next_line;
+
+              try
+              {
+                BufferedReader rr = new BufferedReader(new FileReader("serviceviews/" + rest_items[2]));
+
+                while((next_line = rr.readLine()) != null)
+                {
+                  wb.append(next_line);
+                  wb.append("\r\n");
+                }
+
+                rr.close();
+
+                content = wb.toString();
+              }
+              catch(Exception fnf)
+              {
+                System.out.println("Exception loading service view:");
+                fnf.printStackTrace();
+              }
+            }
             else if(url.startsWith("/mdata/"))
             {
               // Serve REST requests containing metric data.

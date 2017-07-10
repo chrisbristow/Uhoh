@@ -1,0 +1,87 @@
+{
+  "layers":
+  [
+    {
+      "layer": "Customer Journey Stage",
+      "elements":
+      [
+        {
+          "tag": "MAP_JOIN",
+          "name": "Join"
+        }
+      ]
+    },
+    {
+      "layer": "Services",
+      "elements":
+      [
+        {
+          "tag": "MAP_CREDIT",
+          "name": "Credit Check"
+        },
+        {
+          "tag": "MAP_ACTIVATE",
+          "name": "Activate"
+        }
+      ]
+    },
+    {
+      "layer": "Platforms",
+      "elements":
+      [
+        {
+          "tag": "MAP_CRM",
+          "name": "CRM"
+        },
+        {
+          "tag": "MAP_ERP",
+          "name": "ERP"
+        },
+        {
+          "tag": "MAP_PAYMENTS",
+          "name": "Payments"
+        },
+        {
+          "tag": "MAP_GEO",
+          "name": "Location"
+        }
+      ]
+    },
+    {
+      "layer": "Infrastructure",
+      "elements":
+      [
+        {
+          "tag": "MAP_CRM_HOSTS",
+          "name": "CRM Hosts"
+        },
+        {
+          "tag": "MAP_CRM_DB",
+          "name": "CRM Database"
+        },
+        {
+          "tag": "MAP_ERP_HOSTS",
+          "name": "ERP Hosts"
+        },
+        {
+          "tag": "MAP_ERP_DB",
+          "name": "ERP Database"
+        },
+        {
+          "tag": "MAP_PAYMENTS_ROUTER",
+          "name": "Payments Router"
+        }
+      ]
+    },
+    {
+      "layer": "",
+      "elements":
+      [
+        {
+          "tag": "MAP_GEO_API",
+          "name": "Location API"
+        }
+      ]
+    }
+  ]
+}

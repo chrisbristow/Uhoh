@@ -1,0 +1,207 @@
+<html>
+
+  <head>
+    <title>_URL_</title>
+  </head>
+
+  <style>
+
+      body
+      {
+        margin: 0;
+        background-color: #ffffff;
+      }
+
+      .alert_red
+      {
+        margin-bottom: 1px;
+        background-color: #EF0000;
+        color: #ffffff;
+        font-family: 'Roboto', arial, sans-serif;
+        font-size: 12pt;
+        font-weight: Roboto;
+        padding: 10px;
+        border-left: 2px solid #ffffff;
+        border-right: 2px solid #ffffff;
+      }
+
+      .alert_amber
+      {
+        margin-bottom: 1px;
+        background-color: #FCA800;
+        color: #444444;
+        font-family: 'Roboto', arial, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        padding: 10px;
+        border-left: 2px solid #ffffff;
+        border-right: 2px solid #ffffff;
+      }
+
+      .alert_green
+      {
+        margin-bottom: 1px;
+        background-color: #aaffaa;
+        color: #666666;
+        font-family: 'Roboto', arial, sans-serif;
+        font-size: 12pt;
+        font-weight: normal;
+        padding: 10px;
+        border-left: 2px solid #ffffff;
+        border-right: 2px solid #ffffff;
+      }
+
+      .cat
+      {
+        font: bold 12pt 'Roboto', arial, sans-serif;
+      }
+
+      .box
+      {
+        text-align: center;
+      }
+
+  </style>
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
+
+  <script>
+
+      window.addEvent('domready', function()
+      {
+        fetch_template(document.title);
+      });
+
+      function fetch_template(t_name)
+      {
+        var ajax = new Request({ noCache: true, url: "/sview/" + t_name + "/", onSuccess: function(responseText, responseXML) { build_template(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
+        ajax.get();
+      }
+
+      function build_template(responseText)
+      {
+        try
+        {
+          var obj = JSON.decode(responseText);
+          var html = "";
+
+          for(var i = 0; i < obj.layers.length; i ++)
+          {
+            html += "<tr>";
+            html += "<td class='cat'>" + obj.layers[i].layer + "</td>";
+            html += "<td class='box'>";
+
+            for(var j = 0; j < obj.layers[i].elements.length; j ++)
+            {
+              html += "<span class='alert_green' id='" + obj.layers[i].elements[j].tag + "'>" + obj.layers[i].elements[j].name + "</span>";
+            }
+
+            html += "</td>";
+            html += "</tr>";
+          }
+
+          $('alerts').innerHTML = html;
+
+          do_fetch();
+          do_fade_out();
+        }
+        catch(err)
+        {
+          alert("Error: Service view " + t_name + " contains errors");
+        }
+      }
+
+      function do_fetch()
+      {
+        var ajax = new Request({ noCache: true, url: "/ui", onSuccess: function(responseText, responseXML) { do_render(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
+        ajax.get();
+
+        setTimeout(function() { do_fetch(); }, 20000);
+      }
+
+      function do_fade_out()
+      {
+        var red_alerts = $$('#alerts span.alert_red');
+
+        for(var rdi = 0; rdi < red_alerts.length; rdi ++)
+        {
+          red_alerts[rdi].fade('0.2');
+        }
+
+        setTimeout(function() { do_fade_in(); }, 500);
+      }
+
+      function do_fade_in()
+      {
+        var red_alerts = $$('#alerts span.alert_red');
+
+        for(var rdi = 0; rdi < red_alerts.length; rdi ++)
+        {
+          red_alerts[rdi].fade('1');
+        }
+
+        setTimeout(function() { do_fade_out(); }, 3000);
+      }
+
+      function do_render(responseText)
+      {
+        var obj = JSON.decode(responseText);
+
+        if(obj.status != "ok")
+        {
+          alert("The server returned an error");
+        }
+        else
+        {
+          var rtags = [];
+
+          for(var i = 0; i < obj.red.length; i ++)
+          {
+            rtags = rtags.concat(obj.red[i][1].split(','));
+          }
+
+          for(var i = 0; i < obj.amber.length; i ++)
+          {
+            rtags = rtags.concat(obj.amber[i][1].split(','));
+          }
+
+          for(var i = 0; i < obj.green.length; i ++)
+          {
+            rtags = rtags.concat(obj.green[i][1].split(','));
+          }
+
+          var svc_boxes = $$('#alerts span');
+
+          for(var rdi = 0; rdi < svc_boxes.length; rdi ++)
+          {
+            if(rtags.indexOf(svc_boxes[rdi].id) != -1)
+            {
+              $(svc_boxes[rdi].id).set('class', 'alert_red');
+            }
+            else
+            {
+              $(svc_boxes[rdi].id).set('class', 'alert_green');
+            }
+          }
+        }
+      }
+
+      function errbox()
+      {
+        alert("Error calling the server");
+      }
+
+  </script>
+
+  <body>
+
+    <table border="0" cellspacing="0" cellpadding="12" id="alerts">
+    </table>
+
+    <div id="debug"></div>
+
+  </body>
+
+</html>
