@@ -422,25 +422,4 @@ public class SchnauzerConfigurizer extends UhohBase
       schs.get(i).keep_running = false;
     }
   }
-  
-  // The get_kvps() method is used to extract key / value pairs
-  // from the configuration.
-  
-  HashMap<String, String> get_kvps(String conf)
-  {
-    HashMap<String, String> h = new HashMap<String, String>();
-    String[] s1 = conf.split("\\s+");
-    
-    for(int i = 0; i < s1.length; i ++)
-    {
-      String[] s2 = s1[i].split("=");
-      
-      if(s2.length > 1)
-      {
-        h.put(s2[0], s2[1]);
-      }
-    }
-    
-    return(h);
-  }
 }

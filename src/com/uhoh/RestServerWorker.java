@@ -156,28 +156,8 @@ public class RestServerWorker extends UhohBase implements Runnable
               // Serve the service view configuration pages.
 
               String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
-              StringBuffer wb = new StringBuffer();
-              String next_line;
 
-              try
-              {
-                BufferedReader rr = new BufferedReader(new FileReader("serviceviews/" + rest_items[2]));
-
-                while((next_line = rr.readLine()) != null)
-                {
-                  wb.append(next_line);
-                  wb.append("\r\n");
-                }
-
-                rr.close();
-
-                content = wb.toString();
-              }
-              catch(Exception fnf)
-              {
-                System.out.println("Exception loading service view:");
-                fnf.printStackTrace();
-              }
+              content = service_to_json("serviceviews/" + rest_items[2]);
             }
             else if(url.startsWith("/mdata/"))
             {
@@ -262,5 +242,80 @@ public class RestServerWorker extends UhohBase implements Runnable
       System.out.println("Exception handling REST request:");
       e.printStackTrace();
     }
+  }
+
+  // service_to_json() loads a Service Map View definition file and converts
+  // it into JSON format ready for dispatch to the Service Map View Javascript
+  // user interface.
+
+  String service_to_json(String f)
+  {
+    String r = "";
+
+    try
+    {
+      StringBuffer wb = new StringBuffer("{ \"layers\": [ { ");
+      String next_line;
+      BufferedReader rr = new BufferedReader(new FileReader(f));
+      int layer_count = 0;
+      int element_count = 0;
+
+      while((next_line = rr.readLine()) != null)
+      {
+        HashMap<String, String> args = get_kvps(next_line);
+
+        if(next_line.startsWith("element:"))
+        {
+          String tag = args.get("tag");
+          String name = next_line.replaceFirst("^\\s*element:\\s+.+name=", "");
+
+          if(tag != null && next_line.contains("name="))
+          {
+            if(element_count > 0)
+            {
+              wb.append(",");
+            }
+
+            wb.append("{ \"tag\": \"" + tag + "\", \"name\": \"" + name + "\" } ");
+            element_count++;
+          }
+        }
+        else if(next_line.startsWith("layer:"))
+        {
+          String name = next_line.replaceFirst("^\\s*layer:\\s+.+name=", "");
+
+          if(next_line.contains("name="))
+          {
+            if(name.equals("NONE"))
+            {
+              name = "";
+            }
+
+            if(layer_count > 0)
+            {
+              wb.append("] }, { ");
+            }
+
+            wb.append("\"layer\": \"" + name + "\", \"elements\": [ ");
+            layer_count++;
+            element_count = 0;
+          }
+        }
+      }
+
+      rr.close();
+
+      wb.append("] } ] }");
+
+      r = wb.toString();
+    }
+    catch(Exception e)
+    {
+      System.out.println("Exception loading service view file: " + f);
+      e.printStackTrace();
+      r = "{ \"status\": \"error\" }";
+    }
+
+    return(r);
   }
 }

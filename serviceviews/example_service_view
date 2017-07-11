@@ -1,87 +1,25 @@
-{
-  "layers":
-  [
-    {
-      "layer": "Customer Journey Stage",
-      "elements":
-      [
-        {
-          "tag": "MAP_JOIN",
-          "name": "Join"
-        }
-      ]
-    },
-    {
-      "layer": "Services",
-      "elements":
-      [
-        {
-          "tag": "MAP_CREDIT",
-          "name": "Credit Check"
-        },
-        {
-          "tag": "MAP_ACTIVATE",
-          "name": "Activate"
-        }
-      ]
-    },
-    {
-      "layer": "Platforms",
-      "elements":
-      [
-        {
-          "tag": "MAP_CRM",
-          "name": "CRM"
-        },
-        {
-          "tag": "MAP_ERP",
-          "name": "ERP"
-        },
-        {
-          "tag": "MAP_PAYMENTS",
-          "name": "Payments"
-        },
-        {
-          "tag": "MAP_GEO",
-          "name": "Location"
-        }
-      ]
-    },
-    {
-      "layer": "Infrastructure",
-      "elements":
-      [
-        {
-          "tag": "MAP_CRM_HOSTS",
-          "name": "CRM Hosts"
-        },
-        {
-          "tag": "MAP_CRM_DB",
-          "name": "CRM Database"
-        },
-        {
-          "tag": "MAP_ERP_HOSTS",
-          "name": "ERP Hosts"
-        },
-        {
-          "tag": "MAP_ERP_DB",
-          "name": "ERP Database"
-        },
-        {
-          "tag": "MAP_PAYMENTS_ROUTER",
-          "name": "Payments Router"
-        }
-      ]
-    },
-    {
-      "layer": "",
-      "elements":
-      [
-        {
-          "tag": "MAP_GEO_API",
-          "name": "Location API"
-        }
-      ]
-    }
-  ]
-}
+layer:     name=Customer Journey Stage
+element:   tag=MAP_EXPLORE             name=Explore
+element:   tag=MAP_JOIN                name=Join
+element:   tag=MAP_USE                 name=Use
+element:   tag=MAP_LEAVE               name=Leave
+
+layer:     name=Services
+element:   tag=MAP_CREDIT              name=Credit Check
+element:   tag=MAP_ACTIVATE            name=Activate
+
+layer:     name=Platforms
+element:   tag=MAP_CRM                 name=CRM
+element:   tag=MAP_ERP                 name=ERP
+element:   tag=MAP_PAYMENTS            name=Payments
+element:   tag=MAP_GEO                 name=Location
+
+layer:     name=Infrastructure
+element:   tag=MAP_CRM_HOSTS           name=CRM Hosts
+element:   tag=MAP_CRM_DB              name=CRM Database
+element:   tag=MAP_ERP_HOSTS           name=ERP Hosts
+element:   tag=MAP_ERP_DB              name=ERP Database
+element:   tag=MAP_PAYMENTS_ROUTER     name=Payments Router
+
+layer:     name=NONE
+element:   tag=MAP_GEO_API             name=Location API
