@@ -159,6 +159,14 @@ public class RestServerWorker extends UhohBase implements Runnable
 
               content = service_to_json("serviceviews/" + rest_items[2]);
             }
+            else if(url.startsWith("/dashboard/"))
+            {
+              // Serve a dashboard view.
+
+              String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
+
+              content = dashboard_to_json("dashboards/" + rest_items[2], rest_items[2]);
+            }
             else if(url.startsWith("/mdata/"))
             {
               // Serve REST requests containing metric data.
@@ -314,6 +322,59 @@ public class RestServerWorker extends UhohBase implements Runnable
       System.out.println("Exception loading service view file: " + f);
       e.printStackTrace();
       r = "{ \"status\": \"error\" }";
+    }
+
+    return(r);
+  }
+
+  // dashboard_to_json() loads a Dashboard View definition file and converts
+  // it into HTML format ready for dispatch to the browser.
+
+  String dashboard_to_json(String f, String db)
+  {
+    String r = "";
+
+    try
+    {
+      StringBuffer wb = new StringBuffer("<html>\r\n<head>\r\n<title>" + db + "</title>\r\n</head>\r\n<body>\r\n");
+      String next_line;
+      BufferedReader rr = new BufferedReader(new FileReader(f));
+
+      while((next_line = rr.readLine()) != null)
+      {
+        HashMap<String, String> args = get_kvps(next_line);
+
+        if(next_line.startsWith("row:"))
+        {
+          String size = args.get("size");
+          String url = args.get("url");
+          String url2 = args.get("url2");
+
+          if(size != null && url != null)
+          {
+            if(url2 == null)
+            {
+              wb.append("<nobr>\r\n<iframe src=\"" + url + "\" width=\"100%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n</nobr>\r\n");
+            }
+            else
+            {
+              wb.append("<nobr>\r\n<iframe src=\"" + url + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n<iframe src=\"" + url2 + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n</nobr>\r\n");
+            }
+          }
+        }
+      }
+
+      rr.close();
+
+      wb.append("</body>\r\n</html>");
+
+      r = wb.toString();
+    }
+    catch(Exception e)
+    {
+      System.out.println("Exception loading service view file: " + f);
+      e.printStackTrace();
+      r = "<html>Dashboard " + db + " not found</html>";
     }
 
     return(r);
