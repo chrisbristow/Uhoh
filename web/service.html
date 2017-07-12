@@ -85,27 +85,35 @@
         try
         {
           var obj = JSON.decode(responseText);
-          var html = "";
 
-          for(var i = 0; i < obj.layers.length; i ++)
+          if(obj.status != "ok")
           {
-            html += "<tr>";
-            html += "<td class='cat'>" + obj.layers[i].layer + "</td>";
-            html += "<td class='box'>";
+            alert("Error: The service map requested could not be loaded");
+          }
+          else
+          {
+            var html = "";
 
-            for(var j = 0; j < obj.layers[i].elements.length; j ++)
+            for(var i = 0; i < obj.layers.length; i ++)
             {
-              html += "<span class='alert_green' id='" + obj.layers[i].elements[j].tag + "'>" + obj.layers[i].elements[j].name + "</span>";
+              html += "<tr>";
+              html += "<td class='cat'>" + obj.layers[i].layer + "</td>";
+              html += "<td class='box'>";
+
+              for(var j = 0; j < obj.layers[i].elements.length; j ++)
+              {
+                html += "<span class='alert_green' id='" + obj.layers[i].elements[j].tag + "'>" + obj.layers[i].elements[j].name + "</span>";
+              }
+
+              html += "</td>";
+              html += "</tr>";
             }
 
-            html += "</td>";
-            html += "</tr>";
+            $('alerts').innerHTML = html;
+
+            do_fetch();
+            do_fade_out();
           }
-
-          $('alerts').innerHTML = html;
-
-          do_fetch();
-          do_fade_out();
         }
         catch(err)
         {

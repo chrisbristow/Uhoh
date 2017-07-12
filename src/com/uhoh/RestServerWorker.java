@@ -262,7 +262,7 @@ public class RestServerWorker extends UhohBase implements Runnable
 
     try
     {
-      StringBuffer wb = new StringBuffer("{ \"layers\": [ { ");
+      StringBuffer wb = new StringBuffer("{ \"status\": \"ok\", \"layers\": [ { ");
       String next_line;
       BufferedReader rr = new BufferedReader(new FileReader(f));
       int layer_count = 0;
