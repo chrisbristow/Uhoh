@@ -57,7 +57,8 @@
 
       window.addEvent('domready', function()
       {
-        if(location.search.startsWith("?"))
+        //if(location.search.startsWith("?"))
+        if(location.search.charAt(0) == "?")
         {
           var filter = (location.search).replace(/\?/, "");
 
