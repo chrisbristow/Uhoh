@@ -1,25 +1,33 @@
-layer:     name=Customer Journey Stage
-element:   tag=MAP_EXPLORE             name=Explore
-element:   tag=MAP_JOIN                name=Join
-element:   tag=MAP_USE                 name=Use
-element:   tag=MAP_LEAVE               name=Leave
+layer:     name=Activity
+element:   tag=MAP_EXPLORE             name=Compare
+element:   tag=MAP_JOIN                name=Register
+element:   tag=MAP_USE                 name=Purchase
+element:   tag=MAP_UPG                 name=Upgrade
+element:   tag=MAP_LEAVE               name=Retire
 
 layer:     name=Services
+element:   tag=MAP_DEAL                name=Deal Calculator
 element:   tag=MAP_CREDIT              name=Credit Check
 element:   tag=MAP_ACTIVATE            name=Activate
+element:   tag=MAP_DEACTIVATE          name=Deactivate
 
 layer:     name=Platforms
-element:   tag=MAP_CRM                 name=CRM
-element:   tag=MAP_ERP                 name=ERP
-element:   tag=MAP_PAYMENTS            name=Payments
-element:   tag=MAP_GEO                 name=Location
+element:   tag=MAP_WEB                 name=Web Site
+element:   tag=MAP_CRM                 name=CRM Platform
+element:   tag=MAP_ERP                 name=ERP Platform
+element:   tag=MAP_PAYMENTS            name=Payments Platform
+element:   tag=MAP_GEO                 name=Location Platform
 
 layer:     name=Infrastructure
 element:   tag=MAP_CRM_HOSTS           name=CRM Hosts
-element:   tag=MAP_CRM_DB              name=CRM Database
+element:   tag=MAP_CRM_DB              name=CRM Databases
+element:   tag=MAP_CRM_AS              name=CRM App Servers
 element:   tag=MAP_ERP_HOSTS           name=ERP Hosts
-element:   tag=MAP_ERP_DB              name=ERP Database
+element:   tag=MAP_ERP_DB              name=ERP Databases
+element:   tag=MAP_ERP_AS              name=ERP App Servers
 element:   tag=MAP_PAYMENTS_ROUTER     name=Payments Router
 
 layer:     name=NONE
 element:   tag=MAP_GEO_API             name=Location API
+element:   tag=MAP_CDN                 name=Content Delivery Network
+element:   tag=MAP_CMS                 name=Content Management System
