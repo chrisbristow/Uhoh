@@ -336,7 +336,7 @@ public class RestServerWorker extends UhohBase implements Runnable
 
     try
     {
-      StringBuffer wb = new StringBuffer("<html>\r\n<head>\r\n<title>" + db + "</title>\r\n</head>\r\n<body>\r\n");
+      StringBuffer wb = new StringBuffer("<html>\r\n<head>\r\n<title>" + db + "</title>\r\n<link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>\r\n</head>\r\n<body>\r\n");
       String next_line;
       BufferedReader rr = new BufferedReader(new FileReader(f));
 
@@ -360,6 +360,15 @@ public class RestServerWorker extends UhohBase implements Runnable
             {
               wb.append("<nobr>\r\n<iframe src=\"" + url + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n<iframe src=\"" + url2 + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n</nobr>\r\n");
             }
+          }
+        }
+        else if(next_line.startsWith("title:"))
+        {
+          if(next_line.contains("name="))
+          {
+            String name = next_line.replaceFirst("^\\s*title:\\s+name=", "");
+
+            wb.append("<center style=\"font: bold 12pt 'Roboto', arial, sans-serif;\">" + name + "</center>\r\n");
           }
         }
       }
