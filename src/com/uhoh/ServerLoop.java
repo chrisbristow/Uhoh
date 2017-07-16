@@ -55,12 +55,12 @@ public class ServerLoop extends UhohBase
   String broadcast_address;
   DatagramSocket udp_socket = null;
   String our_name = null;
-  HashMap<String, Object[]> clients = new HashMap<String, Object[]>();
+  ConcurrentHashMap<String, Object[]> clients = new ConcurrentHashMap<String, Object[]>();
   LinkedBlockingQueue<Object[]> client_q = new LinkedBlockingQueue<Object[]>();
-  HashMap<String, Object[]> ui_red = new HashMap<String, Object[]>();
-  HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
-  HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
-  HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
+  ConcurrentHashMap<String, Object[]> ui_red = new ConcurrentHashMap<String, Object[]>();
+  ConcurrentHashMap<String, Object[]> ui_amber = new ConcurrentHashMap<String, Object[]>();
+  ConcurrentHashMap<String, Object[]> ui_green = new ConcurrentHashMap<String, Object[]>();
+  ConcurrentHashMap<String, Long> ui_rtime = new ConcurrentHashMap<String, Long>();
   String unicast_addrs = null;
   String secondary_server = null;
   String dead_client_tags = "GREEN";
@@ -388,7 +388,7 @@ public class ServerLoop extends UhohBase
   // The get_ui_items() method sorts and maintains the list of current
   // alerts.  This list is used by the Web UI.
 
-  public String get_ui_items(HashMap<String, Object[]> ui_disp)
+  public String get_ui_items(ConcurrentHashMap<String, Object[]> ui_disp)
   {
     LinkedList<Map.Entry<String, Object[]>> lst = new LinkedList<Map.Entry<String, Object[]>>(ui_disp.entrySet());
 
