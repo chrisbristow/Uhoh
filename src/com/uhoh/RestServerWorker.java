@@ -102,6 +102,12 @@ public class RestServerWorker extends UhohBase implements Runnable
               String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
               StringBuffer wb = new StringBuffer();
               String next_line;
+              String y_axis = "Volume";
+
+              if(rest_items.length == 5)
+              {
+                y_axis = rest_items[4].replaceAll("%20", " ");
+              }
 
               try
               {
@@ -109,7 +115,7 @@ public class RestServerWorker extends UhohBase implements Runnable
 
                 while((next_line = rr.readLine()) != null)
                 {
-                  wb.append(next_line.replaceFirst("_URL_", rest_items[2] + "/" + rest_items[3]));
+                  wb.append(next_line.replaceFirst("_URL_", rest_items[2] + "/" + rest_items[3]).replaceFirst("_METRIC_", y_axis));
                   wb.append("\r\n");
                 }
 
