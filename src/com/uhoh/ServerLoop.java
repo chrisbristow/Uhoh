@@ -55,12 +55,12 @@ public class ServerLoop extends UhohBase
   String broadcast_address;
   DatagramSocket udp_socket = null;
   String our_name = null;
-  ConcurrentHashMap<String, Object[]> clients = new ConcurrentHashMap<String, Object[]>();
+  HashMap<String, Object[]> clients = new HashMap<String, Object[]>();
   LinkedBlockingQueue<Object[]> client_q = new LinkedBlockingQueue<Object[]>();
-  ConcurrentHashMap<String, Object[]> ui_red = new ConcurrentHashMap<String, Object[]>();
-  ConcurrentHashMap<String, Object[]> ui_amber = new ConcurrentHashMap<String, Object[]>();
-  ConcurrentHashMap<String, Object[]> ui_green = new ConcurrentHashMap<String, Object[]>();
-  ConcurrentHashMap<String, Long> ui_rtime = new ConcurrentHashMap<String, Long>();
+  HashMap<String, Object[]> ui_red = new HashMap<String, Object[]>();
+  HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
+  HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
+  HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
   String unicast_addrs = null;
   String secondary_server = null;
   String dead_client_tags = "GREEN";
@@ -388,7 +388,7 @@ public class ServerLoop extends UhohBase
   // The get_ui_items() method sorts and maintains the list of current
   // alerts.  This list is used by the Web UI.
 
-  public String get_ui_items(ConcurrentHashMap<String, Object[]> ui_disp)
+  public String get_ui_items(HashMap<String, Object[]> ui_disp)
   {
     LinkedList<Map.Entry<String, Object[]>> lst = new LinkedList<Map.Entry<String, Object[]>>(ui_disp.entrySet());
 
@@ -422,7 +422,16 @@ public class ServerLoop extends UhohBase
       if(((Long)ui_disp.get(msg)[0]) < (System.currentTimeMillis() - ui_rtime.get((String)ui_disp.get(msg)[1])))
       {
         log("Purging: " + msg);
-        ui_disp.remove(msg);
+
+        try
+        {
+          ui_disp.remove(msg);
+        }
+        catch(Exception e)
+        {
+          log("Exception purging timed-out alert: " + msg + " :");
+          e.printStackTrace();
+        }
       }
     }
 
