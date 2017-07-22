@@ -1,4 +1,4 @@
 row:   size=30%   url=/service/example_service_view
-title: name=Chart: Medium / Chart: Low
-row:   size=30%   url=/metric/TODAY/A_MEDIUM/   url2=/metric/TODAY/A_LOW/
+title: name=Performance Information
+row:   size=30%   url=/metric/TODAY/A_MEDIUM/   url2=/metric/TODAY/A_LOW/Delay%20(sec)
 row:   size=40%   url=/
