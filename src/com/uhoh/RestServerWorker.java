@@ -171,7 +171,7 @@ public class RestServerWorker extends UhohBase implements Runnable
 
               String[] rest_items = url.replaceFirst("\\?.*$", "").split("/");
 
-              content = dashboard_to_json("dashboards/" + rest_items[2], rest_items[2]);
+              content = dashboard_to_html("dashboards/" + rest_items[2], rest_items[2]);
             }
             else if(url.startsWith("/mdata/"))
             {
@@ -333,16 +333,16 @@ public class RestServerWorker extends UhohBase implements Runnable
     return(r);
   }
 
-  // dashboard_to_json() loads a Dashboard View definition file and converts
+  // dashboard_to_html() loads a Dashboard View definition file and converts
   // it into HTML format ready for dispatch to the browser.
 
-  String dashboard_to_json(String f, String db)
+  String dashboard_to_html(String f, String db)
   {
     String r = "";
 
     try
     {
-      StringBuffer wb = new StringBuffer("<html>\r\n<head>\r\n<title>" + db + "</title>\r\n<link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>\r\n</head>\r\n<body>\r\n");
+      StringBuffer wb = new StringBuffer("<html>\r\n  <head>\r\n    <title>" + db + "</title>\r\n    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>\r\n  </head>\r\n  <body>\r\n");
       String next_line;
       BufferedReader rr = new BufferedReader(new FileReader(f));
 
@@ -360,11 +360,11 @@ public class RestServerWorker extends UhohBase implements Runnable
           {
             if(url2 == null)
             {
-              wb.append("<nobr>\r\n<iframe src=\"" + url + "\" width=\"100%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n</nobr>\r\n");
+              wb.append("    <nobr>\r\n      <iframe src=\"" + url + "\" width=\"100%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n    </nobr>\r\n");
             }
             else
             {
-              wb.append("<nobr>\r\n<iframe src=\"" + url + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n<iframe src=\"" + url2 + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n</nobr>\r\n");
+              wb.append("    <nobr>\r\n      <iframe src=\"" + url + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n      <iframe src=\"" + url2 + "\" width=\"50%\" height=\"" + size + "\" scrolling=\"no\" frameborder=\"0\"></iframe>\r\n    </nobr>\r\n");
             }
           }
         }
@@ -374,14 +374,14 @@ public class RestServerWorker extends UhohBase implements Runnable
           {
             String name = next_line.replaceFirst("^\\s*title:\\s+name=", "");
 
-            wb.append("<center style=\"font: bold 12pt 'Roboto', arial, sans-serif;\">" + name + "</center>\r\n");
+            wb.append("    <center style=\"font: bold 12pt 'Roboto', arial, sans-serif;\">" + name + "</center>\r\n");
           }
         }
       }
 
       rr.close();
 
-      wb.append("</body>\r\n</html>");
+      wb.append("  </body>\r\n</html>");
 
       r = wb.toString();
     }
