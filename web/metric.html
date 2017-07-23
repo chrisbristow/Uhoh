@@ -62,17 +62,24 @@
       {
         var obj = JSON.decode(responseText);
 
-        datatable = null;
-        datatable = new google.visualization.DataTable();
-        datatable.addColumn('datetime', 'Time');
-        datatable.addColumn('number', 'Value')
-
-        for(var i = 0; i < obj.items.length; i ++)
+        if(obj.status != "ok")
         {
-          datatable.addRow([ new Date(obj.items[i][0], obj.items[i][1] - 1, obj.items[i][2], obj.items[i][3], obj.items[i][4], obj.items[i][5], 0), obj.items[i][6]]);
+          $('chart').innerHTML = "No chart data available";
         }
+        else
+        {
+          datatable = null;
+          datatable = new google.visualization.DataTable();
+          datatable.addColumn('datetime', 'Time');
+          datatable.addColumn('number', 'Value')
 
-        chart.draw(datatable, chartoptions);
+          for(var i = 0; i < obj.items.length; i ++)
+          {
+            datatable.addRow([ new Date(obj.items[i][0], obj.items[i][1] - 1, obj.items[i][2], obj.items[i][3], obj.items[i][4], obj.items[i][5], 0), obj.items[i][6]]);
+          }
+
+          chart.draw(datatable, chartoptions);
+        }
       }
 
       function errbox()
@@ -86,7 +93,7 @@
 
   <body>
 
-  <div id="chart" style="width: 100%; height: 100%;"></div>
+  <div id="chart" style="width: 100%; height: 100%; font-family: 'Roboto', arial, sans-serif; font-size: 12pt;"></div>
 
   </body>
 
