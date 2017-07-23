@@ -114,12 +114,16 @@ public class CommandSchnauzer extends Schnauzer
       {
         if(is_active(active_string))
         {
+          log("Running " + command);
+
           String line;
           Process p = Runtime.getRuntime().exec(command);
           BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
           while((line = input.readLine()) != null)
           {
+            log("Command output: " + line);
+
             if(capture.length() != 0)
             {
               if(line.trim().matches(".*" + capture + ".*"))
