@@ -193,7 +193,7 @@ public class RestServerWorker extends UhohBase implements Runnable
                 BufferedReader rr = new BufferedReader(new FileReader("metrics/" + dir_name + "/" + rest_items[3]));
                 String pfx = "";
 
-                wb.append("{\r\n  \"items\":\r\n  [\r\n");
+                wb.append("{\r\n  \"status\": \"ok\",\r\n  \"items\":\r\n  [\r\n");
 
                 while((next_line = rr.readLine()) != null)
                 {
