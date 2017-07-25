@@ -1,9 +1,5 @@
-# This program consumes a log file (reads from the tail of the file).
-# If the file is "rolled" (ie. copied/moved to a backup file name and
-# a new file created in it's place with the same name, then this
-# program will continue to read from the new file.
+#!/usr/bin/perl
 #
-# This program can be used as a basis for implementing Uhoh Alert
 #       Licence
 #       -------
 #       Copyright (c) 2015-2017, Chris Bristow
