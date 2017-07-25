@@ -416,7 +416,7 @@ public class ServerLoop extends UhohBase
       Date ev_dt = new Date();
       ev_dt.setTime(((Long)ui_disp.get(msg)[0]));
       sb.append(pfx);
-      sb.append("[\"" + ev_dt.toString() + ": " + msg.replaceAll("\"", "") + "\", \"" + (String)ui_disp.get(msg)[2] + "\"]");
+      sb.append("[\"" + ev_dt.toString() + ": " + msg.replaceAll("\"", "").replaceAll("\\\\", "\\\\") + "\", \"" + (String)ui_disp.get(msg)[2] + "\"]");
       pfx = ",";
 
       if(((Long)ui_disp.get(msg)[0]) < (System.currentTimeMillis() - ui_rtime.get((String)ui_disp.get(msg)[1])))
