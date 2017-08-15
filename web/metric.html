@@ -69,7 +69,7 @@
 
         if(obj.status != "ok")
         {
-          $('chart').innerHTML = "No chart data available";
+          $('chart').innerHTML = "No chart data available (" + chartoptions.title + ")";
         }
         else
         {
@@ -84,9 +84,37 @@
           }
 
           chart.draw(datatable, chartoptions);
-
-          $('controls').innerHTML = "";
         }
+
+        var dt = new Date();
+        var u_parts = chartoptions.title.split('/');
+
+        if(u_parts[0].match(/^(\d\d\d\d)\-(\d\d)\-(\d\d)$/) != null)
+        {
+          var ddc = u_parts[0].match(/^(\d\d\d\d)\-(\d\d)\-(\d\d)$/);
+
+          dt = new Date(ddc[1], ddc[2] - 1, ddc[3], 12, 0, 0, 0);
+        }
+
+        var d_back = new Date(dt.getTime() - 86400000);
+        var d_fwd = new Date(dt.getTime() + 86400000);
+
+        var y_date = d_back.getFullYear() + "-" + pad(d_back.getMonth() + 1) + "-" + pad(d_back.getDate());
+        var t_date = d_fwd.getFullYear() + "-" + pad(d_fwd.getMonth() + 1) + "-" + pad(d_fwd.getDate());
+
+        $('controls').innerHTML = "<input type='button' value='&lt;' onmouseup='location.href = \"/metric/" + y_date + "/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' /> <input type='button' value='O' onmouseup='location.href = \"/metric/TODAY/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' /> <input type='button' value='&gt;' onmouseup='location.href = \"/metric/" + t_date + "/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' />";
+      }
+
+      function pad(x)
+      {
+        var r = x + "";
+
+        if(x < 10)
+        {
+          r = "0" + x;
+        }
+
+        return(r);
       }
 
       function errbox()
