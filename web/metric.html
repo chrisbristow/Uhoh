@@ -35,7 +35,7 @@
 
       window.addEvent('domready', function()
       {
-        chart = new google.visualization.LineChart(document.getElementById('chart'));
+        chart = new google.visualization.AreaChart(document.getElementById('chart'));
 
         chartoptions = {
           title: '_URL_',
@@ -84,7 +84,7 @@
 
       function errbox()
       {
-        alert("Error calling the server");
+        $('chart').innerHTML = "Error calling the server";
       }
 
     </script>
@@ -93,7 +93,7 @@
 
   <body>
 
-    <div id="chart" style="width: 100%; height: 100%; font-family: 'Roboto', arial, sans-serif; font-size: 12pt;"></div>
+    <div id="chart" style="width: 100%; height: 100%; font-family: 'Roboto', arial, sans-serif; font-size: 12pt; font-weight: bold;"></div>
 
   </body>
 

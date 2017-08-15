@@ -45,6 +45,11 @@
         padding: 10px;
       }
 
+      .cat
+      {
+        font: bold 12pt 'Roboto', arial, sans-serif;
+      }
+
   </style>
 
   <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
@@ -109,7 +114,7 @@
 
         if(obj.status != "ok")
         {
-          alert("The server returned an error");
+          response = "The server returned an error";
         }
         else
         {
@@ -155,14 +160,14 @@
 
       function errbox()
       {
-        alert("Error calling the server");
+        $('alerts').innerHTML = "Error calling the server";
       }
 
   </script>
 
   <body>
 
-    <div id="alerts"></div>
+    <div id="alerts" class="cat"></div>
 
   </body>
 

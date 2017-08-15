@@ -89,7 +89,7 @@
 
           if(obj.status != "ok")
           {
-            alert("Error: The service map requested could not be loaded");
+            $('debug').innerHTML = "Error: The service map requested could not be loaded";
           }
           else
           {
@@ -118,7 +118,7 @@
         }
         catch(err)
         {
-          alert("Error: Service view " + t_name + " contains errors");
+          $('debug').innerHTML = "Error: Service view " + t_name + " contains errors";
         }
       }
 
@@ -160,7 +160,7 @@
 
         if(obj.status != "ok")
         {
-          alert("The server returned an error");
+          $('debug').innerHTML = "The server returned an error";
         }
         else
         {
@@ -195,12 +195,14 @@
               $(svc_boxes[rdi].id).setStyle('opacity', '1.0');
             }
           }
+
+          $('debug').innerHTML = "";
         }
       }
 
       function errbox()
       {
-        alert("Error calling the server");
+        $('debug').innerHTML = "Error calling the server";
       }
 
   </script>
@@ -210,7 +212,7 @@
     <table border="0" cellspacing="0" cellpadding="12" id="alerts">
     </table>
 
-    <div id="debug"></div>
+    <div id="debug" class="cat"></div>
 
   </body>
 
