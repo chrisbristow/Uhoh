@@ -60,6 +60,7 @@ public class ServerLoop extends UhohBase
   HashMap<String, Object[]> ui_red = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_amber = new HashMap<String, Object[]>();
   HashMap<String, Object[]> ui_green = new HashMap<String, Object[]>();
+  HashMap<String, Object[]> ui_purple = new HashMap<String, Object[]>();
   HashMap<String, Long> ui_rtime = new HashMap<String, Long>();
   String unicast_addrs = null;
   String secondary_server = null;
@@ -179,6 +180,7 @@ public class ServerLoop extends UhohBase
         get_ui_items(ui_red);
         get_ui_items(ui_amber);
         get_ui_items(ui_green);
+        get_ui_items(ui_purple);
 
         try
         {
@@ -349,6 +351,9 @@ public class ServerLoop extends UhohBase
               sb.append("],");
               sb.append("\"green\":[");
               sb.append(get_ui_items(ui_green));
+              sb.append("],");
+              sb.append("\"purple\":[");
+              sb.append(get_ui_items(ui_purple));
               sb.append("]}");
 
               ((LinkedBlockingQueue)new_update[1]).put(sb.toString());
@@ -370,6 +375,10 @@ public class ServerLoop extends UhohBase
               else if(tags.contains("GREEN"))
               {
                 ui_green.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
+              }
+              else if(tags.contains("PURPLE"))
+              {
+                ui_purple.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
               }
 
               disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]);

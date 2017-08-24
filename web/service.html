@@ -181,6 +181,11 @@
             rtags = rtags.concat(obj.green[i][1].split(','));
           }
 
+          for(var i = 0; i < obj.purple.length; i ++)
+          {
+            rtags = rtags.concat(obj.purple[i][1].split(','));
+          }
+
           var svc_boxes = $$('#alerts span');
 
           for(var rdi = 0; rdi < svc_boxes.length; rdi ++)
