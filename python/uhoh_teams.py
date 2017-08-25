@@ -107,7 +107,7 @@ def main(filename, tag, s_url, throttle):
 
               if tag in tags:
                 msg = alert_s[1] + ": " + alert_s[6]
-                payload = 'payload={"text": "' + msg + '"}'
+                payload = '{"text": "' + msg + '"}'
                 req = urllib.request.Request(url=s_url, method='POST', data=payload.encode())
 
                 try:
