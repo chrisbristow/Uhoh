@@ -107,7 +107,7 @@ def main(filename, tag, s_url, channel, throttle):
               tags = alert_s[5].split(',')
 
               if tag in tags:
-                msg = alert_s[1] + ": " + alert_s[6]
+                msg = alert_s[1] + ": " + alert_s[6].replace("\\", "\\\\")
                 payload = 'payload={"channel": "#' + channel + '", "username": "Uhoh", "text": "' + msg + '"}'
                 req = urllib.request.Request(url=s_url, method='POST', data=payload.encode())
 
