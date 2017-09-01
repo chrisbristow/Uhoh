@@ -66,7 +66,8 @@ public class SchnauzerConfigurizer extends UhohBase
     
     while(st.hasMoreTokens())
     {
-      String config_line = st.nextToken();
+      String config_line = st.nextToken().trim();
+      boolean c_line_ok = false;
       
       //log("Config: " + config_line);
 
@@ -78,22 +79,27 @@ public class SchnauzerConfigurizer extends UhohBase
         if(config_line.startsWith("file:"))
         {
           file = config_line.replaceFirst("^file:\\s+", "");
+          c_line_ok = true;
         }
         else if(config_line.startsWith("active:"))
         {
           active = config_line.replaceFirst("^active:\\s+", "");
+          c_line_ok = true;
         }
         else if(config_line.startsWith("match:"))
         {
           match_str = config_line.replaceFirst("^match:\\s+", "");
+          c_line_ok = true;
         }
         else if(config_line.startsWith("capture:"))
         {
           capture = config_line.replaceFirst("^capture:\\s+", "");
+          c_line_ok = true;
         }
         else if(config_line.startsWith("ps_command:"))
         {
           ps_command = config_line.replaceFirst("^ps_command:\\s+", "");
+          c_line_ok = true;
         }
         else if(config_line.startsWith("alert_all:"))
         {
@@ -113,6 +119,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
 
@@ -133,6 +140,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
           
@@ -159,6 +167,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
 
@@ -185,6 +194,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
 
@@ -205,6 +215,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
 
@@ -225,6 +236,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
 
@@ -253,6 +265,7 @@ public class SchnauzerConfigurizer extends UhohBase
                 Thread t = new Thread(sh);
                 t.start();
                 schs.add(sh);
+                c_line_ok = true;
               }
               else if(args.get("minimum") != null)
               {
@@ -260,6 +273,7 @@ public class SchnauzerConfigurizer extends UhohBase
                 Thread t = new Thread(sh);
                 t.start();
                 schs.add(sh);
+                c_line_ok = true;
               }
               else if(args.get("maximum") != null)
               {
@@ -267,6 +281,7 @@ public class SchnauzerConfigurizer extends UhohBase
                 Thread t = new Thread(sh);
                 t.start();
                 schs.add(sh);
+                c_line_ok = true;
               }
             }
           }
@@ -288,6 +303,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
           
@@ -308,11 +324,13 @@ public class SchnauzerConfigurizer extends UhohBase
               {
                 ps_hash.put(match_str, new Object[]{ args.get("tags"), active, new Integer(args.get("minimum")), new Integer(args.get("maximum")), 0 });
                 log("Checking for process: " + match_str + " (" + args.get("minimum") + " <= N <= " + args.get("maximum") + ") [" + args.get("tags") + "]");
+                c_line_ok = true;
               }
               else if(args.get("exactly") != null)
               {
                 ps_hash.put(match_str, new Object[]{ args.get("tags"), active, new Integer(args.get("exactly")), new Integer(args.get("exactly")), 0 });
                 log("Checking for process: " + match_str + " (N = " + args.get("exactly") + ") [" + args.get("tags") + "]");
+                c_line_ok = true;
               }
             }
           }
@@ -336,6 +354,7 @@ public class SchnauzerConfigurizer extends UhohBase
               Thread t = new Thread(sh);
               t.start();
               schs.add(sh);
+              c_line_ok = true;
             }
           }
 
@@ -353,6 +372,7 @@ public class SchnauzerConfigurizer extends UhohBase
             String message = config_line.replaceFirst("^\\s*alert_multi:\\s+.+message=", "");
             log("Collecting tags: " + args.get("collect") + " over " + args.get("seconds") + " second(s) to output: " + message + " (" + args.get("tags") + ")");
             event_collector.multi_list.add(new MultiMatcher(args.get("tags"), Long.parseLong(args.get("seconds")), message, args.get("collect"), active, event_collector));
+            c_line_ok = true;
           }
 
           active = "ANY";
@@ -369,6 +389,7 @@ public class SchnauzerConfigurizer extends UhohBase
             Thread t = new Thread(sh);
             t.start();
             schs.add(sh);
+            c_line_ok = true;
           }
 
           active = "ANY";
@@ -384,15 +405,33 @@ public class SchnauzerConfigurizer extends UhohBase
             Thread t = new Thread(sh);
             t.start();
             schs.add(sh);
+            c_line_ok = true;
           }
 
           active = "ANY";
+        }
+        else if(config_line.startsWith("#"))
+        {
+          c_line_ok = true;
+        }
+        else if(config_line.equals(""))
+        {
+          c_line_ok = true;
+        }
+        else if(config_line.equals("CONFIG"))
+        {
+          c_line_ok = true;
         }
       }
       catch(Exception e)
       {
         log("Exception parsing configuration: " + config_line);
         e.printStackTrace();
+      }
+
+      if(c_line_ok == false)
+      {
+        log("Unrecognised configuration line: " + config_line);
       }
     }
 
