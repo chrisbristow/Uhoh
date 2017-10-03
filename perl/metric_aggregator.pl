@@ -45,9 +45,9 @@
 
 $| = 1;
 
-if($#ARGV != 4)
+if($#ARGV != 5)
 {
-  print STDERR "metric_aggregator.pl <metric_name> <days_back> <start_hour> <end_hour> <aggregate_name>\n";
+  print STDERR "metric_aggregator.pl <metric_name> <days_back> <start_hour> <end_hour> <aggregate_name> <AVERAGE|TOTAL>\n";
   exit(1);
 }
 
@@ -56,6 +56,7 @@ $days_back = $ARGV[1];
 $start_time = $ARGV[2];
 $end_time = $ARGV[3];
 $agg_name = $ARGV[4];
+$agg_type = $ARGV[5];
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 $dir_name = "../metrics/".sprintf("%04d-%02d-%02d", $year + 1900, $mon + 1, $mday);
@@ -102,9 +103,20 @@ for($c = 0; $c <= $days_back; $c ++)
     }
   }
 
-  if($daily_count > 0)
+  if($agg_type =~ m/^.*TOTAL.*$/)
+  {
+    printf(OUT "%d,%d,%d,%d,0,0,%f\n", $year + 1900, $mon + 1, $mday, $end_time, $daily_total);
+    print "T";
+  }
+  elsif($daily_count > 0)
   {
     printf(OUT "%d,%d,%d,%d,0,0,%f\n", $year + 1900, $mon + 1, $mday, $end_time, ($daily_total / $daily_count));
+    print "A";
+  }
+  else
+  {
+    printf(OUT "%d,%d,%d,%d,0,0,%f\n", $year + 1900, $mon + 1, $mday, $end_time, 0);
+    print "A";
   }
 
   $s_utime += 86400;
