@@ -42,6 +42,7 @@
 # - <start_hour>: The hour of day after which values are used.
 # - <end_hour>: The hour of day after which values are not used.
 # - <aggregate_name>: The name of the metric to create containing calculated average values.
+# - <AVERAGE|TOTAL>: Choose whether the daily output is average or total.
 
 $| = 1;
 

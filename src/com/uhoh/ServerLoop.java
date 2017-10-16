@@ -121,7 +121,12 @@ public class ServerLoop extends UhohBase
         log("Secondary server:                     " + secondary_server);
       }
 
-      //run();
+      if(props.getProperty("launch") != null)
+      {
+        String launch = props.getProperty("launch").trim();
+        log("Running:                              " + launch);
+        Runtime.getRuntime().exec(launch);
+      }
     }
     catch(Exception e)
     {
