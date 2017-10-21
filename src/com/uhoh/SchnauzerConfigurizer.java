@@ -68,8 +68,6 @@ public class SchnauzerConfigurizer extends UhohBase
     {
       String config_line = st.nextToken().trim();
       boolean c_line_ok = false;
-      
-      //log("Config: " + config_line);
 
       // The following block is a large switch table which performs the parsing
       // of the configuration and starts Schnauzer() threads as necessary.

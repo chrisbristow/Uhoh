@@ -276,6 +276,7 @@ public class RestServerWorker extends UhohBase implements Runnable
 
       while((next_line = rr.readLine()) != null)
       {
+        next_line = next_line.trim();
         HashMap<String, String> args = get_kvps(next_line);
 
         if(next_line.startsWith("element:"))
@@ -342,12 +343,28 @@ public class RestServerWorker extends UhohBase implements Runnable
 
     try
     {
-      StringBuffer wb = new StringBuffer("<html>\r\n  <head>\r\n    <title>" + db + "</title>\r\n    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>\r\n  </head>\r\n  <body>\r\n");
       String next_line;
-      BufferedReader rr = new BufferedReader(new FileReader(f));
+      String colour = "#ffffff";
+      RandomAccessFile rr = new RandomAccessFile(f, "r");
 
       while((next_line = rr.readLine()) != null)
       {
+        next_line = next_line.trim();
+        HashMap<String, String> args = get_kvps(next_line);
+
+        if(next_line.startsWith("background:"))
+        {
+          colour = args.get("colour");
+        }
+      }
+
+      rr.seek(0);
+
+      StringBuffer wb = new StringBuffer("<html>\r\n  <head>\r\n    <title>" + db + "</title>\r\n    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>\r\n  </head>\r\n  <body bgcolor='" + colour + "'>\r\n");
+
+      while((next_line = rr.readLine()) != null)
+      {
+        next_line = next_line.trim();
         HashMap<String, String> args = get_kvps(next_line);
 
         if(next_line.startsWith("row:"))
