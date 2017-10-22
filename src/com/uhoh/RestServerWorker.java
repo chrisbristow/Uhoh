@@ -157,6 +157,33 @@ public class RestServerWorker extends UhohBase implements Runnable
                 fnf.printStackTrace();
               }
             }
+            else if(url.startsWith("/uhoh.css"))
+            {
+              // Serve the Uhoh UI CSS file.
+
+              StringBuffer wb = new StringBuffer();
+              String next_line;
+
+              try
+              {
+                BufferedReader rr = new BufferedReader(new FileReader("web/uhoh.css"));
+
+                while((next_line = rr.readLine()) != null)
+                {
+                  wb.append(next_line);
+                  wb.append("\r\n");
+                }
+
+                rr.close();
+
+                content = wb.toString();
+              }
+              catch(Exception fnf)
+              {
+                System.out.println("Exception loading uhoh.css:");
+                fnf.printStackTrace();
+              }
+            }
             else if(url.startsWith("/sview/"))
             {
               // Serve the service view configuration pages.
@@ -344,7 +371,7 @@ public class RestServerWorker extends UhohBase implements Runnable
     try
     {
       String next_line;
-      String colour = "#ffffff";
+      String colour = "#262626";
       RandomAccessFile rr = new RandomAccessFile(f, "r");
 
       while((next_line = rr.readLine()) != null)
@@ -360,7 +387,7 @@ public class RestServerWorker extends UhohBase implements Runnable
 
       rr.seek(0);
 
-      StringBuffer wb = new StringBuffer("<html>\r\n  <head>\r\n    <title>" + db + "</title>\r\n    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>\r\n  </head>\r\n  <body bgcolor='" + colour + "'>\r\n");
+      StringBuffer wb = new StringBuffer("<html>\r\n  <head>\r\n    <title>" + db + "</title>\r\n    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>\r\n  </head>\r\n  <body bgcolor='" + colour + "'>\r\n");
 
       while((next_line = rr.readLine()) != null)
       {
@@ -391,7 +418,7 @@ public class RestServerWorker extends UhohBase implements Runnable
           {
             String name = next_line.replaceFirst("^\\s*title:\\s+name=", "");
 
-            wb.append("    <center style=\"font: bold 12pt 'Roboto', arial, sans-serif;\">" + name + "</center>\r\n");
+            wb.append("    <center style=\"font: bold 12pt 'Roboto Slab', arial, sans-serif; color: #ffffff\">" + name + "</center>\r\n");
           }
         }
       }

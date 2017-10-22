@@ -1,0 +1,51 @@
+body
+{
+  margin: 0;
+  background-color: #262626;
+}
+
+.alert_red
+{
+  margin-bottom: 1px;
+  background-color: #FF523A;
+  color: #ffffff;
+  font-family: 'Roboto Slab', arial, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  padding: 10px;
+  border-left: 2px solid #262626;
+  border-right: 2px solid #262626;
+}
+
+.alert_amber
+{
+  margin-bottom: 1px;
+  background-color: #FF883A;
+  color: #ffffff;
+  font-family: 'Roboto Slab', arial, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  padding: 10px;
+  border-left: 2px solid #262626;
+  border-right: 2px solid #262626;
+}
+
+.alert_green
+{
+  margin-bottom: 1px;
+  background-color: #5DCC57;
+  color: #ffffff;
+  font-family: 'Roboto Slab', arial, sans-serif;
+  font-size: 12pt;
+  font-weight: normal;
+  padding: 10px;
+  border-left: 2px solid #262626;
+  border-right: 2px solid #262626;
+  opacity: 1.0;
+}
+
+.cat
+{
+  font: bold 12pt 'Roboto Slab', arial, sans-serif;
+  color: #ffffff;
+}
