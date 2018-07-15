@@ -138,6 +138,25 @@ public class SocketMonitor extends UhohBase implements Runnable
           cfz.terminate_all();
           cfz = null;
         }
+        else if(in_data.startsWith("INJECT%%"))
+        {
+          // INJECT allows applications to send alerts as UDP messages directly to an Uhoh Client.
+          // This can be used to instrument applications without requiring a synchronous connection
+          // between the application and the Uhoh Client.
+          //
+          // The format for INJECT UDP messages is:
+          //
+          // INJECT%%<tags>%%<message text>
+          //
+          // NB: The 'netcat' command is a convenient way to send UDP messages from a shell-script
+          // to an Uhoh Client - for example:
+          //
+          // echo "INJECT%%RED%%This is a test." | nc -4u -w0 127.0.0.1 8888
+
+          String[] st = in_data.split("%%");
+
+          event_collector.dispatch("CLIENT%%" + st[1].trim() + "%%" + st[2].trim(), "ALL");
+        }
       }
       catch(Exception e)
       {
