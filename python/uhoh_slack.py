@@ -1,6 +1,6 @@
 #       Licence
 #       -------
-#       Copyright (c) 2015-2017, Chris Bristow
+#       Copyright (c) 2015-2018, Chris Bristow
 #       All rights reserved.
 #
 #       Redistribution and use in source and binary forms, with or without
