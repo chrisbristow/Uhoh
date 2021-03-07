@@ -3,32 +3,50 @@
   <head>
     <title>_URL_</title>
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
     <link href='/uhoh.css' rel='stylesheet' type='text/css'>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
-
-    <script type="text/javascript"
-            src="https://www.google.com/jsapi?autoload={
-            'modules':[{
-              'name':'visualization',
-              'version':'1',
-              'packages':['corechart']
-            }]
-          }">
-    </script>
-
     <script>
 
-      var datatable = null;
-      var chartoptions = null;
-      var chart = null;
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(init_chart);
 
-      window.addEvent('domready', function()
+      function init_chart()
       {
-        chart = new google.visualization.AreaChart(document.getElementById('chart'));
+        do_fetch(document.title);
+      }
 
-        chartoptions = {
+      function do_fetch(title)
+      {
+        $.ajax(
+        {
+          url: "/mdata/" + title + "/",
+          type: "GET",
+          contentType: "application/json",
+          success: function(result, status, xhr)
+          {
+            do_render(result);
+          },
+          error: function(xhr, status, error)
+          {
+            errbox();
+          },
+          processData: false,
+          dataType: "json"
+        });
+
+        setTimeout(function() { do_fetch(title); }, 60000);
+      }
+
+      function do_render(responseText)
+      {
+        let obj = responseText;
+
+        chartoptions =
+        {
           title: '_URL_',
           titleTextStyle: { color: '#ffffff', fontName: 'Roboto Slab, arial, sans-serif', fontSize: 20 },
           titlePosition: 'out',
@@ -41,61 +59,46 @@
           series: { 0: { color: '#FF883A', lineWidth: 1 }, 1: { color: '#FCA800', lineWidth: 1 }, 2: { color: '#00FF00', lineWidth: 1 } }
         };
 
-        do_fetch(document.title);
-      });
-
-      function do_fetch(title)
-      {
-        var ajax = new Request({ noCache: true, url: "/mdata/" + title + "/", onSuccess: function(responseText, responseXML) { do_render(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
-        ajax.get();
-        setTimeout(function() { do_fetch(title); }, 60000);
-      }
-
-      function do_render(responseText)
-      {
-        var obj = JSON.decode(responseText);
-
         if(obj.status != "ok")
         {
-          $('chart').innerHTML = "No chart data available (" + chartoptions.title + ")";
+          $('#chart').html("No chart data available (" + chartoptions.title + ")");
         }
         else
         {
-          datatable = null;
-          datatable = new google.visualization.DataTable();
-          datatable.addColumn('datetime', 'Time');
-          datatable.addColumn('number', 'Value')
+          let dtable = [ [ "Time", "Value" ] ];
 
-          for(var i = 0; i < obj.items.length; i ++)
+          for(let i = 0; i < obj.items.length; i ++)
           {
-            datatable.addRow([ new Date(obj.items[i][0], obj.items[i][1] - 1, obj.items[i][2], obj.items[i][3], obj.items[i][4], obj.items[i][5], 0), obj.items[i][6]]);
+            dtable.push([ obj.items[i][0] + "-" + pad(obj.items[i][1]) + "-" + pad(obj.items[i][2]) + " " + pad(obj.items[i][3]) + ":" + pad(obj.items[i][4]) + ":" + pad(obj.items[i][5]), obj.items[i][6] ]);
           }
 
-          chart.draw(datatable, chartoptions);
+          let rdata = google.visualization.arrayToDataTable(dtable);
+          let chart = new google.visualization.AreaChart(document.getElementById('cdiv'));
+          chart.draw(rdata, chartoptions);
         }
 
-        var dt = new Date();
-        var u_parts = chartoptions.title.split('/');
+        let dt = new Date();
+        let u_parts = chartoptions.title.split('/');
 
         if(u_parts[0].match(/^(\d\d\d\d)\-(\d\d)\-(\d\d)$/) != null)
         {
-          var ddc = u_parts[0].match(/^(\d\d\d\d)\-(\d\d)\-(\d\d)$/);
+          let ddc = u_parts[0].match(/^(\d\d\d\d)\-(\d\d)\-(\d\d)$/);
 
           dt = new Date(ddc[1], ddc[2] - 1, ddc[3], 12, 0, 0, 0);
         }
 
-        var d_back = new Date(dt.getTime() - 86400000);
-        var d_fwd = new Date(dt.getTime() + 86400000);
+        let d_back = new Date(dt.getTime() - 86400000);
+        let d_fwd = new Date(dt.getTime() + 86400000);
 
-        var y_date = d_back.getFullYear() + "-" + pad(d_back.getMonth() + 1) + "-" + pad(d_back.getDate());
-        var t_date = d_fwd.getFullYear() + "-" + pad(d_fwd.getMonth() + 1) + "-" + pad(d_fwd.getDate());
+        let y_date = d_back.getFullYear() + "-" + pad(d_back.getMonth() + 1) + "-" + pad(d_back.getDate());
+        let t_date = d_fwd.getFullYear() + "-" + pad(d_fwd.getMonth() + 1) + "-" + pad(d_fwd.getDate());
 
-        $('controls').innerHTML = "<input type='button' value='&lt;' onmouseup='location.href = \"/metric/" + y_date + "/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' /> <input type='button' value='O' onmouseup='location.href = \"/metric/TODAY/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' /> <input type='button' value='&gt;' onmouseup='location.href = \"/metric/" + t_date + "/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' />";
+        document.getElementById('controls').innerHTML = "<input type='button' value='&lt;' onmouseup='location.href = \"/metric/" + y_date + "/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' /> <input type='button' value='O' onmouseup='location.href = \"/metric/TODAY/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' /> <input type='button' value='&gt;' onmouseup='location.href = \"/metric/" + t_date + "/" + u_parts[1] + "/" + chartoptions.vAxis.title + "\";' />";
       }
 
       function pad(x)
       {
-        var r = x + "";
+        let r = x + "";
 
         if(x < 10)
         {
@@ -116,7 +119,7 @@
 
   <body>
 
-    <div id="chart" style="width: 100%; height: 90%; font-family: 'Roboto Slab', arial, sans-serif; font-size: 12pt; font-weight: bold; color: #ffffff; background-color: #262626"></div>
+    <div id="cdiv" style="width: 100%; height: 90%; font-family: 'Roboto Slab', arial, sans-serif; font-size: 12pt; font-weight: bold; color: #ffffff; background-color: #262626"></div>
 
     <div id="controls" class="cat"></div>
 

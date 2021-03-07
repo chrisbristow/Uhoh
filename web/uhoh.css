@@ -15,6 +15,24 @@ body
   padding: 10px;
   border-left: 2px solid #262626;
   border-right: 2px solid #262626;
+  animation-name: red_alert;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes red_alert
+{
+  0%   { opacity: 1; }
+  10%  { opacity: 1; }
+  20%  { opacity: 1; }
+  30%  { opacity: 1; }
+  40%  { opacity: 1; }
+  50%  { opacity: 0.2; }
+  60%  { opacity: 1; }
+  70%  { opacity: 1; }
+  80%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 1; }
 }
 
 .alert_amber

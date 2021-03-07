@@ -129,6 +129,23 @@ public class RestServerWorker extends UhohBase implements Runnable
                 fnf.printStackTrace();
               }
             }
+            else if(url.startsWith("/metrics"))
+            {
+              // Serve the last metric view for Prometheus consumption.
+
+              LinkedBlockingQueue<String> tmp_q = new LinkedBlockingQueue<String>();
+              server_loop.client_q.put(new Object[]{ "PROM_REQ", tmp_q });
+              String prom_doc = tmp_q.poll(rest_request_timeout, TimeUnit.MILLISECONDS);
+
+              if(prom_doc != null)
+              {
+                content = prom_doc;
+              }
+              else
+              {
+                content = "";
+              }
+            }
             else if(url.startsWith("/service/"))
             {
               // Serve the service view Web UI static container page.

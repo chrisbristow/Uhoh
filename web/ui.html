@@ -7,17 +7,18 @@
   <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
   <link href='/uhoh.css' rel='stylesheet' type='text/css'>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   <script>
 
-      var tags = [];
+      let tags = [];
 
-      window.addEvent('domready', function()
+      $(document).ready(function()
       {
         if(location.search.charAt(0) == "?")
         {
-          var filter = (location.search).replace(/\?/, "");
+          let filter = (location.search).replace(/\?/, "");
 
           document.title = "Uhoh (" + filter + ")";
 
@@ -25,45 +26,34 @@
         }
 
         do_fetch();
-        do_fade_out();
       });
 
       function do_fetch()
       {
-        var ajax = new Request({ noCache: true, url: "/ui", onSuccess: function(responseText, responseXML) { do_render(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
-        ajax.get();
+        $.ajax(
+        {
+          url: "/ui",
+          type: "GET",
+          contentType: "application/json",
+          success: function(result, status, xhr)
+          {
+            do_render(result);
+          },
+          error: function(xhr, status, error)
+          {
+            errbox();
+          },
+          processData: false,
+          dataType: "json"
+        });
 
         setTimeout(function() { do_fetch(); }, 20000);
       }
 
-      function do_fade_out()
-      {
-        var red_alerts = $$('#alerts div.alert_red');
-
-        for(var rdi = 0; rdi < red_alerts.length; rdi ++)
-        {
-          red_alerts[rdi].fade('0.2');
-        }
-
-        setTimeout(function() { do_fade_in(); }, 500);
-      }
-
-      function do_fade_in()
-      {
-        var red_alerts = $$('#alerts div.alert_red');
-
-        for(var rdi = 0; rdi < red_alerts.length; rdi ++)
-        {
-          red_alerts[rdi].fade('1');
-        }
-
-        setTimeout(function() { do_fade_out(); }, 3000);
-      }
-
       function do_render(responseText)
       {
-        var obj = JSON.decode(responseText);
-        var response = "";
+        let obj = responseText;
+        let response = "";
 
         if(obj.status != "ok")
         {
@@ -81,14 +71,14 @@
           response = "<div class=\"alert_green\">&nbsp;&nbsp;</div>";
         }
 
-        $('alerts').innerHTML = response;
+        $('#alerts').html(response);
       }
 
       function get_alerts(aobj, categ)
       {
-        var html = "";
+        let html = "";
 
-        for(var i = 0; i < aobj.length; i ++)
+        for(let i = 0; i < aobj.length; i ++)
         {
           if(tags.length == 0)
           {
@@ -96,9 +86,9 @@
           }
           else
           {
-            for(var j = 0; j < tags.length; j ++)
+            for(let j = 0; j < tags.length; j ++)
             {
-              var itags = aobj[i][1].split(",");
+              let itags = aobj[i][1].split(",");
 
               if(itags.indexOf(tags[j]) >= 0)
               {
@@ -113,7 +103,7 @@
 
       function errbox()
       {
-        $('alerts').innerHTML = "Error calling the server";
+        $('#alerts').html("Error calling the server");
       }
 
   </script>

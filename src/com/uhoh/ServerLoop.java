@@ -66,6 +66,7 @@ public class ServerLoop extends UhohBase
   String secondary_server = null;
   String dead_client_tags = "GREEN";
   String no_config_tags = "GREEN,NO_CLIENT_CONFIG";
+  HashMap<HashMap<String, String>, Double> last_metric_store = new HashMap<HashMap<String, String>, Double>();
 
   // Initialise a new ServerLoop() by loading and parsing the Server
   // properties file.
@@ -388,7 +389,24 @@ public class ServerLoop extends UhohBase
                 ui_purple.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
               }
 
-              disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]);
+              disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6], our_name);
+            }
+            else if(new_update[0].equals("PROM_REQ"))
+            {
+              // Handle incoming requests from Prometheus:
+
+              StringBuffer sb = new StringBuffer("");
+
+              for(Map.Entry<HashMap<String, String>, Double> set : last_metric_store.entrySet())
+              {
+                HashMap desc = set.getKey();
+                Double m_val = set.getValue();
+
+                sb.append("uhoh_metric{server=\"" + desc.get("server") + "\",metric=\"" + desc.get("metric") + "\"} " + m_val);
+                sb.append("\r\n");
+              }
+
+              ((LinkedBlockingQueue)new_update[1]).put(sb.toString());
             }
           }
         }
@@ -458,7 +476,7 @@ public class ServerLoop extends UhohBase
   // The disk_log() method also handles alerts which contain tags indicating that they should be
   // written to metric capture files.
 
-  void disk_log(String s)
+  void disk_log(String s, String svr_host_name)
   {
     log(s);
 
@@ -487,6 +505,13 @@ public class ServerLoop extends UhohBase
           if(contains_metric)
           {
             String metric_name = tag[i].replaceFirst("METRIC_", "");
+
+            HashMap<String, String> pts_params = new HashMap<String, String>();
+            pts_params.put("server", svr_host_name);
+            pts_params.put("metric", metric_name);
+
+            last_metric_store.put(pts_params, metric_value);
+
             File metric_dir = new File("metrics");
 
             if(!metric_dir.exists())
