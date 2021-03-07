@@ -103,7 +103,7 @@ public abstract class UhohBase
     }
   }
 
-  // The is_active() method is provided with a string as it's own argument.
+  // The is_active() method is provided with a string as it's only argument.
   // The string is examined to see if it indicates that the current day/time
   // sits within the definition contained in the string.  If so, true is returned,
   // if not, false.

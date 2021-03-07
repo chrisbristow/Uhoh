@@ -320,6 +320,8 @@ public class ServerLoop extends UhohBase
         }
       }
 
+      // Read the update queue for things to do:
+
       try
       {
         Object[] new_update = new Object[]{"MT"};
