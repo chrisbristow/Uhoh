@@ -69,6 +69,10 @@ public abstract class UhohBase
   // Prefix for log messages.
   String logging_pfx = "C";
 
+  // Metrics are removed from the Prometheus /metrics API once they
+  // haven't been updated for this amount of time:
+  long prom_metric_max_age = 600000;
+
   // Used internally to define which type of metric should be captured.
   enum MetricCalcs { TOTAL, AVERAGE, MAXIMUM, MINIMUM, COUNT, THRESHOLD };
 

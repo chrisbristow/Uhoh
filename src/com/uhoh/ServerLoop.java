@@ -66,7 +66,7 @@ public class ServerLoop extends UhohBase
   String secondary_server = null;
   String dead_client_tags = "GREEN";
   String no_config_tags = "GREEN,NO_CLIENT_CONFIG";
-  HashMap<HashMap<String, String>, Double> last_metric_store = new HashMap<HashMap<String, String>, Double>();
+  HashMap<String, Object[]> last_metric_store = new HashMap<String, Object[]>();
 
   // Initialise a new ServerLoop() by loading and parsing the Server
   // properties file.
@@ -109,6 +109,12 @@ public class ServerLoop extends UhohBase
       log("UI: Process events held for:          " + ui_rtime.get("PROCESS") + " ms");
       log("UI: Idle client events held for:      " + ui_rtime.get("IDLE") + " ms");
       log("UI: Other events held for:            " + ui_rtime.get("ALL") + " ms");
+
+      if(props.getProperty("prom_metric_max_age") != null)
+      {
+        prom_metric_max_age = Long.parseLong(props.getProperty("prom_metric_max_age"));
+        log("Prometheus metric max age:            " + prom_metric_max_age);
+      }
 
       if(props.getProperty("udp_unicast_address") != null)
       {
@@ -389,21 +395,43 @@ public class ServerLoop extends UhohBase
                 ui_purple.put(new_update[1] + ": " + new_update[6], new Object[]{new Long(System.currentTimeMillis()), (String)new_update[2], (String)new_update[5]});
               }
 
-              disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6], our_name);
+              disk_log("ALERT%%" + new_update[1] + "%%" + new_update[2] + "%%" + new_update[3] + "%%" + new_update[4] + "%%" + new_update[5] + "%%" + new_update[6]);
             }
             else if(new_update[0].equals("PROM_REQ"))
             {
               // Handle incoming requests from Prometheus:
 
               StringBuffer sb = new StringBuffer("");
+              Iterator<String> iter = last_metric_store.keySet().iterator();
+              HashSet<String> to_purge = new HashSet<String>();
 
-              for(Map.Entry<HashMap<String, String>, Double> set : last_metric_store.entrySet())
+              while(iter.hasNext())
               {
-                HashMap desc = set.getKey();
-                Double m_val = set.getValue();
+                String desc = iter.next();
+                Object[] m_val = last_metric_store.get(desc);
 
-                sb.append("uhoh_metric{server=\"" + desc.get("server") + "\",metric=\"" + desc.get("metric") + "\"} " + m_val);
-                sb.append("\r\n");
+                if((Long)m_val[1] < (System.currentTimeMillis() - prom_metric_max_age))
+                {
+                  to_purge.add(desc);
+                }
+                else
+                {
+                  sb.append("uhoh_metric{server=\"" + our_name + "\",metric=\"" + desc + "\"} " + m_val[0]);
+                  sb.append("\r\n");
+                }
+              }
+
+              // Purge any metrics which haven't been updated for "prom_metric_max_age":
+
+              Iterator<String> iter2 = to_purge.iterator();
+
+              while(iter2.hasNext())
+              {
+                String m_name = iter2.next();
+
+                log("Purging idle metric: " + m_name);
+
+                last_metric_store.remove(m_name);
               }
 
               ((LinkedBlockingQueue)new_update[1]).put(sb.toString());
@@ -426,7 +454,8 @@ public class ServerLoop extends UhohBase
   {
     LinkedList<Map.Entry<String, Object[]>> lst = new LinkedList<Map.Entry<String, Object[]>>(ui_disp.entrySet());
 
-    Collections.sort(lst, new Comparator<Map.Entry<String, Object[]>>() {
+    Collections.sort(lst, new Comparator<Map.Entry<String, Object[]>>()
+    {
       public int compare(Map.Entry<String, Object[]> o1, Map.Entry<String, Object[]> o2)
       {
         return(((Long)o2.getValue()[0]).compareTo((Long)o1.getValue()[0]));
@@ -476,7 +505,7 @@ public class ServerLoop extends UhohBase
   // The disk_log() method also handles alerts which contain tags indicating that they should be
   // written to metric capture files.
 
-  void disk_log(String s, String svr_host_name)
+  void disk_log(String s)
   {
     log(s);
 
@@ -506,11 +535,7 @@ public class ServerLoop extends UhohBase
           {
             String metric_name = tag[i].replaceFirst("METRIC_", "");
 
-            HashMap<String, String> pts_params = new HashMap<String, String>();
-            pts_params.put("server", svr_host_name);
-            pts_params.put("metric", metric_name);
-
-            last_metric_store.put(pts_params, metric_value);
+            last_metric_store.put(metric_name, new Object[]{ metric_value, System.currentTimeMillis() });
 
             File metric_dir = new File("metrics");
 
