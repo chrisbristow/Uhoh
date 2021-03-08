@@ -417,7 +417,7 @@ public class ServerLoop extends UhohBase
                 else
                 {
                   sb.append("uhoh_metric{server=\"" + our_name + "\",metric=\"" + desc + "\"} " + m_val[0]);
-                  sb.append("\r\n");
+                  sb.append("\n");
                 }
               }
 

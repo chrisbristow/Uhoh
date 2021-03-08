@@ -1,5 +1,5 @@
 background:   colour=#262626
 row:          size=30%   url=/service/example_service_view
 title:        name=Performance Information
-row:          size=30%   url=/metric/TODAY/A_MEDIUM/   url2=/metric/TODAY/A_LOW/Delay%20(sec)
+row:          size=30%   url=/metric/TODAY/COUNT_1/   url2=/metric/TODAY/COUNT_2/Delay%20(sec)
 row:          size=50%   url=/
