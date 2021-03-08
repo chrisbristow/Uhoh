@@ -18,6 +18,7 @@ body
   animation-name: red_alert;
   animation-duration: 2s;
   animation-iteration-count: infinite;
+  border-radius: 8px;
 }
 
 @keyframes red_alert
@@ -46,6 +47,7 @@ body
   padding: 10px;
   border-left: 2px solid #262626;
   border-right: 2px solid #262626;
+  border-radius: 8px;
 }
 
 .alert_green
@@ -60,10 +62,16 @@ body
   border-left: 2px solid #262626;
   border-right: 2px solid #262626;
   opacity: 1.0;
+  border-radius: 8px;
 }
 
 .cat
 {
   font: bold 12pt 'Roboto Slab', arial, sans-serif;
   color: #ffffff;
+}
+
+.box
+{
+  text-align: center;
 }

@@ -113,7 +113,7 @@ public class ServerLoop extends UhohBase
       if(props.getProperty("prom_metric_max_age") != null)
       {
         prom_metric_max_age = Long.parseLong(props.getProperty("prom_metric_max_age"));
-        log("Prometheus metric max age:            " + prom_metric_max_age);
+        log("Prometheus metric max age:            " + prom_metric_max_age + " ms");
       }
 
       if(props.getProperty("udp_unicast_address") != null)

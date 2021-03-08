@@ -4,160 +4,158 @@
     <title>_URL_</title>
   </head>
 
-  <style>
-
-      .box
-      {
-        text-align: center;
-      }
-
-  </style>
-
   <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
   <link href='/uhoh.css' rel='stylesheet' type='text/css'>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/mootools/1.5.2/mootools.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   <script>
 
-      window.addEvent('domready', function()
+      let all_tags = [];
+
+      $(document).ready(function()
       {
         fetch_template(document.title);
       });
 
       function fetch_template(t_name)
       {
-        var ajax = new Request({ noCache: true, url: "/sview/" + t_name + "/", onSuccess: function(responseText, responseXML) { build_template(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
-        ajax.get();
+        $.ajax(
+        {
+          url: "/sview/" + t_name + "/",
+          type: "GET",
+          contentType: "application/json",
+          success: function(result, status, xhr)
+          {
+            build_template(result);
+          },
+          error: function(xhr, status, error)
+          {
+            errbox();
+          },
+          processData: false,
+          dataType: "json"
+        });
       }
 
       function build_template(responseText)
       {
         try
         {
-          var obj = JSON.decode(responseText);
+          let obj = responseText;
 
           if(obj.status != "ok")
           {
-            $('debug').innerHTML = "Error: The service map requested could not be loaded";
+            $('#debug').html("Error: The service map requested could not be loaded");
           }
           else
           {
-            var html = "";
+            let html = "";
 
-            for(var i = 0; i < obj.layers.length; i ++)
+            for(let i = 0; i < obj.layers.length; i ++)
             {
               html += "<tr>";
               html += "<td class='cat'>" + obj.layers[i].layer + "</td>";
               html += "<td class='box'>";
 
-              for(var j = 0; j < obj.layers[i].elements.length; j ++)
+              for(let j = 0; j < obj.layers[i].elements.length; j ++)
               {
-                html += "<span class='alert_green' id='" + obj.layers[i].elements[j].tag + "'>" + obj.layers[i].elements[j].name + "</span>";
+                let tag_id = obj.layers[i].elements[j].tag;
+
+                html += "<span class='alert_green' id='" + tag_id + "'>" + obj.layers[i].elements[j].name + "</span>";
+
+                all_tags.push(tag_id);
               }
 
               html += "</td>";
               html += "</tr>";
             }
 
-            $('alerts').innerHTML = html;
+            $('#alerts').html(html);
 
             do_fetch();
-            do_fade_out();
           }
         }
         catch(err)
         {
-          $('debug').innerHTML = "Error: Service view contains errors";
+          $('#debug').html("Error: Service view contains errors");
         }
       }
 
       function do_fetch()
       {
-        var ajax = new Request({ noCache: true, url: "/ui", onSuccess: function(responseText, responseXML) { do_render(responseText) }, onFailure: function() { errbox() }, onException: function() { errbox() } });
-        ajax.get();
+        $.ajax(
+        {
+          url: "/ui",
+          type: "GET",
+          contentType: "application/json",
+          success: function(result, status, xhr)
+          {
+            do_render(result);
+          },
+          error: function(xhr, status, error)
+          {
+            errbox();
+          },
+          processData: false,
+          dataType: "json"
+        });
 
         setTimeout(function() { do_fetch(); }, 20000);
       }
 
-      function do_fade_out()
-      {
-        var red_alerts = $$('#alerts span.alert_red');
-
-        for(var rdi = 0; rdi < red_alerts.length; rdi ++)
-        {
-          red_alerts[rdi].fade('0.2');
-        }
-
-        setTimeout(function() { do_fade_in(); }, 500);
-      }
-
-      function do_fade_in()
-      {
-        var red_alerts = $$('#alerts span.alert_red');
-
-        for(var rdi = 0; rdi < red_alerts.length; rdi ++)
-        {
-          red_alerts[rdi].fade('1');
-        }
-
-        setTimeout(function() { do_fade_out(); }, 3000);
-      }
-
       function do_render(responseText)
       {
-        var obj = JSON.decode(responseText);
+        let obj = responseText;
 
         if(obj.status != "ok")
         {
-          $('debug').innerHTML = "The server returned an error";
+          $('#debug').html("The server returned an error");
         }
         else
         {
-          var rtags = [];
+          let rtags = [];
 
-          for(var i = 0; i < obj.red.length; i ++)
+          for(let i = 0; i < obj.red.length; i ++)
           {
             rtags = rtags.concat(obj.red[i][1].split(','));
           }
 
-          for(var i = 0; i < obj.amber.length; i ++)
+          for(let i = 0; i < obj.amber.length; i ++)
           {
             rtags = rtags.concat(obj.amber[i][1].split(','));
           }
 
-          for(var i = 0; i < obj.green.length; i ++)
+          for(let i = 0; i < obj.green.length; i ++)
           {
             rtags = rtags.concat(obj.green[i][1].split(','));
           }
 
-          for(var i = 0; i < obj.purple.length; i ++)
+          for(let i = 0; i < obj.purple.length; i ++)
           {
             rtags = rtags.concat(obj.purple[i][1].split(','));
           }
 
-          var svc_boxes = $$('#alerts span');
-
-          for(var rdi = 0; rdi < svc_boxes.length; rdi ++)
+          for(let a = 0; a < all_tags.length; a ++)
           {
-            if(rtags.indexOf(svc_boxes[rdi].id) != -1)
+            if(rtags.indexOf(all_tags[a]) > -1)
             {
-              $(svc_boxes[rdi].id).set('class', 'alert_red');
+              $("#" + all_tags[a]).attr("class", "alert_red");
             }
             else
             {
-              $(svc_boxes[rdi].id).set('class', 'alert_green');
-              $(svc_boxes[rdi].id).setStyle('opacity', '1.0');
+              $("#" + all_tags[a]).attr("class", "alert_green");
             }
           }
 
-          $('debug').innerHTML = "";
+          $('#debug').html("");
         }
       }
 
       function errbox()
       {
-        $('debug').innerHTML = "Error calling the server";
+        $('#debug').html("Error calling the server");
       }
 
   </script>
